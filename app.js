@@ -15,7 +15,7 @@ function displayParts(list) {
         products.innerHTML += `
         <div class="card">
 
-            <img src="${part['Image']}" style="width:100%; border-radius:8px; margin-bottom:10px;">
+            <img src="${part['Image']}" loading="lazy">
 
             <h3>${part['Parts Name']}</h3>
 
