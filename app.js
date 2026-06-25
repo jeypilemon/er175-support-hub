@@ -40,7 +40,7 @@ function loadSheet() {
         complete: function(results) {
 
             parts = results.data;
-
+            filteredParts = parts;
             displayParts(parts);
         }
     });
@@ -53,28 +53,31 @@ document.getElementById("search").addEventListener("input", (e) => {
 
     const keyword = e.target.value.toLowerCase();
 
-    const filtered = parts.filter(part =>
+    filteredParts = parts.filter(part =>
         (part['Parts Name'] || '').toLowerCase().includes(keyword) ||
         (part['Parts Category'] || '').toLowerCase().includes(keyword) ||
         (part['Brand'] || '').toLowerCase().includes(keyword) ||
         (part['Compatibility'] || '').toLowerCase().includes(keyword)
     );
 
-    
-    displayParts(filtered);
+    displayParts(filteredParts);
+});
 
-    function filterCategory(category) {
+
+function filterCategory(category) {
+
+    const normalize = (text) =>
+        (text || '').toString().trim().replace(/\s+/g, '').toLowerCase();
 
     if (category === "All") {
+        filteredParts = parts;
         displayParts(parts);
         return;
     }
 
-    const filtered = parts.filter(part =>
-        part['Parts Category'] === category
+    filteredParts = parts.filter(part =>
+        normalize(part['Parts Category']) === normalize(category)
     );
 
-    displayParts(filtered);
+    displayParts(filteredParts);
 }
-
-});
