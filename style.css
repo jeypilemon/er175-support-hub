@@ -55,6 +55,7 @@ input {
     margin: 8px 0 4px;
 }
 
+/* TEXT */
 .card p {
     font-size: 12px;
     margin: 2px 0;
@@ -81,6 +82,7 @@ input {
     }
 }
 
+/* CATEGORY CHIPS */
 .chips {
     display: flex;
     gap: 8px;
@@ -89,6 +91,8 @@ input {
     margin-bottom: 10px;
 }
 
+
+/* CATEGORY BUTTONS */
 .chips button {
     border: none;
     background: #fff;
@@ -100,7 +104,160 @@ input {
     cursor: pointer;
 }
 
+
+/* HOVER EFFECT */
 .chips button:hover {
     background: #ee4d2d;
     color: white;
+}
+
+/* ACTIVE CATEGORY BUTTON */
+.chips button.active {
+    background: #ee4d2d;
+    color: white;
+}
+
+/* TABS */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.tabs button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #eee;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tabs button.active {
+    background: #ee4d2d;
+    color: white;
+    font-weight: bold;
+}
+
+
+.home-grid {
+    display: grid;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.home-card {
+    display: block;
+    padding: 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.home-card span {
+    display: block;
+    font-size: 12px;
+    margin-top: 5px;
+    font-weight: normal;
+    opacity: 0.9;
+}
+
+/* Shopee-style colors */
+.aftermarket {
+    background: linear-gradient(135deg, #ff6b6b, #ee4d2d);
+}
+
+.oem {
+    background: linear-gradient(135deg, #2e7d32, #43a047);
+}
+
+/* Feature box */
+.feature-box {
+    margin-top: 25px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 13px;
+}
+
+/* Social */
+.social {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.social a {
+    color: #ee4d2d;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.tabs button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    background: #eee;
+    cursor: pointer;
+}
+
+.tabs button:hover {
+    background: #ee4d2d;
+    color: white;
+}
+
+.meta {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    color: #555;
+    gap: 2px;
+    margin-bottom: 8px;
+}
+
+
+/* Footer Style*/
+.footer {
+    margin-top: 40px;
+    padding: 20px;
+    text-align: center;
+    background: #111;
+    color: white;
+}
+
+.footer p {
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.socials {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.socials a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 12px;
+    background: #333;
+    border-radius: 20px;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.socials a:hover {
+    background: #ffbb00;
 }

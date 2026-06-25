@@ -1,46 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ER175A Parts Finder</title>
-        
-    <link rel="stylesheet" href="style.css">
-    </head>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motorstar ER175 Parts Finder</title>
+<link rel="stylesheet" href="style.css">
+</head>
 
-    <body>
 
-        <div class="container">
+<footer class="footer">
+    <p>Follow me</p>
 
-        <h1>Motorstar ER175A Parts Finder</h1>
+    <div class="socials">
+        <a href="https://www.youtube.com/@jpxcariman" target="_blank">
+            YouTube
+        </a>
 
-        <div class="chips">
-    <button onclick="filterCategory('All')">All</button>
-    <button onclick="filterCategory('Accessories')">Accessories</button>
-    <button onclick="filterCategory('Ballrace')">Ballrace</button>
-    <button onclick="filterCategory('Bearings')">Bearings</button>
-    <button onclick="filterCategory('OilSeal')">OilSeal</button>
-    <button onclick="filterCategory('Brakes')">Brakes</button>
-    <button onclick="filterCategory('CVT')">CVT</button>
-    <button onclick="filterCategory('Electrical')">Electrical</button>
-    <button onclick="filterCategory('FuelSystem')">FuelSystem</button>
-    <button onclick="filterCategory('Sensors')">Sensors</button>
-    <button onclick="filterCategory('Oil')">Oil</button>
-    <button onclick="filterCategory('Engine')">Engine</button>
+        <a href="https://www.tiktok.com/@jp.cariman" target="_blank">
+            TikTok
+        </a>
+
+        <a href="https://www.facebook.com/jpxcariman" target="_blank">
+            Facebook
+        </a>
+    </div>
+</footer>
+
+<body>
+
+<div class="container">
+
+    <h1>Motorstar ER175 Parts Finder</h1>
+
+    <!-- TABS -->
+    <div class="tabs">
+    <button id="tab-aftermarket" onclick="switchTab('aftermarket')">
+        Aftermarket
+    </button>
+
+    <button id="tab-oem" onclick="switchTab('oem')">
+        OEM
+    </button>
 </div>
 
-        <input
-        type="text"
-        id="search"
-        placeholder="Search parts..."
-        >
+<div class="chips" id="chips"></div>
 
-        <div id="products"></div>
+    <!-- SEARCH -->
+    <input type="text" id="search" placeholder="Search parts...">
 
-</div> 
+    <!-- PRODUCTS -->
+    <div id="products"></div>
 
-        <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-        <script src="app.js"></script>
+</div>
 
-    </body>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script src="app.js"></script>
+
+</body>
+
 </html>

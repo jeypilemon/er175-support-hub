@@ -1,29 +1,98 @@
-
-
-const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=0&single=true&output=csv";
-
-let parts = [];
+let currentTab = "aftermarket";
+let currentCategory = "All";
+let aftermarketParts = [];
+let oemParts = [];
 
 const products = document.getElementById("products");
 
-// DISPLAY PRODUCTS
-function displayParts(list) {
+/* ---------------------------
+LOAD AFTERMARKET SHEET
+----------------------------*/
+function loadAftermarket(url) {
+    Papa.parse(url, {
+        download: true,
+        header: true,
+        complete: function(res) {
+            aftermarketParts = res.data;
+            render();
+        }
+    });
+}
+
+/* ---------------------------
+LOAD OEM SHEET
+----------------------------*/
+function loadOEM(url) {
+    Papa.parse(url, {
+        download: true,
+        header: true,
+        complete: function(res) {
+            oemParts = res.data;
+            render();
+        }
+    });
+}
+
+/* ---------------------------
+RENDER FUNCTION
+----------------------------*/
+function render() {
+
+    let data = currentTab === "aftermarket"
+        ? aftermarketParts
+        : oemParts;
+
+    const keyword = document.getElementById("search").value.toLowerCase();
+
+    let filtered = data.filter(p => {
+
+        const matchSearch =
+            (p["Parts Name"] || "").toLowerCase().includes(keyword) ||
+            (p["Parts Category"] || "").toLowerCase().includes(keyword);
+
+        const matchCategory =
+            currentCategory === "All" ||
+            p["Parts Category"] === currentCategory;
+
+        return matchSearch && matchCategory;
+    });
+
     products.innerHTML = "";
 
-    list.forEach(part => {
+    filtered.forEach(part => {
+
+        let extra = "";
+
+        if (currentTab === "aftermarket") {
+            extra = `
+                <div class="meta">
+                    <span>🏷 Brand: ${part["Brand"] || "-"}</span>
+                    <span>🔧 Compatibility: ${part["Compatibility"] || "-"}</span>
+                    <span>📏 Specs/Size: ${part["Spec Size"] || "-"}</span>
+                </div>
+            `;
+        }
+
+        if (currentTab === "oem") {
+            extra = `
+                <div class="meta">
+                    <span>🎨 Color: ${part["Color"] || "-"}</span>
+                </div>
+            `;
+        }
+
         products.innerHTML += `
         <div class="card">
 
-            <img src="${part['Image']}" loading="lazy">
+            <img src="${part["Preview"] || ''}" loading="lazy">
 
-            <h3>${part['Parts Name']}</h3>
+            <h3>${part["Parts Name"]}</h3>
 
-            <p><b>Category:</b> ${part['Parts Category']}</p>
-            <p><b>Brand:</b> ${part['Brand']}</p>
-            <p><b>Compatibility:</b> ${part['Compatibility']}</p>
-            <p><b>Specs:</b> ${part['Specs/Size']}</p>
+            <p><b>Category:</b> ${part["Parts Category"]}</p>
 
-            <a class="button" href="${part['Shopee']}" target="_blank">
+            ${extra}
+
+            <a class="button" href="${part["Shopee"]}" target="_blank">
                 Buy on Shopee
             </a>
 
@@ -32,52 +101,96 @@ function displayParts(list) {
     });
 }
 
-// LOAD GOOGLE SHEET
-function loadSheet() {
-    Papa.parse(sheetURL, {
-        download: true,
-        header: true,
-        complete: function(results) {
+/* tab logic */
+function updateTabUI() {
 
-            parts = results.data;
-            filteredParts = parts;
-            displayParts(parts);
-        }
-    });
+    document.getElementById("tab-aftermarket")
+        .classList.remove("active");
+
+    document.getElementById("tab-oem")
+        .classList.remove("active");
+
+    if (currentTab === "aftermarket") {
+        document.getElementById("tab-aftermarket")
+            .classList.add("active");
+    }
+
+    if (currentTab === "oem") {
+        document.getElementById("tab-oem")
+            .classList.add("active");
+    }
 }
 
-loadSheet();
+/* ---------------------------
+TAB SWITCH
+----------------------------*/
+function switchTab(tab) {
+    currentTab = tab;
+    currentCategory = "All";
 
-// SEARCH FUNCTION
-document.getElementById("search").addEventListener("input", (e) => {
+    updateTabUI();   // 🔥 highlight tabs
+    renderChips();
+    render();
+}
 
-    const keyword = e.target.value.toLowerCase();
-
-    filteredParts = parts.filter(part =>
-        (part['Parts Name'] || '').toLowerCase().includes(keyword) ||
-        (part['Parts Category'] || '').toLowerCase().includes(keyword) ||
-        (part['Brand'] || '').toLowerCase().includes(keyword) ||
-        (part['Compatibility'] || '').toLowerCase().includes(keyword)
-    );
-
-    displayParts(filteredParts);
+/* ---------------------------
+SEARCH
+----------------------------*/
+document.addEventListener("input", (e) => {
+    if (e.target.id === "search") {
+        render();
+    }
 });
 
 
-function filterCategory(category) {
-
-    const normalize = (text) =>
-        (text || '').toString().trim().replace(/\s+/g, '').toLowerCase();
-
-    if (category === "All") {
-        filteredParts = parts;
-        displayParts(parts);
-        return;
-    }
-
-    filteredParts = parts.filter(part =>
-        normalize(part['Parts Category']) === normalize(category)
-    );
-
-    displayParts(filteredParts);
+//category logic    
+function setCategory(cat) {
+    currentCategory = cat;
+    renderChips();   // 🔥 IMPORTANT: refresh chips UI
+    render();
 }
+
+
+//Category filter
+function getCategories(data) {
+
+    const cats = data
+        .map(p => p["Parts Category"])
+        .filter(Boolean);
+
+    return ["All", ...new Set(cats)];
+}
+
+//Render category chips
+function renderChips() {
+
+    const chips = document.getElementById("chips");
+
+    let data = currentTab === "aftermarket"
+        ? aftermarketParts
+        : oemParts;
+
+    const categories = getCategories(data);
+
+    chips.innerHTML = "";
+
+    categories.forEach(cat => {
+
+        chips.innerHTML += `
+        <button class="chip ${currentCategory === cat ? 'active' : ''}"
+        onclick="setCategory('${cat}')">
+            ${cat}
+        </button>
+        `;
+    });
+}
+
+/* ---------------------------
+INIT
+----------------------------*/
+loadAftermarket("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=0&single=true&output=csv");
+
+loadOEM("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=1094479797&single=true&output=csv");
+
+
+updateTabUI();
