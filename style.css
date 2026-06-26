@@ -51,8 +51,7 @@ input#search:focus {
 .card img {
     width: 100%;
     height: 180px;
-    object-fit: contain; /* IMPORTANT */
-    background: #f7f7f7;
+    object-fit: cover;
     border-radius: 12px;
     padding: 10px;
 }
@@ -311,80 +310,6 @@ input#search:focus {
     border-bottom: 1px solid #eee;
 }
 
-/*Feature Grid*/
-.featured-grid {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-}
-
-.featured-card {
-    min-width: 120px;
-    border: 1px solid #eee;
-    padding: 8px;
-    border-radius: 10px;
-}
-
-/* Featured Card Image */
-.featured-grid {
-    display: flex;
-    gap: 10px;
-    overflow-x: auto;
-    padding: 5px 0;
-}
-
-.featured-card {
-    min-width: 140px;
-    max-width: 140px;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    padding: 8px;
-    flex-shrink: 0;
-    background: #fff;
-}
-
-.featured-card img {
-    width: 100%;
-    height: 90px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.featured-card p {
-    font-size: 12px;
-    margin-top: 6px;
-}
-
-/*Feature Card Hover Effect*/
-.featured-card {
-    cursor: pointer;
-    transition: transform 0.2s ease;
-}
-
-.featured-card:hover {
-    transform: scale(1.05);
-}
-
-/*Clicable Featured Card*/
-
-.featured-card {
-    cursor: pointer;
-}
-
-.featured-card img,
-.featured-card p {
-    pointer-events: none;
-}
-
-
-.footer {
-    margin-top: 50px;
-    padding: 25px;
-    text-align: center;
-    background: #111;
-    color: white;
-}
-
 .social-icons {
     display: flex;
     justify-content: center;
@@ -458,7 +383,7 @@ input#search:focus {
 
 .reset-btn {
     background: #111;
-    color: white;
+    color: rgb(17, 17, 17);
     border: none;
     padding: 10px 14px;
     border-radius: 10px;
@@ -477,7 +402,7 @@ input#search:focus {
 }
 
 .reset-btn {
-    background: #f3f3f3;
+    background: #ffffff;
     border: none;
     padding: 8px 12px;
     border-radius: 10px;
@@ -486,7 +411,7 @@ input#search:focus {
 }
 
 .reset-btn:hover {
-    background: #ddd;
+    background: #ffd900;
 }
 
 
@@ -693,4 +618,326 @@ body {
 
 .suggestion-item:hover {
     background: #f5f5f5;
+}
+
+
+
+/* =========================
+SAAS SUPPORT BAR (STRIPE STYLE)
+========================= */
+
+.saas-bar {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 10px 16px;
+    background: #0b0f19;
+    color: white;
+
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-family: system-ui, sans-serif;
+}
+
+/* LEFT SIDE */
+.saas-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.saas-left .dot {
+    width: 8px;
+    height: 8px;
+    background: #ffc400;
+    border-radius: 50%;
+}
+
+/* RIGHT SIDE LINKS */
+.saas-right {
+    display: flex;
+    gap: 14px;
+}
+
+.saas-right a {
+    color: #000000;
+    text-decoration: none;
+    font-size: 13px;
+    transition: 0.2s;
+}
+
+.saas-right a:hover {
+    color: rgb(255, 60, 0);
+}
+
+/* =========================
+MOBILE RESPONSIVE FIX
+========================= */
+
+@media (max-width: 600px) {
+
+    .saas-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 10px 12px;
+    }
+
+    .saas-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .saas-right a {
+        font-size: 12px;
+    }
+}
+
+
+/*troubleshooting Guides Card Style*/
+.help-card {
+    background: #fff;
+    border: 1px solid #eaeaea;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+
+    transition: 0.2s ease;
+}
+
+.help-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.help-header {
+    width: 100%;
+    padding: 16px 18px;
+
+    background: linear-gradient(135deg, #ffffff, #f7f9fc);
+    border: none;
+
+    text-align: left;
+    font-weight: 700;
+    font-size: 15px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+
+    border-left: 4px solid #ff4d2d;
+}
+
+.help-card {
+    transition: all 0.2s ease;
+}
+
+.help-card:hover .help-header {
+    border-left-color: #ff2d55;
+    background: linear-gradient(135deg, #fff, #fff7f7);
+}
+
+.help-header:hover {
+    background: #fff3ef;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.help-body {
+    font-size: 14px;
+    color: #444;
+    line-height: 1.6;
+}
+
+.help-footer {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #777;
+}
+
+
+/*mobile fix for troubleshooting guides*/
+@media (max-width: 600px) {
+    .help-card {
+        padding: 12px;
+    }
+
+    .help-header h3 {
+        font-size: 14px;
+    }
+
+    .help-body {
+        font-size: 13px;
+    }
+}
+
+
+/*stripe style troubleshooting guides*/
+.card {
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+}
+
+.solution-text {
+    font-size: 14px;
+    color: #444;
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+.video-section, .product-section {
+    margin-top: 12px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 8px 10px;
+    margin: 5px 5px 0 0;
+    border-radius: 10px;
+    font-size: 13px;
+    text-decoration: none;
+    border: 1px solid #ddd;
+}
+
+.btn.tiktok {
+    background: #000;
+    color: white;
+}
+
+.btn.youtube {
+    background: #ff0000;
+    color: white;
+}
+
+.btn.buy {
+    background: #10b981;
+    color: white;
+}
+
+
+/* ===== HELP CENTER CARD ===== */
+.help-card {
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    margin: 10px 0;
+    overflow: hidden;
+    background: #fff;
+}
+
+/* HEADER */
+.help-header {
+    width: 100%;
+    padding: 14px 16px;
+    background: #fff;
+    border: none;
+    text-align: left;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.help-header:hover {
+    background: #f7f7f7;
+}
+
+/* BODY */
+.help-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.25s ease;
+    padding: 0 16px;
+}
+
+.help-body.open {
+    max-height: 600px;
+    padding: 12px 16px 16px;
+}
+
+/* TEXT */
+.help-solution {
+    font-size: 14px;
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 12px;
+}
+
+/* PRODUCT CHIP */
+.chip-btn {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: #111;
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+/* MOBILE FIRST */
+@media (max-width: 768px) {
+    .help-header {
+        font-size: 14px;
+    }
+}
+
+.inline-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    margin: 4px 0;
+    padding: 6px 10px;
+
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+
+    text-decoration: none;
+    transition: 0.2s ease;
+
+    white-space: nowrap;
+}
+
+/* YouTube */
+.inline-link.youtube {
+    background: #ff0000;
+    color: white;
+}
+
+/* TikTok */
+.inline-link.tiktok {
+    background: #111;
+    color: white;
+}
+
+/* Facebook */
+.inline-link.facebook {
+    background: #1877f2;
+    color: white;
+}
+
+/* hover effect */
+.inline-link:hover {
+    transform: translateY(-1px);
+    opacity: 0.9;
+}
+
+/* mobile spacing fix */
+.help-solution br + .inline-link {
+    margin-top: 6px;
 }
