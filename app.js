@@ -61,6 +61,16 @@ function render() {
 
     products.innerHTML = "";
 
+if (filtered.length === 0) {
+    products.innerHTML = `
+        <div class="empty-state">
+            ❌ No results found
+            <p>Try different keywords or category</p>
+        </div>
+    `;
+    return;
+}
+
     filtered.forEach(part => {
 
         let extra = "";
