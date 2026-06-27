@@ -1,10 +1,11 @@
 let currentTab = "aftermarket";
 let currentCategory = "All";
+let globalKeyword = "";
 
 let aftermarketParts = [];
 let oemParts = [];
 let troubleshootData = [];
-let troubleshootKeyword = "";
+
 
 const products = document.getElementById("products");
 
@@ -63,7 +64,7 @@ function render() {
 
     const data = currentTab === "aftermarket" ? aftermarketParts : oemParts;
 
-    const keyword = normalizeText(document.getElementById("search")?.value || "");
+    const keyword = globalKeyword;
 
     const filtered = data.filter(p => {
         const name = normalizeText(p["Parts Name"] || "");
@@ -108,7 +109,7 @@ function renderTroubleshoot() {
         const tags = (item["Tags"] || "").toLowerCase();
 
         return (
-            (issue.includes(troubleshootKeyword) || solution.includes(troubleshootKeyword)) &&
+            (issue.includes(globalKeyword) || solution.includes(globalKeyword)) &&
             (currentCategory === "All" || tags.includes(currentCategory.toLowerCase()))
         );
     });
@@ -216,6 +217,9 @@ TABS
 function switchTab(tab) {
     currentTab = tab;
     currentCategory = "All";
+
+    updateTabUI();
+
     renderChips();
     render();
 }
@@ -266,10 +270,19 @@ function setCategory(cat) {
 INIT
 ========================= */
 
-window.addEventListener("load", () => {
+document.getElementById("search").addEventListener("input", (e) => {
+    globalKeyword = normalizeText(e.target.value);
     render();
 });
 
+
+function updateTabUI() {
+    document.getElementById("tab-aftermarket").classList.remove("active");
+    document.getElementById("tab-oem").classList.remove("active");
+    document.getElementById("tab-troubleshoot").classList.remove("active");
+
+    document.getElementById(`tab-${currentTab}`).classList.add("active");
+}
 
 /* =========================
 DATA URLS (PUT YOUR SHEETS HERE)
