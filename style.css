@@ -55,6 +55,23 @@ input#search:focus {
     flex-direction: column;
 }
 
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+}
+
+/*video fix section*/
+.video-section, .product-section {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
 /* IMAGE FIX (THIS solves your "too big" issue) */
 .card img {
     width: 100%;
@@ -188,24 +205,26 @@ input#search:focus {
 }
 
 
-.tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
 .tabs button {
     flex: 1;
     padding: 10px;
     border: none;
-    border-radius: 8px;
-    background: #eee;
+    border-radius: 10px;
+    background: #f1f1f1;
     cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
 }
 
-.tabs button:hover {
+.tabs button:active {
+    transform: scale(0.97);
+}
+
+.tabs button.active {
     background: #ee4d2d;
     color: white;
+    font-weight: 700;
+    box-shadow: 0 6px 15px rgba(238,77,45,0.2);
 }
 
 .meta {
@@ -776,12 +795,12 @@ MOBILE RESPONSIVE FIX
 .help-body {
     max-height: 0;
     overflow: hidden;
-    transition: all 0.25s ease;
+    transition: max-height 0.3s ease, padding 0.3s ease;
     padding: 0 16px;
 }
 
 .help-body.open {
-    max-height: 600px;
+    max-height: 800px;
     padding: 12px 16px 16px;
 }
 
@@ -1014,3 +1033,5 @@ MOBILE RESPONSIVE FIX
 #products.manual-mode {
     display: block !important;
 }
+
+

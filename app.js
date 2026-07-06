@@ -13,6 +13,22 @@ const ownersManualPDF =
 const products = document.getElementById("products");
 
 /* =========================
+GLOBAL STATE (PUT HERE)
+========================= */
+
+const state = {
+    tab: "aftermarket",
+    category: "All",
+    keyword: "",
+    data: {
+        aftermarket: [],
+        oem: [],
+        troubleshoot: [],
+        manual: []
+    }
+};
+
+/* =========================
 LOAD DATA
 ========================= */
 
@@ -136,7 +152,16 @@ TOGGLE TROUBLESHOOT CARDS
 
 function toggleCard(id) {
     const el = document.getElementById(id);
-    if (el) el.classList.toggle("open");
+    if (!el) return;
+
+    const isOpen = el.classList.contains("open");
+
+    document.querySelectorAll(".help-body.open")
+        .forEach(x => x.classList.remove("open"));
+
+    if (!isOpen) {
+        el.classList.add("open");
+    }
 }
 
 
@@ -152,6 +177,8 @@ function updateTabUI() {
         activeBtn.classList.add("active");
     }
 }
+
+
 
 /* =========================
 RENDER MAIN
@@ -220,7 +247,7 @@ if (currentTab === "aftermarket" || currentTab === "oem") {
         `;
     }).join("");
 
-    updateTabUI();
+    syncUI();
 }
 
 /* =========================
@@ -261,6 +288,7 @@ function renderTroubleshoot() {
         </div>
         `;
     }).join("");
+
 }
 
 /* =========================
@@ -313,6 +341,8 @@ function renderManual() {
     });
 
     container.innerHTML = html;
+    
+    syncUI();
 }
 
 /* =========================
@@ -331,7 +361,7 @@ function switchTab(tab) {
 
     renderChips();
     render();
-    updateTabUI();
+    syncUI();
 }
 
 function renderChips() {
@@ -339,16 +369,28 @@ function renderChips() {
 
     let cats = [];
 
-    if (currentTab === "aftermarket") cats = [...new Set(aftermarketParts.map(p => p["Parts Category"]))];
-    else if (currentTab === "oem") cats = [...new Set(oemParts.map(p => p["Parts Category"]))];
-    else if (currentTab === "troubleshoot") cats = [...new Set(troubleshootData.flatMap(p => (p["Tags"] || "").split(",")))];
-    else return (chips.innerHTML = "");
+    if (currentTab === "aftermarket") {
+        cats = [...new Set(aftermarketParts.map(p => p["Parts Category"]))];
+    } else if (currentTab === "oem") {
+        cats = [...new Set(oemParts.map(p => p["Parts Category"]))];
+    } else if (currentTab === "troubleshoot") {
+        cats = [...new Set(troubleshootData.flatMap(p => (p["Tags"] || "").split(",")))];
+    } else {
+        chips.innerHTML = "";
+        return;
+    }
 
     cats = ["All", ...cats.filter(Boolean)];
 
     chips.innerHTML = cats.map(c =>
         `<button class="${c === currentCategory ? "active" : ""}" onclick="setCategory('${c}')">${c}</button>`
     ).join("");
+}
+
+
+/*Clean sync*/
+function syncUI() {
+    updateTabUI();
 }
 
 /* =========================
