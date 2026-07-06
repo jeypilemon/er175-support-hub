@@ -79,27 +79,27 @@ function openModal(url) {
 
     const ytId = getYouTubeId(url);
 
-    // reset first
     frame.src = "";
 
-    // YouTube → modal
+    // YouTube → in-app
     if (ytId) {
         frame.src = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
         modal.classList.add("show");
         return;
     }
 
-    // TikTok / Facebook → open new tab (they block iframe)
-    if (
-        url.includes("tiktok.com") ||
-        url.includes("facebook.com") ||
-        url.includes("fb.watch")
-    ) {
-        window.open(url, "_blank");
+    // TikTok → force app intent (best effort)
+    if (url.includes("tiktok.com")) {
+        window.location.href = url; // mobile opens app if installed
         return;
     }
 
-    // fallback
+    // Facebook → force app / browser fallback
+    if (url.includes("facebook.com") || url.includes("fb.watch")) {
+        window.location.href = url;
+        return;
+    }
+
     window.open(url, "_blank");
 }
 
@@ -424,6 +424,11 @@ document.getElementById("search").addEventListener("input", e => {
     render();
 });
 
+
+
+window.closeModal = closeModal;
+window.openModal = openModal;
+
 /* =========================
 INIT
 ========================= */
@@ -436,7 +441,3 @@ loadOEM("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2Vecpds
 loadTroubleshoot("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=557855511&single=true&output=csv");
 
 loadManual("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=56637698&single=true&output=csv");
-
-
-window.closeModal = closeModal;
-window.openModal = openModal;

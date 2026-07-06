@@ -1145,7 +1145,7 @@ MOBILE RESPONSIVE FIX
     position: fixed;
     inset: 0;
     display: none;
-    z-index: 999999;
+    z-index: 999999; /* MUST be higher than saas bar */
 }
 
 .link-modal.show {
@@ -1168,7 +1168,7 @@ MOBILE RESPONSIVE FIX
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    z-index: 2;
+    z-index: 1000000;
 }
 
 #modalFrame {
