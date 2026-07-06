@@ -530,13 +530,16 @@ function getEmptyStateMessage() {
 }
 
 function resetFilters() {
+
     globalKeyword = "";
     manualSearch = "";
+    currentCategory = "All";
 
     document.getElementById("search").value = "";
 
     renderChips();
     render();
+
 }
 
 function setCategory(cat) {

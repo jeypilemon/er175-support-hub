@@ -112,13 +112,14 @@ input#search:focus {
     text-align: center;
     border-radius: 10px;
     text-decoration: none;
-    font-weight: 600;
+    font-size: 14px;
+    font-weight: 700;
     margin-top: auto;
 }
 
 .button:hover {
-    background: var(--accent);
-    transform: translateY(-1px);
+    background: #006eff;
+    transform: translateY(-2px);
 }
 
 
@@ -131,27 +132,63 @@ input#search:focus {
 
 /* CATEGORY CHIPS */
 .chips {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 10px 0;
-    margin-bottom: 10px;
+
+    display:flex;
+
+    gap:8px;
+
+    overflow-x:auto;
+
+    flex-wrap:nowrap;
+
+    white-space:nowrap;
+
+    scrollbar-width:none;
+
+    position:sticky;
+
+    top:58px;
+
+    z-index:90;
+
+    background:#0b0f14;
+
+    padding:8px 10px;
+
 }
 
 
-/* CATEGORY BUTTONS */
-.chips button {
-    border: 1px solid var(--border);
-    background: var(--surface);
-    color: var(--text);   /* ✅ FIX BLACK TEXT */
-    
-    padding: 8px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    white-space: nowrap;
+.chips::-webkit-scrollbar {
+    display:none;
+}
 
-    cursor: pointer;
-    transition: 0.2s ease;
+
+.chips button {
+
+    flex:0 0 auto;
+
+    background:#161f2b;
+
+    color:#e6edf3;
+
+    border:1px solid #243041;
+
+    border-radius:20px;
+
+    padding:8px 14px;
+
+    font-size:13px;
+
+}
+
+.chips {
+    mask-image: linear-gradient(
+        to right,
+        transparent,
+        black 15px,
+        black 90%,
+        transparent
+    );
 }
 
 
@@ -237,6 +274,7 @@ input#search:focus {
 
 .reset-btn {
     background: var(--surface);
+    color: var(--text);
     border: none;
     padding: 8px 12px;
     border-radius: 10px;
@@ -271,6 +309,8 @@ input#search:focus {
 /* ===== HELP CENTER CARD ===== */
 .help-card {
     border: 1px solid #eaeaea;
+    background:var(--surface);
+    border:1px solid var(--border);
     border-radius: 12px;
     margin: 10px 0;
     overflow: hidden;
@@ -282,7 +322,8 @@ input#search:focus {
 .help-header {
     width: 100%;
     padding: 14px 16px;
-    background: #fff;
+    color:var(--text);
+    background:#151e29;
     border: none;
     text-align: left;
     font-weight: 600;
@@ -292,11 +333,13 @@ input#search:focus {
 }
 
 .help-header:hover {
-    background: #f7f7f7;
+    background:var(--border);
 }
 
 /* BODY */
 .help-body {
+    background:var(--card);
+    color:var(--muted);
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease, padding 0.3s ease;
@@ -311,7 +354,7 @@ input#search:focus {
 /* TEXT */
 .help-solution {
     font-size: 14px;
-    color: #333;
+    color:#d8e2ec;
     line-height: 1.6;
     margin-bottom: 12px;
 }
@@ -435,35 +478,90 @@ input#search:focus {
     border: 1px solid #e5e7eb;
 }
 
-.manual-card{
-    background:#fff;
-    border-radius:14px;
-    overflow:hidden;
-    border:1px solid #ececec;
+.manual-section {
+
+background:var(--surface);
+border:1px solid var(--border);
+
+border-radius:14px;
+
+margin-bottom:12px;
+
+overflow:hidden;
+
 }
 
-.manual-section{
-    max-width:900px;
-    margin:0 auto 30px;
+
+.manual-section-title {
+
+padding:14px 16px;
+
+font-size:15px;
+font-weight:700;
+
+color:var(--text);
+
+background:#151e29;
+
+border-bottom:1px solid var(--border);
+
 }
 
-.manual-card{
-    width:100%;
+
+
+.manual-card {
+
+background:var(--card);
+
 }
 
-.manual-row{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap: 10px;
-    padding: 12px 16px;
+
+.manual-row {
+
+display:flex;
+
+justify-content:space-between;
+
+gap:15px;
+
+padding:14px 16px;
+
+border-bottom:1px solid var(--border);
+
 }
 
-.manual-spec,
+
+.manual-spec {
+
+color:var(--muted);
+
+font-size:14px;
+
+}
+
+
 .manual-value {
-    word-break: break-word;
+
+color:var(--text);
+
+font-weight:600;
+
+text-align:right;
+
 }
 
+
+mark {
+
+background:rgba(77,163,255,.25);
+
+color:#fff;
+
+border-radius:4px;
+
+padding:2px 4px;
+
+}
 
 .search-box{
     display:flex;
@@ -512,7 +610,7 @@ MANUAL SECTION (CLEAN UI UPGRADE)
 ========================= */
 .manual-header p {
     font-size: 12px;
-    color: #6b7280;
+    color: var(--text);
     margin-top: 4px;
 }
 
@@ -521,7 +619,7 @@ MANUAL SECTION (CLEAN UI UPGRADE)
     border: 1px solid #e6e8ec;
     border-radius: 12px;
     overflow: hidden;
-    background: #ffffff;
+    background: var(--bg);
     box-shadow: 0 2px 10px rgba(0,0,0,0.04);
     transition: 0.2s ease;
 }
@@ -545,8 +643,8 @@ MANUAL SECTION (CLEAN UI UPGRADE)
     justify-content: space-between;
     align-items: center;
 
-    background: linear-gradient(180deg, #ffffff, #f9fafb);
-    color: #1f2937;
+    background: var(--card);
+    color: var(--accent);
 }
 
 /* remove default arrow */
@@ -558,7 +656,7 @@ MANUAL SECTION (CLEAN UI UPGRADE)
 .manual-section summary::after {
     content: "+";
     font-size: 20px;
-    color: #6b7280;
+    color: var(--accent);
     transition: 0.25s ease;
 }
 
@@ -597,20 +695,20 @@ MANUAL SECTION (CLEAN UI UPGRADE)
 
 /* soft hover */
 .manual-row:hover {
-    background: #f9fafb;
+    background: var(--surface);
 }
 
 /* SPEC LABEL */
 .manual-spec {
     font-size: 13px;
-    color: #374151;
+    color: var(--muted);
 }
 
 /* VALUE */
 .manual-value {
     font-size: 13px;
     font-weight: 600;
-    color: #111827;
+    color: var(--accent);
     text-align: right;
 }
 
@@ -630,18 +728,19 @@ MANUAL SECTION (CLEAN UI UPGRADE)
     .manual-value {
         text-align: left;
         font-weight: 700;
-        color: #0f172a;
+        color: var(--text);
     }
 
     .manual-section summary {
         font-size: 15px;
+        color: var(--text);
     }
 }
 
 
 /*Skeleton Load CSS*/
 .skeleton {
-    background: #e2e5e9;
+    background: var(--border);
     border-radius: 8px;
     position: relative;
     overflow: hidden;
@@ -657,7 +756,7 @@ MANUAL SECTION (CLEAN UI UPGRADE)
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(255,255,255,0.6),
+        rgba(44, 62, 92, 0.6),
         transparent
     );
     animation: loading 1.2s infinite;
@@ -769,7 +868,7 @@ MANUAL SECTION (CLEAN UI UPGRADE)
 
     padding: 10px 12px;
 
-    background: rgba(10,10,15,0.95);
+    background: var(--surface);
     color: white;
 
     font-size: 12px;
