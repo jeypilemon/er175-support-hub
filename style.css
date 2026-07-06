@@ -185,7 +185,7 @@ input#search:focus {
     mask-image: linear-gradient(
         to right,
         transparent,
-        black 15px,
+        black 30px,
         black 90%,
         transparent
     );
