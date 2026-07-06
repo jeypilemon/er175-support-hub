@@ -23,7 +23,7 @@
 <div id="supportBar" class="saas-bar">
     <div class="saas-left">
         <span class="dot"></span>
-        <strong>Follow me as a thank you!</strong>
+        <strong>Follow me for support!</strong>
     </div>
 
     <div class="saas-right">
@@ -50,15 +50,18 @@
   </div>
 </div>
 
-    
-    <h1>Motorstar ER175Fi Technical Hub</h1>
+    <header class="hero">
+    <div class="hero-title">Motorstar ER175 Technical Hub</div>
+    <div class="hero-subtitle">
+        Parts, diagnostics, and manual data for quick repair reference
+    </div>
+</header>
 
-    <!-- TABS -->
-    <div class="tabs">
-    <button data-tab="manual" onclick="switchTab('manual')">Owner's Manual</button>
-    <button data-tab="troubleshoot" onclick="switchTab('troubleshoot')">Troubleshooting Guides</button>
-    <button data-tab="aftermarket" onclick="switchTab('aftermarket')">Aftermarket Parts</button>
-    <button data-tab="oem" onclick="switchTab('oem')">OEM Genuine Parts</button>
+    <div class="segmented">
+    <button class="seg active" data-tab="manual" onclick="switchTab('manual')">Manual</button>
+    <button class="seg" data-tab="troubleshoot" onclick="switchTab('troubleshoot')">Troubleshoot</button>
+    <button class="seg" data-tab="aftermarket" onclick="switchTab('aftermarket')">Parts</button>
+    <button class="seg" data-tab="oem" onclick="switchTab('oem')">OEM</button>
 </div>
 
     <!-- CHIPS -->

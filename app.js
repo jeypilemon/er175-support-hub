@@ -1,6 +1,7 @@
 let currentTab = "aftermarket";
 let currentCategory = "All";
 let globalKeyword = "";
+let manualSearch = "";
 
 let manualData = [];
 let aftermarketParts = [];
@@ -114,9 +115,13 @@ function normalizeText(text) {
         .trim();
 }
 
-function highlight(text) {
+function safeHighlight(text) {
     if (!globalKeyword) return text || "";
-    const reg = new RegExp(globalKeyword, "ig");
+
+    const escaped = globalKeyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    const reg = new RegExp(`\\b${escaped}\\b`, "gi");
+
     return (text || "").replace(reg, m => `<mark>${m}</mark>`);
 }
 
@@ -175,8 +180,9 @@ function loadManual(url) {
 TAB UI
 ========================= */
 function updateTabUI() {
-    document.querySelectorAll(".tabs button")
-        .forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".seg").forEach(btn => {
+        btn.classList.remove("active");
+    });
 
     const activeBtn = document.querySelector(`[data-tab="${currentTab}"]`);
     if (activeBtn) activeBtn.classList.add("active");
@@ -360,11 +366,21 @@ MANUAL (FIXED + CSS SUPPORT)
 ========================= */
 function renderManual() {
 
-    const filtered = manualData.filter(item =>
-        normalizeText(item["Category"]).includes(globalKeyword) ||
-        normalizeText(item["Specification"]).includes(globalKeyword) ||
-        normalizeText(item["Value"]).includes(globalKeyword)
-    );
+    const filtered = manualData.filter(item => {
+
+        const spec = normalizeText(item["Specification"]);
+        const val = normalizeText(item["Value"]);
+        const cat = normalizeText(item["Category"]);
+
+        const q = globalKeyword;
+
+        return (
+            !q ||
+            spec.includes(q) ||
+            val.includes(q) ||
+            cat.includes(q)
+        );
+    });
 
     const grouped = {};
 
@@ -374,17 +390,29 @@ function renderManual() {
         grouped[c].push(i);
     });
 
+    if (Object.keys(grouped).length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                No manual data found
+            </div>
+        `;
+        return;
+    }
+
     let html = `
         <div class="manual-download">
-            <a class="manual-download-btn" href="https://drive.google.com/file/d/1xJyf7sNn1Nlo7X4r0a3X6W_R5pUabHbQ/view" target="_blank">
-                📄 Owner's Manual (Download)
+            <a class="manual-download-btn" href="#" target="_blank">
+                📄 Download Owner's Manual PDF
             </a>
         </div>
     `;
 
     Object.keys(grouped).forEach(cat => {
+
+        const open = globalKeyword ? "open" : "";
+
         html += `
-        <details class="manual-section">
+        <details class="manual-section" ${open}>
             <summary>${cat}</summary>
             <div class="manual-card">
         `;
@@ -392,8 +420,8 @@ function renderManual() {
         grouped[cat].forEach(i => {
             html += `
             <div class="manual-row">
-                <div class="manual-spec">${highlight(i["Specification"])}</div>
-                <div class="manual-value">${highlight(i["Value"])}</div>
+                <div class="manual-spec">${safeHighlight(i["Specification"])}</div>
+                <div class="manual-value">${safeHighlight(i["Value"])}</div>
             </div>
             `;
         });
@@ -403,6 +431,27 @@ function renderManual() {
 
     container.innerHTML = html;
     updateTabUI();
+}
+
+
+function openManualMatch(query) {
+
+    if (!query) return; // 🚫 DO NOT OPEN ALL
+
+    const q = normalizeText(query);
+
+    const sections = document.querySelectorAll(".manual-section");
+
+    sections.forEach(section => {
+
+        const text = normalizeText(section.innerText);
+
+        if (text.includes(q)) {
+            section.open = true;
+        } else {
+            section.open = false; // optional: collapse others
+        }
+    });
 }
 
 /* Dictionary*/
@@ -455,6 +504,24 @@ function applySuggestion(text) {
 ACTIONS
 ========================= */
 
+
+function normalizeText(text) {
+    return (text || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, "") // remove symbols
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function matchWords(text, query) {
+    if (!query) return true;
+
+    const words = text.split(" ");
+    const q = query.trim();
+
+    return words.includes(q);
+}
+
 function getEmptyStateMessage() {
     if (globalKeyword) {
         return `No results found for "<b>${globalKeyword}</b>"`;
@@ -464,7 +531,7 @@ function getEmptyStateMessage() {
 
 function resetFilters() {
     globalKeyword = "";
-    currentCategory = "All";
+    manualSearch = "";
 
     document.getElementById("search").value = "";
 
@@ -483,15 +550,45 @@ function switchTab(tab) {
     currentCategory = "All";
     renderChips();
     render();
+    updateSearchPlaceholder();
 }
 
 /* =========================
 SEARCH
 ========================= */
+
+function openManualMatch(query) {
+    const q = normalizeText(query);
+
+    const sections = document.querySelectorAll(".manual-section");
+
+    sections.forEach(section => {
+        const text = section.innerText.toLowerCase();
+
+        if (text.includes(q)) {
+            section.open = true; // auto expand
+            section.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    });
+}
+
+function updateSearchPlaceholder() {
+    const search = document.getElementById("search");
+
+    if (currentTab === "manual") {
+        search.placeholder = "What do you want? (e.g. oil capacity, torque spec)";
+    } else if (currentTab === "troubleshoot") {
+        search.placeholder = "Search issues (e.g. no power, check engine light on, vibration)";
+    } else {
+        search.placeholder = "Search parts (e.g. bearing, seat cover, brake pads)";
+    }
+}
+
 document.getElementById("search").addEventListener("input", e => {
     globalKeyword = normalizeText(e.target.value);
+
     render();
-    renderSuggestion();
+
 });
 
 
