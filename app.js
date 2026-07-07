@@ -1,9 +1,19 @@
 let currentTab = "aftermarket";
 let currentCategory = "All";
 let globalKeyword = "";
-let manualSearch = "";
 
+let currentComponentSide = "Right";
+
+let manualSearch = "";
 let manualData = [];
+let manualComponents = [];
+let manualDashboard = [];
+let manualMaintenance = [];
+let manualEFI = [];
+let manualWiring = [];
+let manualPrecautions = [];
+let manualMistakes = [];
+
 let aftermarketParts = [];
 let oemParts = [];
 let troubleshootData = [];
@@ -23,7 +33,9 @@ const loaded = {
     aftermarket: false,
     oem: false,
     troubleshoot: false,
-    manual: false
+    manual: false,
+    components:false
+
 };
 
 function closeModal() {
@@ -54,7 +66,13 @@ function renderSkeleton(count = 6) {
 READY CHECK
 ========================= */
 function checkReady() {
-    if (loaded.aftermarket && loaded.oem && loaded.troubleshoot && loaded.manual) {
+    if (
+loaded.aftermarket &&
+loaded.oem &&
+loaded.troubleshoot &&
+loaded.manual &&
+loaded.components
+) {
         isLoading = false;
         render();
         renderChips();
@@ -213,6 +231,70 @@ function loadManual(url) {
         }
     });
 }
+
+function loadManualComponents(url) {
+
+    Papa.parse(url, {
+
+        download:true,
+
+        header:true,
+
+        complete: res => {
+
+            manualComponents =
+            res.data.filter(x=>x["Component"]);
+
+
+            loaded.components = true;
+
+
+            console.log(
+                "Components loaded:",
+                manualComponents.length
+            );
+
+
+            checkReady();
+
+        }
+
+    });
+
+}
+
+/*function loadManualSections(){
+
+    loadCSV("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=1017192042&single=true&output=csv", data=>{
+        manualComponents = data;
+    });
+
+    loadCSV("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=81321961&single=true&output=csv", data=>{
+        manualDashboard = data;
+    });
+
+    loadCSV("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=1981058519&single=true&output=csv", data=>{
+        manualMaintenance = data;
+    });
+
+    loadCSV("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=1991247179&single=true&output=csv", data=>{
+        manualEFI = data;
+    });
+
+    loadCSV("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=1373439743&single=true&output=csv", data=>{
+        manualWiring = data;
+    });
+
+    loadCSV("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=2052007273&single=true&output=csv", data=>{
+        manualPrecautions = data;
+    });
+
+    loadCSV("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=1708336835&single=true&output=csv", data=>{
+        manualMistakes = data;
+    });
+
+}
+*/
 
 /* =========================
 TAB UI
@@ -424,11 +506,92 @@ function renderTroubleshoot() {
 /* =========================
 MANUAL (FIXED + CSS SUPPORT)
 ========================= */
+
 function renderManual() {
+
+    container.innerHTML = `
+
+    <div class="manual-download">
+
+        <a class="manual-download-btn"
+        href="https://drive.google.com/file/d/1xJyf7sNn1Nlo7X4r0a3X6W_R5pUabHbQ/view"
+        target="_blank">
+
+        Download Owner's Manual PDF (Official)
+
+        </a>
+
+    </div>
+
+
+    <div class="manual-menu">
+
+
+        <button onclick="openManualSection('specs')">
+            Specifications
+        </button>
+
+
+        <button onclick="openManualSection('components')">
+            Component Guide
+        </button>
+
+
+        <button onclick="openManualSection('dashboard')">
+            Dashboard Guide
+        </button>
+
+
+        <button onclick="openManualSection('maintenance')">
+            Maintenance
+        </button>
+
+
+        <button onclick="openManualSection('efi')">
+            EFI Diagnostics
+        </button>
+
+
+        <button onclick="openManualSection('wiring')">
+            Wiring Reference
+        </button>
+
+
+        <button onclick="openManualSection('precautions')">
+            Precautions
+        </button>
+
+
+        <button onclick="openManualSection('mistakes')">
+            Common Owner Mistakes
+        </button>
+
+
+    </div>
+
+
+    <div id="manualContent">
+
+        <div class="empty-state">
+            Select a manual section
+        </div>
+
+    </div>
+
+
+    `;
+
+
+    updateTabUI();
+
+}
+
+
+function renderManualSpecs() {
 
     const filtered = manualData.filter(item => {
 
-        const searchText = normalizeText(
+    const searchText = normalizeText(
     (item["Category"] || "") +
 " " +
 (item["Specification"] || "") +
@@ -459,26 +622,12 @@ return searchText.includes(
     });
 
 
-    let html = `
-
-    <div class="manual-download">
-
-        <a class="manual-download-btn"
-        href="https://drive.google.com/file/d/1xJyf7sNn1Nlo7X4r0a3X6W_R5pUabHbQ/view"
-        target="_blank">
-
-        Download Owner's Manual PDF (Official)
-
-        </a>
-
-    </div>
-
-    `;
+    let html = "";
 
 
     if(filtered.length === 0){
 
-        container.innerHTML = `
+        document.getElementById("manualContent").innerHTML = `
         <div class="empty-state">
         No manual information found
         </div>
@@ -550,9 +699,404 @@ return searchText.includes(
 
 
 
-    container.innerHTML = html;
+    document.getElementById("manualContent").innerHTML = html;
 
     updateTabUI();
+
+}
+
+function renderManualComponents(){
+
+
+const content = document.getElementById("manualContent");
+
+
+if(!manualComponents || manualComponents.length === 0){
+
+    content.innerHTML = `
+    <div class="empty-state">
+        Component data is loading...
+    </div>
+    `;
+
+    return;
+
+}
+
+
+function drawImageSide(side){
+
+
+const filtered = manualComponents.filter(item =>
+    (item["Image Side"] || "").toLowerCase() 
+    === side.toLowerCase()
+);
+
+
+
+return `
+
+
+<div class="component-viewer">
+
+
+<div class="image-switch">
+
+<button onclick="window.componentSide('Right')">
+Right Side
+</button>
+
+
+<button onclick="window.componentSide('Left')">
+Left Side
+</button>
+
+</div>
+
+
+
+<div class="component-image">
+
+
+<img src="
+assets/images/er175-sideview-${side.toLowerCase()}.png
+"
+alt="ER175 Component Guide">
+
+
+${
+
+filtered.map(item=>`
+
+<button
+
+class="component-marker"
+
+style="
+left:${item["X Position"]}%;
+top:${item["Y Position"]}%;
+"
+
+data-id="${item["ID"]}"
+
+id="marker-${item["ID"]}"
+
+title="${item["Component"]}"
+
+>
+
+${item["ID"]}
+
+</button>
+
+`).join("")
+
+}
+
+
+</div>
+
+
+
+
+<div class="component-list">
+
+
+${
+
+Object.entries(
+
+filtered.reduce((groups,item)=>{
+
+const category = item["Category"] || "Other";
+
+
+if(!groups[category]){
+
+    groups[category] = [];
+
+}
+
+
+groups[category].push(item);
+
+
+return groups;
+
+
+},{})
+
+)
+
+.map(([category,items])=>`
+
+
+<section class="component-category">
+
+
+<h3 class="component-category-title">
+
+${category}
+
+</h3>
+
+
+
+<div class="category-line"></div>
+
+
+
+${
+
+items.map(item=>`
+
+
+<div
+
+class="component-item"
+
+id="component-${item["ID"]}"
+
+onclick="focusComponent('${item["ID"]}')"
+
+>
+
+
+<div class="component-number">
+
+${item["ID"]}
+
+</div>
+
+
+
+<div class="component-details">
+
+
+<h3>
+
+${item["Component"]}
+
+</h3>
+
+
+
+<p>
+
+<strong>Location:</strong>
+
+${item["Location"] || ""}
+
+</p>
+
+
+
+<div class="manual-note">
+
+${item["Access / Notes"] || ""}
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+`).join("")
+
+}
+
+
+
+</section>
+
+
+
+`).join("")
+
+}
+
+
+</div>
+
+
+</div>
+
+
+`;
+
+}
+
+
+
+window.componentSide=function(side){
+
+    const content =
+    document.getElementById("manualContent");
+
+
+    currentComponentSide = side;
+
+
+    content.innerHTML =
+    drawImageSide(side);
+
+
+    attachComponentMarkers();
+
+};
+
+
+content.innerHTML = drawImageSide(currentComponentSide);
+
+
+attachComponentMarkers();
+
+
+}
+
+function attachComponentMarkers(){
+
+    document
+    .querySelectorAll(".component-marker")
+    .forEach(marker=>{
+
+
+        marker.onclick=function(){
+
+            focusComponent(this.dataset.id);
+
+        };
+
+
+    });
+
+}
+
+function focusComponent(id){
+
+
+const component =
+manualComponents.find(item =>
+    item["ID"] == id
+);
+
+
+
+if(!component){
+
+    console.log("Component not found:", id);
+
+    return;
+
+}
+
+
+// check image side
+
+const side = component["Image Side"];
+
+
+
+if(
+    side &&
+    side.toLowerCase() !== currentComponentSide.toLowerCase()
+){
+
+    window.componentSide(side);
+
+
+    // wait for image redraw
+
+    setTimeout(()=>{
+
+        focusComponent(id);
+
+    },300);
+
+
+    return;
+
+}
+
+
+
+
+const image =
+document.querySelector(".component-image");
+
+
+
+if(image){
+
+    image.classList.add("show");
+
+}
+
+
+
+
+const marker =
+document.querySelector(
+`.component-marker[data-id="${id}"]`
+);
+
+
+
+const card =
+document.getElementById(
+`component-${id}`
+);
+
+
+
+if(card){
+
+
+card.scrollIntoView({
+
+    behavior:"smooth",
+
+    block:"center"
+
+});
+
+
+card.classList.add("highlight");
+
+
+setTimeout(()=>{
+
+    card.classList.remove("highlight");
+
+},2000);
+
+
+}
+
+
+
+if(marker){
+
+
+marker.classList.add("marker-focus");
+
+
+setTimeout(()=>{
+
+
+marker.classList.remove("marker-focus");
+
+
+},2000);
+
+
+}
+
+
 
 }
 
@@ -605,6 +1149,107 @@ function applySuggestion(text) {
 /* =========================
 ACTIONS
 ========================= */
+
+function openManualSection(section){
+
+    const content = document.getElementById("manualContent");
+
+    if (!content) return;
+
+
+    switch(section){
+
+
+        case "specs":
+
+            renderManualSpecs();
+
+            break;
+
+
+
+        case "components":
+
+            renderManualComponents();
+
+            break;
+
+
+
+        case "dashboard":
+
+            content.innerHTML = `
+                <div class="empty-state">
+                    Dashboard Guide coming next
+                </div>
+            `;
+
+            break;
+
+
+
+        case "maintenance":
+
+            content.innerHTML = `
+                <div class="empty-state">
+                    Maintenance Guide coming next
+                </div>
+            `;
+
+            break;
+
+
+
+        case "efi":
+
+            content.innerHTML = `
+                <div class="empty-state">
+                    EFI Diagnostics coming next
+                </div>
+            `;
+
+            break;
+
+
+
+        case "wiring":
+
+            content.innerHTML = `
+                <div class="empty-state">
+                    Wiring Reference coming next
+                </div>
+            `;
+
+            break;
+
+
+
+        case "precautions":
+
+            content.innerHTML = `
+                <div class="empty-state">
+                    Precautions coming next
+                </div>
+            `;
+
+            break;
+
+
+
+        case "mistakes":
+
+            content.innerHTML = `
+                <div class="empty-state">
+                    Common Owner Mistakes coming next
+                </div>
+            `;
+
+            break;
+
+
+    }
+
+}
 
 function matchWords(text, query) {
     if (!query) return true;
@@ -701,3 +1346,5 @@ loadOEM("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2Vecpds
 loadTroubleshoot("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=557855511&single=true&output=csv");
 
 loadManual("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=56637698&single=true&output=csv");
+
+loadManualComponents("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=1017192042&single=true&output=csv");
