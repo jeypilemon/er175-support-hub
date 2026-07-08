@@ -3,6 +3,9 @@ let currentCategory = "All";
 let globalKeyword = "";
 
 let currentComponentSide = "Right";
+let currentViewerComponent = null;
+let currentViewerIndex = 0;
+
 
 let manualSearch = "";
 let manualData = [];
@@ -66,17 +69,26 @@ function renderSkeleton(count = 6) {
 READY CHECK
 ========================= */
 function checkReady() {
+
+    console.log("LOAD STATUS:", loaded);
+
     if (
-loaded.aftermarket &&
-loaded.oem &&
-loaded.troubleshoot &&
-loaded.manual &&
-loaded.components
-) {
+        loaded.aftermarket &&
+        loaded.oem &&
+        loaded.troubleshoot &&
+        loaded.manual
+    ) {
+
+        console.log("ALL DATA READY");
+
         isLoading = false;
+
         render();
+
         renderChips();
+
     }
+
 }
 
 /* Global Functions*/
@@ -246,7 +258,9 @@ function loadManualComponents(url) {
             res.data.filter(x=>x["Component"]);
 
 
-            loaded.components = true;
+            manualComponents.sort((a,b)=>
+            Number(a.ID)-Number(b.ID)
+            );
 
 
             console.log(
@@ -255,13 +269,12 @@ function loadManualComponents(url) {
             );
 
 
-            checkReady();
-
         }
 
     });
 
 }
+
 
 /*function loadManualSections(){
 
@@ -468,32 +481,14 @@ function linkifySolution(text) {
 }
 
 
-/*open component modal*/
+function switchViewerSide(side){
 
-function openComponentViewer(id){
-
-
-const item =
-manualComponents.find(
-x=>x["ID"] == id
-);
-
-
-
-if(!item){
-
-console.log("Missing component",id);
-
+if(!currentViewerComponent)
 return;
 
-}
 
+currentViewerComponent["Image Side"] = side;
 
-
-const modal =
-document.getElementById(
-"componentModal"
-);
 
 
 const image =
@@ -509,46 +504,29 @@ document.getElementById(
 
 
 
+if(image){
+
+image.classList.remove("zoom");
+
+
 image.src =
-`assets/images/er175-sideview-${item["Image Side"].toLowerCase()}.png`;
+`assets/images/er175-sideview-${side.toLowerCase()}.png`;
 
 
+}
+
+
+
+if(marker){
 
 marker.style.left =
-item["X Position"]+"%";
+currentViewerComponent["X Position"]+"%";
 
 
 marker.style.top =
-item["Y Position"]+"%";
+currentViewerComponent["Y Position"]+"%";
 
-
-
-document.getElementById(
-"componentViewerTitle"
-).innerHTML =
-item["Component"];
-
-
-
-document.getElementById(
-"componentViewerLocation"
-).innerHTML =
-`
-<strong>Location:</strong>
-${item["Location"]}
-`;
-
-
-
-document.getElementById(
-"componentViewerNotes"
-).innerHTML =
-item["Access / Notes"] || "";
-
-
-
-image.style.transformOrigin =
-`${item["X Position"]}% ${item["Y Position"]}%`;
+}
 
 
 
@@ -556,23 +534,223 @@ setTimeout(()=>{
 
 image.classList.add("zoom");
 
+},500);
 
-},100);
-
-
-
-modal.classList.add("show");
 
 
 }
 
-function closeComponentViewer(){
 
-const modal =
-document.getElementById(
-"componentModal"
+document.addEventListener(
+"click",
+function(e){
+
+
+if(e.target.id==="componentViewerImage"){
+
+
+resetViewerZoom();
+
+
+}
+
+
+});
+
+/*open component modal*/
+
+function openComponentViewer(id){
+
+console.log("OPEN COMPONENT", id);
+
+
+const item = manualComponents.find(
+x => x["ID"] == id
 );
 
+if(!item){
+    console.log("Missing component", id);
+    return;
+}
+
+
+currentViewerComponent = item;
+
+currentViewerIndex =
+manualComponents.findIndex(
+x=>x["ID"] == id
+);
+
+
+if(!item){
+
+console.log("Missing component", id);
+return;
+
+}
+
+
+
+const modal =
+document.getElementById("componentModal");
+
+
+const image =
+document.getElementById("componentViewerImage");
+
+
+const marker =
+document.getElementById("componentViewerMarker");
+
+
+
+const title =
+document.getElementById("componentViewerTitle");
+
+
+const location =
+document.getElementById("componentViewerLocation");
+
+
+const notes =
+document.getElementById("componentViewerNotes");
+
+
+
+// IMAGE LOAD
+
+if(image){
+
+    image.classList.remove("zoom");
+
+
+    image.src =
+    `assets/images/er175-sideview-${item["Image Side"].toLowerCase()}.png`;
+
+    image.style.transformOrigin =
+    `${item["X Position"]}% ${item["Y Position"]}%`;
+
+}
+
+
+
+// MARKER POSITION
+
+if(marker){
+
+    marker.style.left =
+    item["X Position"] + "%";
+
+
+    marker.style.top =
+    item["Y Position"] + "%";
+
+
+    marker.style.display = "block";
+
+    marker.classList.add("active");
+
+}
+
+
+
+// TEXT INFO
+
+if(title){
+
+    title.innerHTML =
+    item["Component"];
+
+}
+
+
+if(location){
+
+    location.innerHTML =
+    `
+    <strong>Location:</strong>
+    ${item["Location"] || ""}
+    `;
+
+}
+
+
+if(notes){
+
+    notes.innerHTML =
+    item["Access / Notes"] || "";
+
+}
+
+
+
+// SHOW MODAL
+
+modal.classList.add("show");
+
+
+
+// ZOOM AFTER IMAGE LOAD
+
+setTimeout(()=>{
+
+
+    if(image){
+
+        image.classList.add("zoom");
+
+    }
+
+
+},500);
+
+
+
+}
+
+
+function previousComponent(){
+
+
+currentViewerIndex--;
+
+
+if(currentViewerIndex < 0){
+
+    currentViewerIndex =
+    manualComponents.length - 1;
+
+}
+
+const previous =
+manualComponents[currentViewerIndex];
+
+
+openComponentViewer(previous["ID"]);
+
+
+}
+
+function openNextComponent(){
+
+    currentViewerIndex++;
+
+if(currentViewerIndex >= manualComponents.length){
+
+    currentViewerIndex = 0;
+
+}
+
+
+const next =
+manualComponents[currentViewerIndex];
+
+
+openComponentViewer(next["ID"]);
+
+}
+
+function resetViewerZoom(){
 
 const image =
 document.getElementById(
@@ -580,10 +758,53 @@ document.getElementById(
 );
 
 
+if(image){
+
 image.classList.remove("zoom");
 
+}
 
-modal.classList.remove("show");
+
+}
+
+function closeComponentViewer(){
+
+const modal =
+document.getElementById("componentModal");
+
+
+const image =
+document.getElementById("componentViewerImage");
+
+
+const marker =
+document.getElementById("componentViewerMarker");
+
+
+
+if(image){
+
+    image.classList.remove("zoom");
+
+}
+
+
+if(marker){
+
+    marker.style.display="none";
+
+}
+
+
+if(modal){
+
+    modal.classList.remove("show");
+
+}
+
+if(marker){
+    marker.classList.remove("active");
+}
 
 
 }
@@ -1326,6 +1547,13 @@ document.getElementById("chips").addEventListener("pointerdown",()=>{
 
 window.closeModal = closeModal;
 window.openModal = openModal;
+
+window.openComponentViewer = openComponentViewer;
+window.closeComponentViewer = closeComponentViewer;
+
+window.previousComponent = previousComponent;
+window.openNextComponent = openNextComponent;
+window.resetViewerZoom = resetViewerZoom;
 
 /* =========================
 INIT

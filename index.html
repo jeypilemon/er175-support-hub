@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 
+
 <html lang="en">
 
 
@@ -37,15 +38,6 @@
             f Facebook
         </c>
     </div>
-</div>
-
-    <div id="linkModal" class="link-modal">
-  <div class="link-modal-backdrop" onclick="closeModal()"></div>
-
-  <div class="link-modal-content">
-    <button class="close-modal" onclick="closeModal()">×</button>
-    <iframe id="modalFrame"></iframe>
-  </div>
 </div>
 
     <header class="hero">
@@ -103,6 +95,101 @@
         Built for ER175 owners, mechanics, and DIY Repairs.
     </div>
 </footer>
+
+<!-- MODALS -->
+ <div id="linkModal" class="link-modal">
+  <div class="link-modal-backdrop" onclick="closeModal()"></div>
+
+  <div class="link-modal-content">
+    <button class="close-modal" onclick="closeModal()">×</button>
+    <iframe id="modalFrame"></iframe>
+  </div>
+</div>
+
+
+<div id="componentModal" class="component-modal">
+
+
+<div class="component-modal-box">
+
+
+<button 
+class="component-close"
+onclick="closeComponentViewer()">
+
+×
+
+</button>
+
+
+<div class="component-view-image">
+
+
+<div class="viewer-controls">
+
+<button onclick="previousComponent()">
+← Previous Part
+</button>
+
+<button onclick="resetViewerZoom()">
+Reset View
+</button>
+
+<button onclick="openNextComponent()">
+Next Part →
+</button>
+
+
+
+
+</div>
+
+
+
+<div class="viewer-stage">
+
+
+<img 
+id="componentViewerImage"
+src=""
+>
+
+
+
+<div 
+id="componentViewerMarker"
+class="viewer-marker">
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="component-info">
+
+
+<h3 id="componentViewerTitle"></h3>
+
+
+<p id="componentViewerLocation"></p>
+
+
+<p id="componentViewerNotes"></p>
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
 
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
