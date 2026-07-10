@@ -5,17 +5,26 @@ let globalKeyword = "";
 let currentViewerComponent = null;
 let currentViewerIndex = 0;
 
+let currentViewerMode = "";
 let currentComponentIndex = 0;
 let currentDashboardIndex = 0;
 
-let currentViewerMode = "";
+let viewerMode = "";
+viewerMode="dashboard";
+viewerMode="component";
+
+let currentEFIProblem = null;
+let currentEFISteps = [];
+let currentEFIStepIndex = 0;
+
+let efiFilter = "All";
+let efiSearch = "";
 
 let manualSearch = "";
 let manualData = [];
 let manualComponents = [];
 let manualDashboard = [];
 let manualMaintenance = [];
-let manualEFI = [];
 let manualWiring = [];
 let manualPrecautions = [];
 let manualMistakes = [];
@@ -255,6 +264,8 @@ function loadTroubleshoot(url) {
     });
 }
 
+/* Load Manual Tabs*/
+
 function loadManual(url) {
     Papa.parse(url, {
         download: true,
@@ -319,6 +330,48 @@ function loadManualDashboard(url){
 
     });
 
+}
+
+function loadManualMaintenance(url){
+
+    Papa.parse(url,{
+
+        download:true,
+        header:true,
+
+        complete: res => {
+
+
+            manualMaintenance =
+            res.data.filter(
+                x => x["Item"]
+            );
+
+
+            console.log(
+                "Maintenance loaded:",
+                manualMaintenance.length
+            );
+
+
+        }
+
+    });
+
+}
+
+
+let efiData = [];
+
+function loadEFI(url) {
+    Papa.parse(url, {
+        download: true,
+        header: true,
+        complete: res => {
+            efiData = res.data.filter(r => r.ID);
+
+        }
+    });
 }
 
 /* =========================
@@ -561,16 +614,16 @@ function openComponentViewer(id){
 
 currentViewerMode = "component";
 
+
 const item = manualComponents.find(
-x => x["ID"] == id
+    x => x["ID"] == id
 );
 
 
 if(!item){
-    console.log("Missing component", id);
+    console.log("Missing component:", id);
     return;
 }
-
 
 
 currentViewerComponent = item;
@@ -578,7 +631,7 @@ currentViewerComponent = item;
 
 currentViewerIndex =
 manualComponents.findIndex(
-x => x["ID"] == id
+    x => x["ID"] == id
 );
 
 
@@ -590,19 +643,17 @@ document.getElementById("componentModal");
 const image =
 document.getElementById("componentViewerImage");
 
-if(image){
-    image.style.display="block";
-}
+
+const zoomImage =
+document.getElementById("componentViewerZoom");
+
 
 const marker =
 document.getElementById("componentViewerMarker");
 
 
 const title =
-document.getElementById(
-"componentViewerTitle"
-).innerHTML =
-item["Display / Indicator"] || item["Component"] || "Dashboard Indicator";
+document.getElementById("componentViewerTitle");
 
 
 const location =
@@ -613,16 +664,36 @@ const notes =
 document.getElementById("componentViewerNotes");
 
 
+// REMOVE DASHBOARD ELEMENTS
 
-// IMAGE
+const hint =
+document.querySelector(".dashboard-hint");
+
+if(hint){
+    hint.style.display="none";
+}
+
+
+// RESTORE COMPONENT IMAGE
 
 if(image){
+
+    image.style.display="block";
 
     image.src =
     `assets/images/er175-sideview-${item["Image Side"].toLowerCase()}.png`;
 
 }
 
+
+// HIDE DASH ZOOM IMAGE
+
+if(zoomImage){
+
+    zoomImage.src="";
+    zoomImage.style.display="none";
+
+}
 
 
 // MARKER
@@ -637,12 +708,9 @@ if(marker){
     item["Y Position"] + "%";
 
 
-    marker.style.display = "block";
-
-    marker.classList.add("active");
+    marker.style.display="block";
 
 }
-
 
 
 // TEXT
@@ -650,7 +718,7 @@ if(marker){
 if(title){
 
     title.innerHTML =
-    item["Component"];
+    item["Component"] || "";
 
 }
 
@@ -658,10 +726,7 @@ if(title){
 if(location){
 
     location.innerHTML =
-    `
-    <strong>Location:</strong>
-    ${item["Location"] || "Not specified"}
-    `;
+    "";
 
 }
 
@@ -674,8 +739,7 @@ if(notes){
 }
 
 
-
-// OPEN MODAL
+// OPEN
 
 if(modal){
 
@@ -688,81 +752,93 @@ if(modal){
 
 function previousComponent(){
 
-if(currentViewerMode === "component"){
 
-    currentViewerIndex--;
-
-    if(currentViewerIndex < 0){
-        currentViewerIndex =
-        manualComponents.length - 1;
-    }
-
-    openComponentViewer(
-        manualComponents[currentViewerIndex]["ID"]
-    );
-
-}
+if(currentViewerMode==="dashboard"){
 
 
-else if(currentViewerMode === "dashboard"){
+currentDashboardIndex--;
 
 
-    currentDashboardIndex--;
+if(currentDashboardIndex < 0){
 
-    if(currentDashboardIndex < 0){
-        currentDashboardIndex =
-        manualDashboard.length - 1;
-    }
-
-
-    openDashboardInfo(
-        manualDashboard[currentDashboardIndex]["ID"]
-    );
+    currentDashboardIndex =
+    manualDashboard.length - 1;
 
 }
 
 
+openDashboardInfo(
+    manualDashboard[currentDashboardIndex]["ID"]
+);
+
+
+return;
+
 }
+
+
+// COMPONENT MODE
+
+currentViewerIndex--;
+
+
+if(currentViewerIndex < 0){
+
+    currentViewerIndex =
+    manualComponents.length - 1;
+
+}
+
+
+openComponentViewer(
+    manualComponents[currentViewerIndex]["ID"]
+);
+
+
+}
+
 
 function openNextComponent(){
 
 
-if(currentViewerMode === "component"){
+if(currentViewerMode==="dashboard"){
 
 
-    currentViewerIndex++;
+currentDashboardIndex++;
 
 
-    if(currentViewerIndex >= manualComponents.length){
-        currentViewerIndex = 0;
-    }
+if(currentDashboardIndex >= manualDashboard.length){
 
-
-    openComponentViewer(
-        manualComponents[currentViewerIndex]["ID"]
-    );
-
+    currentDashboardIndex = 0;
 
 }
 
 
-else if(currentViewerMode === "dashboard"){
+openDashboardInfo(
+    manualDashboard[currentDashboardIndex]["ID"]
+);
 
 
-    currentDashboardIndex++;
-
-
-    if(currentDashboardIndex >= manualDashboard.length){
-        currentDashboardIndex = 0;
-    }
-
-
-    openDashboardInfo(
-        manualDashboard[currentDashboardIndex]["ID"]
-    );
-
+return;
 
 }
+
+
+// COMPONENT MODE
+
+currentViewerIndex++;
+
+
+if(currentViewerIndex >= manualComponents.length){
+
+    currentViewerIndex = 0;
+
+}
+
+
+openComponentViewer(
+    manualComponents[currentViewerIndex]["ID"]
+);
 
 
 }
@@ -774,24 +850,57 @@ const modal =
 document.getElementById("componentModal");
 
 
+const image =
+document.getElementById("componentViewerImage");
+
+
+const zoomImage =
+document.getElementById("componentViewerZoom");
+
+
 const marker =
 document.getElementById("componentViewerMarker");
 
+
+// RESET COMPONENT IMAGE
+
+if(image){
+
+    image.src="";
+    image.style.display="none";
+
+}
+
+
+// RESET DASH ZOOM
+
+if(zoomImage){
+
+    zoomImage.src="";
+    zoomImage.style.display="none";
+
+}
+
+
+// RESET MARKER
 
 if(marker){
 
     marker.style.display="none";
 
-    marker.classList.remove("active");
-
 }
 
+
+// CLOSE
 
 if(modal){
 
     modal.classList.remove("show");
 
 }
+
+
+currentViewerMode = "";
 
 }
 
@@ -1026,13 +1135,7 @@ return groups;
 },{});
 
 
-
-
 content.innerHTML = `
-
-<div class="dashboard-hint">
-    👆 Tap the highlighted area to view information
-</div>
 
 <div class="component-list">
 
@@ -1121,40 +1224,37 @@ content.innerHTML = `
 
 <div class="dashboard-image-container">
 
+
 <img 
 src="assets/images/er175-dash.png"
 class="dashboard-image"
 >
-
 
 <div class="dashboard-hint">
 👆 Tap the highlighted area to view information
 </div>
 
 
-${manualDashboard.map(item=>`
+${
+manualDashboard.map(item=>`
 
 <div
 class="dashboard-marker"
+
 style="
 left:${item["X Position"]}%;
 top:${item["Y Position"]}%;
-width:${item["Width"] || 45}px;
-height:${item["Height"] || 35}px;
+width:${(Number(item["Width"]) / 1177) * 100}%;
+height:${(Number(item["Height"]) / 785) * 100}%;
 "
+
 onclick="openDashboardInfo('${item["ID"]}')">
 
 </div>
 
-`).join("")}
 
-
-</div>
-
-
-<p class="component-hint">
-Tap the indicator number to view information
-</p>
+`).join("")
+}
 
 
 </div>
@@ -1163,6 +1263,327 @@ Tap the indicator number to view information
 
 }
 
+function renderMaintenance(){
+
+
+const content =
+document.getElementById("manualContent");
+
+
+
+if(!manualMaintenance.length){
+
+content.innerHTML = `
+
+<div class="empty-state">
+
+Maintenance data loading...
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+
+content.innerHTML = `
+
+
+<div class="maintenance-note">
+
+⚠️ Maintenance intervals may vary depending on riding conditions.
+<br>
+Shorten service intervals for heavy traffic, dusty roads,
+frequent uphill riding, or long-distance use.
+
+</div>
+
+
+
+<div class="maintenance-list">
+
+
+${
+
+manualMaintenance.map(item=>`
+
+
+<div class="maintenance-card">
+
+
+<div class="maintenance-header">
+
+<h3>
+${item["Item"]}
+</h3>
+
+
+<span class="maintenance-category">
+
+${item["Category"]}
+
+</span>
+
+
+</div>
+
+
+
+<div class="maintenance-row">
+
+<strong>
+Interval
+</strong>
+
+<p>
+${item["Interval"]}
+</p>
+
+</div>
+
+
+
+<div class="maintenance-row">
+
+<strong>
+Specification / Procedure
+</strong>
+
+<p>
+${item["Specification / Procedure"]}
+</p>
+
+</div>
+
+
+
+<div class="maintenance-row">
+
+<strong>
+Notes
+</strong>
+
+<p>
+${item["Notes"] || ""}
+</p>
+
+</div>
+
+
+
+</div>
+
+
+`).join("")
+
+}
+
+
+
+</div>
+
+
+`;
+
+}
+
+
+function renderEFI(){
+
+    const content = document.getElementById("manualContent");
+
+    if(!efiData.length){
+
+        content.innerHTML=`
+        <div class="empty-state">
+            EFI data loading...
+        </div>
+        `;
+        return;
+
+    }
+
+    const filtered = efiData.filter(problem=>{
+
+        const text = (
+            problem["Error / Symptom"]+" "+
+            problem["Component / System"]
+        ).toLowerCase();
+
+        return text.includes(efiSearch.toLowerCase());
+
+    });
+
+    content.innerHTML=`
+
+<div class="efi-header">
+
+<h2>EFI Diagnostic Center</h2>
+
+<p>
+Select a symptom to begin guided troubleshooting.
+</p>
+
+<input
+id="efiSearch"
+class="efi-search"
+placeholder="Search symptoms..."
+value="${efiSearch}"
+oninput="searchEFI(this.value)"
+>
+
+</div>
+
+<div class="efi-grid">
+
+${filtered.map(problem=>{
+
+const steps=parseTroubleshootingSteps(
+problem["Possible Cause & Troubleshooting Steps (Sequential)"]
+);
+
+const difficulty=getEFIDifficulty(problem["Component / System"]);
+
+return`
+
+<div class="efi-card">
+
+<div class="efi-card-top">
+
+<div>
+
+<h3>
+
+${problem["Error / Symptom"]}
+
+</h3>
+
+<p>
+
+${problem["Component / System"]}
+
+</p>
+
+</div>
+
+<span class="efi-difficulty ${difficulty.class}">
+
+${difficulty.label}
+
+</span>
+
+</div>
+
+<div class="efi-card-bottom">
+
+<span>
+
+${steps.length} Diagnostic Steps
+
+</span>
+
+<button
+onclick="openEFIDiagnosis('${problem.ID}')">
+
+Diagnose →
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+}).join("")}
+
+</div>
+
+`;
+
+}
+
+function searchEFI(value){
+
+    efiSearch=value;
+
+    renderEFI();
+
+}
+
+function getEFIDifficulty(component){
+
+    const c=component.toLowerCase();
+
+    if(c.includes("ecu")){
+
+        return{
+            label:"Advanced",
+            class:"danger"
+        };
+
+    }
+
+    if(
+        c.includes("pump")||
+        c.includes("injector")||
+        c.includes("sensor")
+    ){
+
+        return{
+            label:"Moderate",
+            class:"warning"
+        };
+
+    }
+
+    return{
+
+        label:"Easy",
+        class:"success"
+
+    };
+
+}
+
+function openEFIDiagnosis(id){
+
+    currentEFIProblem = efiData.find(x=>x.ID==id);
+
+    if(!currentEFIProblem) return;
+
+    currentEFISteps = parseTroubleshootingSteps(
+        currentEFIProblem["Possible Cause & Troubleshooting Steps (Sequential)"]
+    );
+
+    currentEFIStepIndex = 0;
+
+    renderEFIModal();
+
+}
+
+
+
+function parseTroubleshootingSteps(text){
+
+    if(!text) return [];
+
+    const matches = text.match(/(?:^|\n)\d+\.\s[\s\S]*?(?=(?:\n\d+\.\s)|$)/g);
+
+    if(!matches) return [text];
+
+    return matches.map(step=>{
+
+        return step
+            .replace(/^\s*\d+\.\s*/,"")
+            .trim();
+
+    });
+
+}
 
 /* Dictionary*/
 
@@ -1214,6 +1635,171 @@ function applySuggestion(text) {
 ACTIONS
 ========================= */
 
+function getEFICategory(component){
+
+    const c = component.toLowerCase();
+
+    if(c.includes("mil"))
+        return "MIL";
+
+    if(c.includes("fuel") || c.includes("injector") || c.includes("pump"))
+        return "Fuel";
+
+    if(c.includes("sensor") || c.includes("tps"))
+        return "Sensors";
+
+    if(c.includes("battery") || c.includes("fuse") || c.includes("starter"))
+        return "Electrical";
+
+    if(c.includes("ecu"))
+        return "ECU";
+
+    return "Starting";
+
+}
+
+
+function renderEFIModal(){
+
+    const modal = document.getElementById("componentModal");
+
+    document.getElementById("componentViewerTitle").innerHTML =
+        currentEFIProblem["Error / Symptom"];
+
+    document.getElementById("componentViewerLocation").innerHTML =
+        currentEFIProblem["Component / System"];
+
+    document.getElementById("componentViewerNotes").innerHTML = `
+
+<div class="efi-progress">
+
+Step ${currentEFIStepIndex+1}
+of
+${currentEFISteps.length}
+
+</div>
+
+<div class="efi-step-box">
+
+${currentEFISteps[currentEFIStepIndex]}
+
+</div>
+
+<div class="efi-nav">
+
+<button
+onclick="previousEFIStep()"
+${currentEFIStepIndex==0?"disabled":""}>
+
+◀ Previous
+
+</button>
+
+<button
+onclick="nextEFIStep()"
+${currentEFIStepIndex==currentEFISteps.length-1?"disabled":""}>
+
+Next ▶
+
+</button>
+
+</div>
+
+`;
+
+    document.getElementById("componentViewerImage").style.display="none";
+    document.getElementById("componentViewerMarker").style.display="none";
+    document.getElementById("componentViewerZoom").style.display="none";
+
+    modal.classList.add("show");
+
+}
+
+function nextEFIStep(){
+
+    if(currentEFIStepIndex<currentEFISteps.length-1){
+
+        currentEFIStepIndex++;
+
+        renderEFIModal();
+
+    }
+
+}
+
+function previousEFIStep(){
+
+    if(currentEFIStepIndex>0){
+
+        currentEFIStepIndex--;
+
+        renderEFIModal();
+
+    }
+
+}
+
+function resetViewerModal(){
+
+    const image =
+    document.getElementById("componentViewerImage");
+
+    const zoom =
+    document.getElementById("componentViewerZoom");
+
+    const marker =
+    document.getElementById("componentViewerMarker");
+
+
+    if(image){
+        image.src="";
+        image.style.display="none";
+    }
+
+
+    if(zoom){
+        zoom.src="";
+        zoom.style.display="none";
+    }
+
+
+    if(marker){
+        marker.style.display="none";
+    }
+
+}
+
+function resetViewerImage(){
+
+    const image =
+    document.getElementById("componentViewerImage");
+
+    const marker =
+    document.getElementById("componentViewerMarker");
+
+    const zoom =
+    document.getElementById("componentViewerZoom");
+
+
+    if(image){
+        image.src="";
+        image.style.display="block";
+    }
+
+
+    if(marker){
+        marker.style.display="none";
+    }
+
+
+    if(zoom){
+        zoom.style.display="none";
+        zoom.src="";
+    }
+
+}
+
+
 function openDashboardInfo(id){
 
 currentViewerMode = "dashboard";
@@ -1221,67 +1807,133 @@ currentViewerMode = "dashboard";
 
 const item =
 manualDashboard.find(
-x=>x["ID"] == id
+    x => x["ID"] == id
 );
 
 
-if(!item)return;
+if(!item){
+    console.log("Missing dashboard item:", id);
+    return;
+}
 
 
 currentDashboardIndex =
 manualDashboard.findIndex(
-x=>x["ID"] == id
+    x => x["ID"] == id
 );
 
 
 
-document.getElementById(
-"componentViewerTitle"
-).innerHTML =
-item["Component"];
+const modal =
+document.getElementById("componentModal");
 
 
-document.getElementById(
-"componentViewerLocation"
-).innerHTML =
-item["Meaning"];
-
-
-document.getElementById(
-"componentViewerNotes"
-).innerHTML =
-item["Notes"] || "";
-
+const image =
+document.getElementById("componentViewerImage");
 
 
 const zoomImage =
-document.getElementById(
-"componentViewerZoom"
-);
+document.getElementById("componentViewerZoom");
 
 
+const marker =
+document.getElementById("componentViewerMarker");
+
+
+const title =
+document.getElementById("componentViewerTitle");
+
+
+const location =
+document.getElementById("componentViewerLocation");
+
+
+const notes =
+document.getElementById("componentViewerNotes");
+
+
+// HIDE COMPONENT IMAGE
+
+if(image){
+
+    image.src="";
+    image.style.display="none";
+
+}
+
+
+// HIDE COMPONENT MARKER
+
+if(marker){
+
+    marker.style.display="none";
+
+}
+
+
+// TITLE
+
+if(title){
+
+    title.innerHTML =
+    item["Component"] || "";
+
+}
+
+
+// MEANING
+
+if(location){
+
+    location.innerHTML =
+    item["Meaning"] || "";
+
+}
+
+
+// NOTES
+
+if(notes){
+
+    notes.innerHTML =
+    item["Notes"] || "";
+
+}
+
+
+// DASHBOARD ZOOM IMAGE
 
 if(zoomImage){
 
-zoomImage.src =
-item["Zoom Image"] || "";
+    if(item["Zoom Image"]){
+
+        zoomImage.src =
+        item["Zoom Image"];
+
+        zoomImage.style.display="block";
+
+    }
+    else{
+
+        zoomImage.src="";
+        zoomImage.style.display="none";
+
+    }
+
+}
 
 
-zoomImage.style.display =
-item["Zoom Image"]
-? "block"
-: "none";
+// OPEN MODAL
+
+if(modal){
+
+    modal.classList.add("show");
 
 }
 
 
-
-document.getElementById(
-"componentModal"
-).classList.add("show");
-
-
 }
+
 
 function openManualSection(section){
 
@@ -1291,102 +1943,44 @@ function openManualSection(section){
 
     const content = document.getElementById("manualContent");
 
-    if (!content) return;
+    if(!content) return;
 
+    // VERY IMPORTANT
+    content.innerHTML = "";
 
     switch(section){
 
-
         case "specs":
-
             renderManualSpecs();
-
             break;
-
-
 
         case "components":
-
             renderManualComponents();
-
             break;
-
-
 
         case "dashboard":
-
-    renderDashboard();
-
-break;
-
-            content.innerHTML = `
-                <div class="empty-state">
-                    Dashboard Guide coming next
-                </div>
-            `;
-
+            renderDashboard();
             break;
-
-
 
         case "maintenance":
-
-            content.innerHTML = `
-                <div class="empty-state">
-                    Maintenance Guide coming next
-                </div>
-            `;
-
+            renderMaintenance();
             break;
-
-
 
         case "efi":
-
-            content.innerHTML = `
-                <div class="empty-state">
-                    EFI Diagnostics coming next
-                </div>
-            `;
-
+            renderEFI();
             break;
-
-
 
         case "wiring":
-
-            content.innerHTML = `
-                <div class="empty-state">
-                    Wiring Reference coming next
-                </div>
-            `;
-
+            renderWiring();
             break;
-
-
 
         case "precautions":
-
-            content.innerHTML = `
-                <div class="empty-state">
-                    Precautions coming next
-                </div>
-            `;
-
+            renderPrecautions();
             break;
-
-
 
         case "mistakes":
-
-            content.innerHTML = `
-                <div class="empty-state">
-                    Common Owner Mistakes coming next
-                </div>
-            `;
-
+            renderMistakes();
             break;
-
 
     }
 
@@ -1499,6 +2093,11 @@ window.switchTab = switchTab;
 window.setCategory = setCategory;
 window.resetFilters = resetFilters;
 
+window.openEFIDiagnosis = openEFIDiagnosis;
+window.searchEFI = searchEFI;
+window.nextEFIStep = nextEFIStep;
+window.previousEFIStep = previousEFIStep;
+
 window.previousComponent = previousComponent;
 window.openNextComponent = openNextComponent;
 
@@ -1535,3 +2134,7 @@ loadManual("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2Vec
 loadManualComponents("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=1017192042&single=true&output=csv");
 
 loadManualDashboard("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=81321961&single=true&output=csv");
+
+loadManualMaintenance("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=1981058519&single=true&output=csv");
+
+loadEFI("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=980811144&single=true&output=csv");

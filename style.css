@@ -1876,8 +1876,6 @@ height:140px;
 
 }
 
-
-
 .dashboard-hint{
 
 position:absolute;
@@ -1921,5 +1919,547 @@ opacity:1;
 50%{
 opacity:.65;
 }
+
+}
+
+.dashboard-mode #componentViewerImage{
+    display:none !important;
+}
+
+
+.component-modal:not(.dashboard-mode) .dashboard-hint{
+    display:none;
+}
+
+.component-viewer-zoom{
+    display:none;
+}
+
+#componentViewerZoom{
+    display:none;
+    max-width:100%;
+    margin:auto;
+}
+
+
+/* =========================
+MAINTENANCE GUIDE
+========================= */
+
+
+.maintenance-note{
+
+    background:var(--card);
+
+    padding:14px 16px;
+
+    border-radius:12px;
+
+    margin-bottom:18px;
+
+    color: var(--text);
+
+    font-size:14px;
+
+    line-height:1.5;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.06);
+
+}
+
+
+
+/* LIST */
+
+.maintenance-list{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+}
+
+
+
+/* CARD */
+
+.maintenance-card{
+
+    background: var(--card);
+
+    border-radius:14px;
+
+    padding:16px;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+    border:1px solid #427bff;
+
+    transition:.2s ease;
+
+}
+
+
+.maintenance-card:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 8px 18px rgba(0,102,255,.12);
+
+}
+
+
+
+/* HEADER */
+
+.maintenance-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:flex-start;
+
+    gap:12px;
+
+    margin-bottom:14px;
+
+}
+
+
+
+.maintenance-header h3{
+
+    margin:0;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    color: rgb(237, 177, 0);
+
+}
+
+
+
+/* CATEGORY CHIP */
+
+.maintenance-category{
+
+    background:var(--accent);
+
+    color:white;
+
+    padding:5px 10px;
+
+    border-radius:20px;
+
+    font-size:11px;
+
+    font-weight:600;
+
+    white-space:nowrap;
+
+}
+
+
+
+/* CONTENT ROW */
+
+.maintenance-row{
+
+    padding-top:10px;
+
+    margin-top:10px;
+
+
+}
+
+
+
+.maintenance-row strong{
+
+    display:block;
+
+    font-size:12px;
+
+    color: var(--accent);
+
+    text-transform:uppercase;
+
+    letter-spacing:.4px;
+
+    margin-bottom:5px;
+
+}
+
+
+
+.maintenance-row p{
+
+    margin:0;
+
+    color:#ffffff;
+
+    font-size:14px;
+
+    line-height:1.5;
+
+}
+
+
+
+/* KM INTERVAL HIGHLIGHT */
+
+.maintenance-row:first-of-type p{
+
+    font-weight:600;
+
+    color:#ffffff;
+
+}
+
+
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+
+.maintenance-card{
+
+    padding:14px;
+
+}
+
+
+
+.maintenance-header{
+
+    flex-direction:column;
+
+}
+
+
+
+.maintenance-category{
+
+    align-self:flex-start;
+
+}
+
+
+}
+
+
+
+
+/* =========================
+EFI GUIDE
+========================= */
+.efi-header{
+    margin-bottom:20px;
+}
+
+.efi-header h2{
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:6px;
+}
+
+.efi-header p{
+    color:#777;
+}
+
+.efi-card{
+    background:var(--card);
+    border-radius:14px;
+    margin-bottom:14px;
+    overflow:hidden;
+    border:1px solid #e6e6e6;
+    box-shadow:0 4px 12px rgba(0,0,0,.05);
+}
+
+.efi-card-header{
+    padding:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    cursor:pointer;
+}
+
+.efi-card-header:hover{
+    background:var(--surface);
+}
+
+.efi-card-header h3{
+    margin:0;
+    font-size:18px;
+}
+
+.efi-component{
+    display:inline-block;
+    margin-top:6px;
+    color:#0d6efd;
+    font-size:13px;
+    font-weight:600;
+}
+
+.efi-card-body{
+    display:none;
+    padding:18px;
+    border-top:1px solid #eee;
+}
+
+.efi-card-body.open{
+    display:block;
+}
+
+.efi-step{
+    display:flex;
+    gap:15px;
+    margin-bottom:16px;
+}
+
+.step-number{
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    background:#0d6efd;
+    color:#fff;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:700;
+    flex-shrink:0;
+}
+
+.step-text{
+    line-height:1.6;
+}
+
+.efi-expand{
+    font-size:18px;
+    color:#888;
+}
+
+
+.efi-grid{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+
+gap:18px;
+
+margin-top:25px;
+
+}
+
+.efi-card{
+
+background:#fff;
+
+border-radius:14px;
+
+padding:18px;
+
+border:1px solid #e6e6e6;
+
+box-shadow:0 4px 12px rgba(0,0,0,.05);
+
+transition:.2s;
+
+}
+
+.efi-card:hover{
+
+transform:translateY(-4px);
+
+}
+
+.efi-card-top{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:flex-start;
+
+gap:12px;
+
+}
+
+.efi-card h3{
+
+margin:0;
+
+font-size:17px;
+
+font-weight:700;
+
+}
+
+.efi-card p{
+
+margin:6px 0 0;
+
+color:#666;
+
+font-size:14px;
+
+}
+
+.efi-card-bottom{
+
+margin-top:18px;
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+}
+
+.efi-card button{
+
+background:#0066ff;
+
+color:white;
+
+border:none;
+
+padding:10px 18px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-weight:600;
+
+}
+
+.efi-search{
+
+width:100%;
+
+margin-top:15px;
+
+padding:12px;
+
+border-radius:10px;
+
+border:1px solid #ddd;
+
+font-size:15px;
+
+}
+
+.efi-difficulty{
+
+padding:5px 10px;
+
+border-radius:999px;
+
+font-size:12px;
+
+font-weight:700;
+
+}
+
+.efi-difficulty.success{
+
+background:#e9f8ef;
+
+color:#198754;
+
+}
+
+.efi-difficulty.warning{
+
+background:#fff4df;
+
+color:#d97706;
+
+}
+
+.efi-difficulty.danger{
+
+background:#ffe6e6;
+
+color:#dc2626;
+
+}
+
+
+
+.efi-progress{
+
+font-size:13px;
+
+font-weight:700;
+
+color:#0066ff;
+
+margin-bottom:18px;
+
+}
+
+.efi-step-box{
+
+background:#f8fbff;
+
+border:2px solid #dbeafe;
+
+padding:18px;
+
+border-radius:12px;
+
+font-size:15px;
+
+line-height:1.7;
+
+margin-bottom:22px;
+
+}
+
+.efi-nav{
+
+display:flex;
+
+justify-content:space-between;
+
+gap:12px;
+
+}
+
+.efi-nav button{
+
+flex:1;
+
+padding:12px;
+
+border:none;
+
+border-radius:10px;
+
+background:#0066ff;
+
+color:#fff;
+
+font-weight:600;
+
+cursor:pointer;
+
+}
+
+.efi-nav button:disabled{
+
+opacity:.4;
+
+cursor:not-allowed;
 
 }
