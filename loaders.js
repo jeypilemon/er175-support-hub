@@ -135,10 +135,108 @@ function loadEFI(url) {
         download: true,
         header: true,
         complete: res => {
-            efiData = res.data.filter(r => r.ID);
 
+            efiData = res.data.filter(r => r.ID);
+            
+            console.log(
+                "EFI loaded:",
+                efiData.length
+            );
         }
     });
+}
+
+function loadWiring(url) {
+    Papa.parse(url, {
+        download: true,
+        header: true,
+        complete: res => {
+            // 1. Explicitly attach it to the window so all other JS files can see it
+            window.manualWiring = res.data.filter(r => r.ID);
+
+            console.log(
+                "Wiring loaded:",
+                window.manualWiring.length
+            );
+
+            // 2. Trigger the render function immediately now that the data exists!
+            if (typeof renderWiring === 'function') {
+                renderWiring();
+            }
+        }
+    });
+}
+
+function loadPrecautions(url){
+
+    Papa.parse(url,{
+
+        download:true,
+
+        header:true,
+
+        complete:res=>{
+
+            manualPrecautions =
+                res.data.filter(r=>r.ID);
+
+            console.log(
+                "Precautions loaded:",
+                manualPrecautions.length
+            );
+
+        }
+
+    });
+
+}
+
+function loadMistakes(url){
+
+    Papa.parse(url,{
+
+        download:true,
+
+        header:true,
+
+        complete:res=>{
+
+            manualMistakes =
+                res.data.filter(r=>r.ID);
+
+            console.log(
+                "Mistakes loaded:",
+                manualMistakes.length
+            );
+
+        }
+
+    });
+
+}
+
+function loadManualSearchIndex(url){
+
+    Papa.parse(url,{
+
+        download:true,
+
+        header:true,
+
+        complete:res=>{
+
+            manualSearchIndex =
+                res.data.filter(r=>r.ID);
+
+            console.log(
+                "Manual Search Index loaded:",
+                manualSearchIndex.length
+            );
+
+        }
+
+    });
+
 }
 
 function checkReady() {

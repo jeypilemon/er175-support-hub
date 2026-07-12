@@ -1,6 +1,7 @@
 let currentTab = "aftermarket";
 let currentCategory = "All";
-let globalKeyword = "";
+
+let searchQuery = "";
 
 let currentViewerComponent = null;
 let currentViewerIndex = 0;
@@ -9,18 +10,16 @@ let currentViewerMode = "";
 let currentComponentIndex = 0;
 let currentDashboardIndex = 0;
 
-let viewerMode = "";
-viewerMode="dashboard";
-viewerMode="component";
+let currentManualSection = "specs";
 
 let currentEFIProblem = null;
 let currentEFISteps = [];
 let currentEFIStepIndex = 0;
 
 let efiFilter = "All";
-let efiSearch = "";
 
-let manualSearch = "";
+let manualSearchIndex = [];
+
 let manualData = [];
 let manualComponents = [];
 let manualDashboard = [];
@@ -29,7 +28,6 @@ let manualWiring = [];
 let manualPrecautions = [];
 let manualMistakes = [];
 let efiData = [];
-
 
 let aftermarketParts = [];
 let oemParts = [];
@@ -42,8 +40,7 @@ const loaded = {
     oem: false,
     troubleshoot: false,
     manual: false,
-    components:false
-
+    components: false
 };
 
 const container = document.getElementById("products");

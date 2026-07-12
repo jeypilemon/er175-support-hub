@@ -2,6 +2,7 @@ function renderEFI(){
 
     const content = document.getElementById("manualContent");
 
+
     if(!efiData.length){
 
         content.innerHTML=`
@@ -20,7 +21,7 @@ function renderEFI(){
             problem["Component / System"]
         ).toLowerCase();
 
-        return text.includes(efiSearch.toLowerCase());
+        return text.includes(searchQuery);
 
     });
 
@@ -30,17 +31,43 @@ function renderEFI(){
 
 <h2>EFI Diagnostic Center</h2>
 
-<p>
-Select a symptom to begin guided troubleshooting.
-</p>
+<div class="efi-tip">
+    <span class="efi-tip-icon">ℹ️</span>
+    <div>
+        <strong>How to use</strong><br>
+        Select a symptom below, then tap <b>Diagnose →</b> to follow the step-by-step troubleshooting guide.
+    </div>
+</div>
 
-<input
-id="efiSearch"
-class="efi-search"
-placeholder="Search symptoms..."
-value="${efiSearch}"
-oninput="searchEFI(this.value)"
->
+</div>
+
+<div class="efi-guide-grid">
+
+    <div class="efi-guide-card"
+         onclick="openImageModal(
+'assets/images/component/mil-flash-example.png'
+)">
+
+        <img src="assets/images/component/mil-flash-example.png">
+
+        <h3>MIL Flash Example</h3>
+
+        <p>Understand long and short MIL flashes.</p>
+
+    </div>
+
+    <div class="efi-guide-card"
+         onclick="openImageModal(
+'assets/images/component/obd-manual-ecu-clearing.png'
+)">
+
+        <img src="assets/images/component/obd-manual-ecu-clearing.png">
+
+        <h3>Manual OBD Query & Clearing</h3>
+
+        <p>Read and erase EFI fault codes manually.</p>
+
+    </div>
 
 </div>
 
@@ -109,43 +136,14 @@ Diagnose →
 
 </div>
 
-<div class="efi-guide-grid">
-
-    <div class="efi-guide-card"
-         onclick="openGuideImage(
-             'MIL Flash Example',
-             'assets/images/component/mil-flash-example.png'
-         )">
-
-        <img src="assets/images/component/mil-flash-example.png">
-
-        <h3>MIL Flash Example</h3>
-
-        <p>Understand long and short MIL flashes.</p>
-
-    </div>
-
-    <div class="efi-guide-card"
-         onclick="openGuideImage(
-             'Manual OBD Query & Clearing',
-             'assets/images/component/obd-manual-ecu-clearing.png'
-         )">
-
-        <img src="assets/images/component/obd-manual-ecu-clearing.png">
-
-        <h3>Manual OBD Query & Clearing</h3>
-
-        <p>Read and erase EFI fault codes manually.</p>
-
-    </div>
-
-</div>
-
 `;
 
 }
 
 function openGuideImage(title, image){
+
+    currentViewerMode = "guide";
+    setViewerMode("guide");
 
     const modal = document.getElementById("componentModal");
 
@@ -168,13 +166,6 @@ function openGuideImage(title, image){
 
 }
 
-function searchEFI(value){
-
-    efiSearch=value;
-
-    renderEFI();
-
-}
 
 function openEFIDiagnosis(id){
 
@@ -193,6 +184,9 @@ function openEFIDiagnosis(id){
 }
 
 function renderEFIModal(){
+
+    currentViewerMode = "efi";
+    setViewerMode("efi");
 
     const modal = document.getElementById("componentModal");
 

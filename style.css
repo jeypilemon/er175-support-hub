@@ -1,5 +1,5 @@
 :root {
-    --bg: #0b0f14;
+    --bg: #121214;
     --surface: #121821;
     --card: #161f2b;
     --border: #243041;
@@ -230,6 +230,7 @@ input#search:focus {
     background: var(--accent);
     color: #fff;
     border-color: var(--accent);
+    animation:pulseMarkerChip 1.5s infinite;
 }
 
 .home-grid {
@@ -958,19 +959,36 @@ flex:none;
 
 
 /* container */
+.manual-card{
 
-.manual-card {
-
-    background:var(--surface);
+    background:var(--card);
 
     border:1px solid var(--border);
 
-    border-radius:12px;
+    border-radius:18px;
 
-    overflow:hidden;
+    padding:22px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
+
+    transition:.25s;
 
 }
 
+.manual-card:hover{
+
+    transform:translateY(-4px);
+
+    border-color:var(--accent);
+
+    box-shadow:
+    0 14px 30px rgba(0,0,0,.35);
+
+}
 
 /* each row */
 
@@ -1382,6 +1400,24 @@ border-radius:15px;
 
 }
 
+@keyframes pulseMarkerChip{
+
+    0%{
+        box-shadow:0 0 0 0 #4da3ff;
+    }
+
+
+    70%{
+        box-shadow:0 0 0 15px rgba(255,106,0,0);
+    }
+
+
+    100%{
+        box-shadow:0 0 0 0 rgba(255,106,0,0);
+    }
+
+}
+
 
 .viewer-controls{
 
@@ -1523,7 +1559,7 @@ margin-bottom:14px;
 
 font-size:14px;
 font-weight:700;
-margin:10px 0;
+margin:10px;
 
 }
 
@@ -1537,7 +1573,7 @@ border:1px var(--border) solid;
 border-radius:10px;
 
 padding:10px 12px;
-
+margin-bottom: 5px;
 cursor:pointer;
 
 transition:.2s;
@@ -1942,79 +1978,117 @@ opacity:.65;
 }
 
 
-/* =========================
-MAINTENANCE GUIDE
-========================= */
+/* ==========================================
+   EFI HEADER
+========================================== */
 
+.efi-header{
 
-.maintenance-note{
+    margin-bottom:28px;
 
-    background:var(--card);
+}
 
-    padding:14px 16px;
+.efi-header h2{
 
-    border-radius:12px;
+    font-size:28px;
 
-    margin-bottom:18px;
+    font-weight:700;
 
-    color: var(--text);
+    margin-bottom:10px;
 
-    font-size:14px;
+    color:var(--text);
 
-    line-height:1.5;
+}
 
-    box-shadow:0 3px 10px rgba(0,0,0,.06);
+.efi-header p{
+
+    color:var(--muted);
+
+    line-height:1.7;
+
+    max-width:720px;
 
 }
 
 
+/* ==========================================
+   EFI TOOLTIP
+========================================== */
 
-/* LIST */
-
-.maintenance-list{
+.efi-tip{
 
     display:flex;
 
-    flex-direction:column;
+    align-items:flex-start;
 
-    gap:14px;
+    gap:12px;
 
-}
+    margin:22px 0;
 
+    padding:16px 20px;
 
+    background:rgba(77,163,255,.08);
 
-/* CARD */
+    border:1px solid rgba(77,163,255,.15);
 
-.maintenance-card{
-
-    background: var(--card);
+    border-left:4px solid var(--accent);
 
     border-radius:14px;
 
-    padding:16px;
+    color:var(--text);
 
-    box-shadow:0 4px 12px rgba(0,0,0,.08);
-
-    border:1px solid #427bff;
-
-    transition:.2s ease;
+    line-height:1.7;
 
 }
 
 
-.maintenance-card:hover{
+/* ==========================================
+   EFI GRID
+========================================== */
 
-    transform:translateY(-2px);
+.efi-grid{
 
-    box-shadow:0 8px 18px rgba(0,102,255,.12);
+    display:grid;
+
+    grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+
+    gap:22px;
 
 }
 
 
+/* ==========================================
+   EFI CARD
+========================================== */
 
-/* HEADER */
+.efi-card{
 
-.maintenance-header{
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:22px;
+
+    transition:.25s;
+
+}
+
+.efi-card:hover{
+
+    transform:translateY(-5px);
+
+    border-color:var(--accent);
+
+    box-shadow:
+
+        0 16px 30px rgba(0,0,0,.35);
+
+}
+
+
+.efi-card-top{
 
     display:flex;
 
@@ -2022,456 +2096,229 @@ MAINTENANCE GUIDE
 
     align-items:flex-start;
 
-    gap:12px;
-
-    margin-bottom:14px;
-
-}
-
-
-
-.maintenance-header h3{
-
-    margin:0;
-
-    font-size:16px;
-
-    font-weight:700;
-
-    color: rgb(237, 177, 0);
-
-}
-
-
-
-/* CATEGORY CHIP */
-
-.maintenance-category{
-
-    background:var(--accent);
-
-    color:white;
-
-    padding:5px 10px;
-
-    border-radius:20px;
-
-    font-size:11px;
-
-    font-weight:600;
-
-    white-space:nowrap;
-
-}
-
-
-
-/* CONTENT ROW */
-
-.maintenance-row{
-
-    padding-top:10px;
-
-    margin-top:10px;
-
-
-}
-
-
-
-.maintenance-row strong{
-
-    display:block;
-
-    font-size:12px;
-
-    color: var(--accent);
-
-    text-transform:uppercase;
-
-    letter-spacing:.4px;
-
-    margin-bottom:5px;
-
-}
-
-
-
-.maintenance-row p{
-
-    margin:0;
-
-    color:#ffffff;
-
-    font-size:14px;
-
-    line-height:1.5;
-
-}
-
-
-
-/* KM INTERVAL HIGHLIGHT */
-
-.maintenance-row:first-of-type p{
-
-    font-weight:600;
-
-    color:#ffffff;
-
-}
-
-
-
-/* MOBILE */
-
-@media(max-width:600px){
-
-
-.maintenance-card{
-
-    padding:14px;
-
-}
-
-
-
-.maintenance-header{
-
-    flex-direction:column;
-
-}
-
-
-
-.maintenance-category{
-
-    align-self:flex-start;
-
-}
-
-
-}
-
-
-
-
-/* =========================
-EFI GUIDE
-========================= */
-.efi-header{
-    margin-bottom:20px;
-}
-
-.efi-header h2{
-    font-size:22px;
-    font-weight:700;
-    margin-bottom:6px;
-}
-
-.efi-header p{
-    color:#ffd500;
-}
-
-.efi-card{
-    background:var(--card);
-    border-radius:14px;
-    margin-bottom:14px;
-    overflow:hidden;
-    box-shadow:0 4px 12px rgba(0,0,0,.05);
-}
-
-.efi-card-header{
-    padding:18px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    cursor:pointer;
-}
-
-.efi-card-header:hover{
-    background:var(--surface);
-}
-
-.efi-card-header h3{
-    margin:0;
-    font-size:18px;
-}
-
-.efi-component{
-    display:inline-block;
-    margin-top:6px;
-    color:#0d6efd;
-    font-size:13px;
-    font-weight:600;
-}
-
-.efi-card-body{
-    display:none;
-    padding:18px;
-    border-top:1px solid #eee;
-}
-
-.efi-card-body.open{
-    display:block;
-}
-
-.efi-step{
-    display:flex;
-    gap:15px;
-    margin-bottom:16px;
-}
-
-.step-number{
-    width:34px;
-    height:34px;
-    border-radius:50%;
-    background:#0d6efd;
-    color:#fff;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-weight:700;
-    flex-shrink:0;
-}
-
-.step-text{
-    line-height:1.6;
-}
-
-.efi-expand{
-    font-size:18px;
-    color:#ffc800;
-}
-
-
-.efi-grid{
-
-display:grid;
-
-grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
-
-gap:18px;
-
-margin-top:25px;
-
-}
-
-.efi-card{
-
-background:#0c1528;
-
-border-radius:14px;
-
-padding:18px;
-
-box-shadow:0 4px 12px rgba(0,0,0,.05);
-
-transition:.2s;
-
-}
-
-.efi-card:hover{
-
-transform:translateY(-4px);
-
-}
-
-.efi-card-top{
-
-display:flex;
-
-justify-content:space-between;
-
-align-items:flex-start;
-
-gap:12px;
+    gap:16px;
 
 }
 
 .efi-card h3{
 
-margin:0;
+    margin:0;
 
-font-size:17px;
+    font-size:18px;
 
-font-weight:700;
+    color:var(--text);
 
 }
 
 .efi-card p{
 
-margin:6px 0 0;
+    margin-top:8px;
 
-color:var(--accent);
+    color:var(--muted);
 
-font-size:14px;
+    font-size:14px;
 
 }
 
 .efi-card-bottom{
 
-margin-top:18px;
+    margin-top:20px;
 
-display:flex;
+    padding-top:18px;
 
-justify-content:space-between;
+    border-top:1px solid var(--border);
 
-align-items:center;
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
 
 }
+
+.efi-card-bottom span{
+
+    color:var(--muted);
+
+    font-size:14px;
+
+}
+
+
+/* ==========================================
+   BUTTONS
+========================================== */
 
 .efi-card button{
 
-background:#0033ff;
+    border:none;
 
-color:white;
+    border-radius:10px;
 
-border:none;
+    background:var(--accent);
 
-padding:10px 18px;
+    color:var(--bg);
 
-border-radius:8px;
+    padding:11px 20px;
 
-cursor:pointer;
+    font-weight:700;
 
-font-weight:600;
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+.efi-card button:hover{
+
+    filter:brightness(1.08);
 
 }
 
-.efi-search{
 
-width:100%;
-
-margin-top:15px;
-
-padding:12px;
-
-border-radius:10px;
-
-border:1px solid #ddd;
-
-font-size:15px;
-
-}
+/* ==========================================
+   DIFFICULTY BADGES
+========================================== */
 
 .efi-difficulty{
 
-padding:5px 10px;
+    padding:6px 12px;
 
-border-radius:999px;
+    border-radius:999px;
 
-font-size:12px;
+    font-size:12px;
 
-font-weight:700;
+    font-weight:700;
 
 }
 
 .efi-difficulty.success{
 
-background:#198754;
+    background:rgba(46,204,113,.15);
 
-color:#ffffff;
+    color:#80e5ad;
 
 }
 
 .efi-difficulty.warning{
 
-background:#d97706;
+    background:rgba(255,193,7,.15);
 
-color:#ffffff;
+    color:#ffd86a;
 
 }
 
 .efi-difficulty.danger{
 
-background:#dc2626;
+    background:rgba(255,77,79,.15);
 
-color:#ffffff;
+    color:#ff9797;
 
 }
 
 
+/* ==========================================
+   MODAL
+========================================== */
 
 .efi-progress{
 
-font-size:13px;
+    color:var(--accent);
 
-font-weight:700;
+    font-weight:700;
 
-color:#0066ff;
-
-margin-bottom:18px;
+    margin-bottom:18px;
 
 }
 
 .efi-step-box{
 
-background:var(--surface);
+    background:var(--surface);
 
-border:2px solid #dbeafe;
+    border:1px solid var(--border);
 
-padding:18px;
+    border-left:4px solid var(--accent);
 
-border-radius:12px;
+    border-radius:14px;
 
-font-size:15px;
+    padding:22px;
 
-line-height:1.7;
+    line-height:1.8;
 
-margin-bottom:22px;
+    color:var(--text);
+
+    margin-bottom:24px;
 
 }
 
 .efi-nav{
 
-display:flex;
+    display:flex;
 
-justify-content:space-between;
-
-gap:12px;
+    gap:14px;
 
 }
 
 .efi-nav button{
 
-flex:1;
+    flex:1;
 
-padding:12px;
+    border:none;
 
-border:none;
+    border-radius:10px;
 
-border-radius:10px;
+    padding:13px;
 
-background:#0066ff;
+    background:var(--accent);
 
-color:#fff;
+    color:var(--bg);
 
-font-weight:600;
+    cursor:pointer;
 
-cursor:pointer;
+    font-weight:700;
+
+}
+
+.efi-nav button:hover{
+
+    filter:brightness(1.08);
 
 }
 
 .efi-nav button:disabled{
 
-opacity:.4;
+    opacity:.35;
 
-cursor:not-allowed;
+    cursor:not-allowed;
 
 }
 
 
+/* ==========================================
+   COMPONENT IMAGE
+========================================== */
+
 #componentViewerZoom{
-
-    width:100%;
-    max-width:340px;
-
-    margin:18px auto;
 
     display:block;
 
-    border-radius:12px;
+    width:100%;
+
+    max-width:420px;
+
+    margin:22px auto;
+
+    background:var(--surface);
+
+    border:1px solid var(--border);
+
+    border-radius:14px;
+
+    padding:12px;
+
+    object-fit:contain;
 
     cursor:pointer;
 
@@ -2486,9 +2333,13 @@ cursor:not-allowed;
 }
 
 
+/* ==========================================
+   EFI GUIDES
+========================================== */
+
 .efi-guides{
 
-    margin-top:40px;
+    margin-top:42px;
 
 }
 
@@ -2496,17 +2347,19 @@ cursor:not-allowed;
 
     display:grid;
 
-    gap:20px;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
 
-    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:22px;
 
 }
 
 .efi-guide-card{
 
-    background:var(--card-bg);
+    background:var(--card);
 
-    border-radius:14px;
+    border:1px solid var(--border);
+
+    border-radius:18px;
 
     overflow:hidden;
 
@@ -2514,13 +2367,17 @@ cursor:not-allowed;
 
     transition:.25s;
 
-    border:1px solid rgba(255,255,255,.08);
-
 }
 
 .efi-guide-card:hover{
 
-    transform:translateY(-4px);
+    transform:translateY(-5px);
+
+    border-color:var(--accent);
+
+    box-shadow:
+
+        0 16px 30px rgba(0,0,0,.35);
 
 }
 
@@ -2530,20 +2387,595 @@ cursor:not-allowed;
 
     aspect-ratio:16/9;
 
-    object-fit:cover;
+    object-fit:contain;
+
+    background:var(--surface);
+
+    padding:14px;
 
 }
 
 .efi-guide-card h3{
 
-    padding:16px 16px 6px;
+    padding:18px 18px 8px;
+
+    color:var(--text);
 
 }
 
 .efi-guide-card p{
 
-    padding:0 16px 18px;
+    padding:0 18px 20px;
 
-    opacity:.8;
+    color:var(--muted);
 
+    line-height:1.6;
+
+}
+
+/*zoom view mil flash and obd clearing*/
+
+.image-modal{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.92);
+
+    z-index:9999;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.image-modal.show{
+
+    display:flex;
+
+}
+
+.image-modal-content{
+
+    position:relative;
+
+    width:95%;
+
+    height:95%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+#imageModalImg{
+
+    max-width:100%;
+
+    max-height:100%;
+
+    object-fit:contain;
+
+}
+
+.image-close{
+
+    position:absolute;
+
+    top:15px;
+
+    right:15px;
+
+    font-size:28px;
+
+    background:#d32f2f;
+
+    color:#fff;
+
+    border:none;
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    cursor:pointer;
+
+}
+
+.image-download{
+
+    position:absolute;
+
+    top:15px;
+
+    left:15px;
+
+    padding:10px 18px;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    background:#1976d2;
+
+    color:white;
+
+}
+
+
+
+/*diagnos info tooltip*/
+
+.efi-tip{
+
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+
+    margin:16px 0 20px;
+
+    padding:14px 16px;
+
+    border-radius:12px;
+
+    background:#1b2433;
+
+    border-left:4px solid #3b82f6;
+
+    color:#d9e3f0;
+
+}
+
+.efi-tip-icon{
+
+    font-size:22px;
+
+    line-height:1;
+
+}
+
+/*mistake and precaution css*/
+
+.precaution-grid{
+    display:grid;
+    gap:24px;
+    margin-top:24px;
+    
+}
+.precaution-card{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-left:5px solid #38d27a;
+
+    border-radius:18px;
+
+    padding:22px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
+
+}
+
+.precaution-card.danger{
+
+    border-left-color:#ff6565;
+
+}
+
+.precaution-category{
+
+    color:var(--accent);
+
+    font-size:12px;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+}
+
+.precaution-badge{
+
+    width:fit-content;
+
+    padding:5px 12px;
+
+    border-radius:999px;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.precaution-card.success
+.precaution-badge{
+
+    background:rgba(56,210,122,.12);
+
+    color:#7de4ac;
+
+}
+
+.precaution-card.danger
+.precaution-badge{
+
+    background:rgba(255,101,101,.12);
+
+    color:#ff8d8d;
+
+}
+
+.precaution-notes{
+
+    padding-top:12px;
+
+    border-top:1px dashed var(--border);
+
+    color:var(--muted);
+
+}
+
+/*mistakes css*/
+.mistake-grid{
+    display:grid;
+    gap:24px;
+    margin-top:24px;
+    
+}
+
+.mistake-card{
+
+    background:var(--card);
+
+    border:1px solid var(--border);
+
+    border-radius:18px;
+
+    padding:20px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:16px;
+
+}
+
+.mistake-box{
+
+    background:rgba(255,80,80,.08);
+
+    border-left:4px solid #ff6b6b;
+
+    padding:14px;
+
+    border-radius:10px;
+
+}
+
+.cause-box{
+
+    background:rgba(210, 115, 56, 0.174);
+
+    border-left:4px solid #cf801f;
+
+    padding:14px;
+
+    border-radius:10px;
+
+}
+
+.correct-box{
+
+    background:rgba(56,210,122,.08);
+
+    border-left:4px solid #38d27a;
+
+    padding:14px;
+
+    border-radius:10px;
+
+}
+
+
+/* ==========================================================================
+   Compact Dark-Mode Wiring Cards
+   ========================================================================== */
+
+/* 1. Alert / Tip Banner */
+.manual-tip {
+    background: rgba(77, 163, 255, 0.08);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    border-radius: 6px;
+    color: var(--text);
+    font-size: 0.85rem;
+    margin-bottom: 16px;
+}
+
+/* 2. Grid Container (No ID column, dense packing) */
+.wiring-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+    padding-bottom: 20px;
+    box-sizing: border-box;
+}
+
+/* 3. The Individual Card */
+.wiring-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
+}
+
+/* Interactive States */
+.wiring-card:hover {
+    border-color: var(--accent);
+    background: var(--surface);
+    transform: translateY(-1px);
+}
+
+.wiring-card:active {
+    transform: translateY(0);
+}
+
+/* 4. Card Header (System & Wire Code pin) */
+.wiring-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(36, 48, 65, 0.4);
+    padding-bottom: 6px;
+}
+
+.wire-system {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 8px;
+}
+
+/* Tactile pin style for the code */
+.wire-code {
+    background: var(--bg);
+    color: var(--accent);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* 5. Card Body & Typography */
+.wiring-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.wiring-body h3 {
+    color: var(--text);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.wiring-body p {
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* 6. Search Highlights & Empty States */
+.wiring-card mark {
+    background: rgba(77, 163, 255, 0.25);
+    color: #ffffff;
+    border-radius: 2px;
+    padding: 0 2px;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 30px 16px;
+    color: var(--muted);
+    border: 1.5px dashed var(--border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.wire-color-text {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    opacity: 0.9;
+    margin-bottom: 4px;
+    display: inline-block;
+}
+
+
+/* ==========================================
+   MAINTENANCE COMPACT GRID LAYOUT (NIGHT MODE)
+   ========================================== */
+
+/* Outer grid container */
+.maintenance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 16px;
+    padding: 12px 0 24px 0;
+}
+
+/* Deep Obsidian Dark Card */
+.maintenance-card {
+    background: #121214; 
+    border: 1px solid #26262b;
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.maintenance-card:hover {
+    border-color: #3b3b42;
+    transform: translateY(-2px);
+}
+
+/* Card Header */
+.maintenance-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+/* Interval / Time Badge */
+.maintenance-interval-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #a1a1aa; /* Crisp muted silver */
+    white-space: nowrap;
+    background: #1f1f23;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+/* Card Body Typography (FIXED OVERLAPPING) */
+.maintenance-card-body h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    color: #ffffff; /* pure stark white */
+    line-height: 1.4; /* Added breathing room to prevent overlaps */
+}
+
+/* Procedure and Note Interior Spec Boxes */
+.maintenance-spec-box, 
+.maintenance-notes-box {
+    background: #1a1a1e; /* Solid dark background to prevent muddy blend */
+    border: 1px solid #26262b;
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.spec-label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #71717a; /* Clean contrast label */
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Fixed spacing to prevent overlapping */
+.maintenance-spec-box p,
+.maintenance-notes-box p {
+    margin: 0;
+    font-size: 0.8rem;
+    line-height: 1.5; /* Clean layout tracking wrapper */
+    color: #e4e4e7; /* Highly legible light gray text */
+    word-break: break-word; /* Prevents long continuous text from overflowing */
+}
+
+.maintenance-notes-box {
+    border-left: 3px solid #3f3f46; /* Subtle accent block border for notes */
+}
+
+
+/* ==========================================
+   VIBRANT NIGHT-MODE BADGE COLORS (via data-cat)
+   ========================================== */
+
+/* Base badge structural rules */
+.maintenance-category {
+    display: inline-flex;
+    align-items: center;
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+/* 1. Default / General Category (Neon Silver Accent) */
+.maintenance-category,
+.maintenance-category[data-cat="General"] {
+    background: rgba(161, 161, 170, 0.1);
+    border: 1px solid rgba(161, 161, 170, 0.3);
+    color: #f4f4f5;
+}
+
+/* 2. Engine Maintenance (Pastel Cyber Pink Accent) */
+.maintenance-category[data-cat="Engine Maintenance"],
+.maintenance-category[data-cat="Engine"] {
+    background: rgba(244, 63, 94, 0.15);
+    border: 1px solid rgba(244, 63, 94, 0.4);
+    color: #fda4af;
+}
+
+/* 3. Hydraulics / Pneumatics (Electric Cyber Blue Accent) */
+.maintenance-category[data-cat="Hydraulics"],
+.maintenance-category[data-cat="Pneumatics"] {
+    background: rgba(14, 165, 233, 0.15);
+    border: 1px solid rgba(14, 165, 233, 0.4);
+    color: #7dd3fc;
+}
+
+/* 4. Electrical / Electronics (Matrix Emerald Green Accent) */
+.maintenance-category[data-cat="Electrical"],
+.maintenance-category[data-cat="Electronics"] {
+    background: rgba(34, 197, 94, 0.15);
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    color: #86efac;
+}
+
+/* 5. Safety / Emergency (Vibrant Amber/Orange Accent) */
+.maintenance-category[data-cat="Safety"] {
+    background: rgba(245, 158, 11, 0.15);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    color: #fde047;
 }

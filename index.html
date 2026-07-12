@@ -9,13 +9,38 @@
     <title>Motorstar ER175 Support Hub</title>
     
     <link rel="icon" type="image/png" href="assets/images/192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/32x32.png">
-    <link rel="icon" type="image/png" sizes="48x48" href="assets/images/48x48.png">
-    <link rel="icon" type="image/png" sizes="64x64" href="assets/images/64x64.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/logo/32x32.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="assets/images/logo/48x48.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/images/logo/64x64.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/images/logo/192x192.png">
     
     <link rel="stylesheet" href="style.css">
 </head>
+
+<div id="imageModal" class="image-modal">
+
+    <div class="image-modal-content">
+
+        <button class="image-close"
+            onclick="closeImageModal()">
+            ✕
+        </button>
+
+        <a id="imageDownload"
+            download
+            target="_blank">
+
+            <button class="image-download">
+                ⬇ Download
+            </button>
+
+        </a>
+
+        <img id="imageModalImg">
+
+    </div>
+
+</div>
 
 <body>
 
@@ -85,6 +110,7 @@
     <!-- SEARCH -->
     <div class="search-box">
         <input id="search" placeholder="Search...">
+
     </div>
 
     <!-- RESET -->
@@ -139,19 +165,21 @@
                 </div>
 
             </div>
+<div class="viewer-controls">
 
-            <div class="viewer-controls">
+    <button
+        id="viewerPrev"
+        onclick="previousComponent()">
+        ← Previous Part
+    </button>
 
-                <button onclick="previousComponent()">
-                    ← Previous Part
-                </button>
+    <button
+        id="viewerNext"
+        onclick="openNextComponent()">
+        Next Part →
+    </button>
 
-                <button onclick="openNextComponent()">
-                    Next Part →
-                </button>
-
-            </div>
-
+</div>
             <div class="component-info">
 
                 <h3 id="componentViewerTitle"></h3>
@@ -208,6 +236,7 @@
 <script src="chips.js"></script>
 <script src="ui.js"></script>
 <script src="loaders.js"></script>
+<script src="search.js"></script>
 
 <!-- MANUAL -->
 <!-- Remove this line for now because the file doesn't exist -->
@@ -217,6 +246,9 @@
 <script src="manual/maintenance.js"></script>
 <script src="manual/efi.js"></script>
 <script src="manual/components.js"></script>
+<script src="manual/wiring.js"></script>
+<script src="manual/precautions.js"></script>
+<script src="manual/mistakes.js"></script>
 
 
 <!-- MAIN -->

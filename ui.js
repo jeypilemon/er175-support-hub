@@ -41,7 +41,7 @@ function render() {
         const cat = normalizeText(p["Parts Category"]);
 
         return (
-            (name.includes(globalKeyword) || cat.includes(globalKeyword)) &&
+            (name.includes(searchQuery) || cat.includes(searchQuery)) &&
             (currentCategory === "All" || p["Parts Category"] === currentCategory)
         );
     });
@@ -95,7 +95,7 @@ function renderTroubleshoot() {
         const tags = (item["Tags"] || "").toLowerCase();
 
         return (
-            (issue.includes(globalKeyword) || sol.includes(globalKeyword)) &&
+            (issue.includes(searchQuery) || sol.includes(searchQuery)) &&
             (currentCategory === "All" || tags.includes(currentCategory.toLowerCase()))
         );
     });
@@ -168,7 +168,7 @@ function renderManualSpecs() {
 );
 
 return searchText.includes(
-    normalizeText(globalKeyword)
+    normalizeText(searchQuery)
 );
     });
 
@@ -267,16 +267,67 @@ return searchText.includes(
 
 }
 
-function updateSearchPlaceholder() {
+function updateSearchPlaceholder(){
+
     const search = document.getElementById("search");
 
-    if (currentTab === "manual") {
-        search.placeholder = "What do you want? (e.g. oil capacity, torque spec)";
-    } else if (currentTab === "troubleshoot") {
-        search.placeholder = "Search issues (e.g. no power, check engine light on, vibration)";
-    } else {
-        search.placeholder = "Search parts (e.g. bearing, seat cover, brake pads)";
+    if(!search) return;
+
+    if(currentTab === "aftermarket"){
+
+        search.placeholder =
+        "Search aftermarket parts...";
+
+        return;
     }
+
+    if(currentTab === "oem"){
+
+        search.placeholder =
+        "Search OEM parts...";
+
+        return;
+    }
+
+    if(currentTab === "manual"){
+
+        switch(currentCategory){
+
+            case "maintenance":
+                search.placeholder =
+                "Search maintenance items...";
+                break;
+
+            case "dashboard":
+                search.placeholder =
+                "Search dashboard indicators...";
+                break;
+
+            case "components":
+                search.placeholder =
+                "Search engine components...";
+                break;
+
+            case "efi":
+                search.placeholder =
+                "Search symptoms or error codes...";
+                break;
+
+            default:
+                search.placeholder =
+                "Search manual...";
+        }
+
+        return;
+    }
+
+    if(currentTab === "troubleshoot"){
+
+        search.placeholder =
+        "Search issues (e.g. vibration, won't start)...";
+
+    }
+
 }
 
 function toggleCard(id) {
@@ -332,7 +383,7 @@ function setCategory(cat) {
 
 function resetFilters() {
 
-    globalKeyword = "";
+    searchQuery = "";
     manualSearch = "";
     currentCategory = "All";
 

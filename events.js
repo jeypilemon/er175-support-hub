@@ -1,8 +1,7 @@
 
 document.getElementById("search").addEventListener("input", e => {
-    globalKeyword = normalizeText(e.target.value);
 
-    render();
+    handleGlobalSearch(e.target.value);
 
 });
 
@@ -26,7 +25,6 @@ window.setCategory = setCategory;
 window.resetFilters = resetFilters;
 
 window.openEFIDiagnosis = openEFIDiagnosis;
-window.searchEFI = searchEFI;
 window.nextEFIStep = nextEFIStep;
 window.previousEFIStep = previousEFIStep;
 

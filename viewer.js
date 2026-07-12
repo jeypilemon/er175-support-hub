@@ -4,6 +4,8 @@ function openComponentViewer(id){
 
 currentViewerMode = "component";
 
+setViewerMode("component");
+
 
 const item = manualComponents.find(
     x => x["ID"] == id
@@ -142,6 +144,7 @@ if(modal){
 
 function closeComponentViewer(){
 
+
 const modal =
 document.getElementById("componentModal");
 
@@ -202,92 +205,127 @@ currentViewerMode = "";
 
 function previousComponent(){
 
+    if(currentViewerMode === "guide"){
+        return;
+    }
 
-if(currentViewerMode==="dashboard"){
+    if(currentViewerMode === "efi"){
+        return;
+    }
 
+    if(currentViewerMode==="dashboard"){
 
-currentDashboardIndex--;
+        currentDashboardIndex--;
 
+        if(currentDashboardIndex < 0){
+            currentDashboardIndex =
+            manualDashboard.length - 1;
+        }
 
-if(currentDashboardIndex < 0){
+        openDashboardInfo(
+            manualDashboard[currentDashboardIndex]["ID"]
+        );
 
-    currentDashboardIndex =
-    manualDashboard.length - 1;
+        return;
+    }
 
-}
+    // Component mode
 
+    currentViewerIndex--;
 
-openDashboardInfo(
-    manualDashboard[currentDashboardIndex]["ID"]
-);
+    if(currentViewerIndex < 0){
+        currentViewerIndex =
+        manualComponents.length - 1;
+    }
 
-
-return;
-
-}
-
-
-// COMPONENT MODE
-
-currentViewerIndex--;
-
-
-if(currentViewerIndex < 0){
-
-    currentViewerIndex =
-    manualComponents.length - 1;
-
-}
-
-
-openComponentViewer(
-    manualComponents[currentViewerIndex]["ID"]
-);
-
+    openComponentViewer(
+        manualComponents[currentViewerIndex]["ID"]
+    );
 
 }
 
 function openNextComponent(){
 
 
-if(currentViewerMode==="dashboard"){
+if(currentViewerMode === "guide"){
+        return;
+    }
+
+    if(currentViewerMode === "efi"){
+        return;
+    }
+
+    if(currentViewerMode==="dashboard"){
+
+        currentDashboardIndex++;
+
+        if(currentDashboardIndex >= manualDashboard.length){
+            currentDashboardIndex = 0;
+        }
+
+        openDashboardInfo(
+            manualDashboard[currentDashboardIndex]["ID"]
+        );
+
+        return;
+    }
 
 
-currentDashboardIndex++;
+// Component mode
+    currentViewerIndex++;
 
+    if(currentViewerIndex >= manualComponents.length){
+        currentViewerIndex = 0;
+    }
 
-if(currentDashboardIndex >= manualDashboard.length){
+    openComponentViewer(
+        manualComponents[currentViewerIndex]["ID"]
+    );
 
-    currentDashboardIndex = 0;
+}
+
+function setViewerMode(mode){
+
+    const prev = document.getElementById("viewerPrev");
+    const next = document.getElementById("viewerNext");
+
+    if(!prev || !next) return;
+
+    if(mode === "component"){
+
+        prev.style.display = "";
+        next.style.display = "";
+
+    }else{
+
+        prev.style.display = "none";
+        next.style.display = "none";
+
+    }
 
 }
 
 
-openDashboardInfo(
-    manualDashboard[currentDashboardIndex]["ID"]
-);
+function openImageModal(image){
 
+    const modal = document.getElementById("imageModal");
 
-return;
+    const img = document.getElementById("imageModalImg");
 
-}
+    const download = document.getElementById("imageDownload");
 
+    img.src = image;
 
-// COMPONENT MODE
+    download.href = image;
 
-currentViewerIndex++;
-
-
-if(currentViewerIndex >= manualComponents.length){
-
-    currentViewerIndex = 0;
+    modal.classList.add("show");
 
 }
 
+function closeImageModal(){
 
-openComponentViewer(
-    manualComponents[currentViewerIndex]["ID"]
-);
-
+    document
+        .getElementById("imageModal")
+        .classList.remove("show");
 
 }

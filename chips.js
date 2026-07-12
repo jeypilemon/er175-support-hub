@@ -1,6 +1,17 @@
 function openManualSection(section){
 
+    currentManualSection = section;
     currentCategory = section;
+
+    searchQuery = "";
+
+    const search = document.getElementById("search");
+
+    if(search){
+        search.value = "";
+    }
+
+    updateSearchPlaceholder();
 
     renderManualChips();
 
@@ -85,10 +96,10 @@ document.getElementById("chips");
 
 const sections = [
     ["specs","Specifications"],
-    ["components","Component Guide"],
-    ["dashboard","Dashboard"],
-    ["maintenance","Maintenance"],
-    ["efi","EFI"],
+    ["components","ER Component Guide"],
+    ["dashboard","Digital Panel"],
+    ["maintenance","Maintenance Schedule"],
+    ["efi","EFI Diagnostics"],
     ["wiring","Wiring"],
     ["precautions","Precautions"],
     ["mistakes","Mistakes"]
