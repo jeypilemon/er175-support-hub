@@ -19,84 +19,97 @@ if(!manualComponents || manualComponents.length === 0){
 
 const grouped = manualComponents.reduce((groups,item)=>{
 
+    const category = item["Category"] || "Other";
 
-const category = item["Category"] || "Other";
+    if(!groups[category]){
+        groups[category] = [];
+    }
 
+    groups[category].push(item);
 
-if(!groups[category]){
-
-    groups[category] = [];
-
-}
-
-
-groups[category].push(item);
-
-
-return groups;
-
+    return groups;
 
 },{});
 
 
+
 content.innerHTML = `
 
-<div class="component-list">
+
+<div class="component-preview">
+
+    <div class="component-preview-title">
+        ER175 Component Location Guide
+    </div>
+
+    <div class="component-preview-image">
+
+        <img src="assets/images/er175-sideview-left.png">
+
+    </div>
+
+    <p>
+        Select a component below to view location and access information.
+    </p>
+
+</div>
 
 
-${
-Object.entries(grouped)
+
+<div class="component-grid">
+
+
+${Object.entries(grouped)
 .map(([category,items])=>`
 
 
-<section class="component-category">
+<section class="component-section">
 
 
 <h3 class="component-category-title">
-
 ${category}
-
 </h3>
 
 
+<div class="component-cards">
 
-${
 
-items.map(item=>`
+${items.map(item=>`
 
-<div
-class="component-item"
-id="component-${item["ID"]}"
+
+<div 
+class="component-card"
 onclick="openComponentViewer('${item["ID"]}')"
 >
 
 
-<div class="component-details">
-
-
-<h3>
+<h4>
 ${item["Component"]}
-</h3>
+</h4>
+
+
+<span>
+${item["Location"]}
+</span>
+
 
 </div>
 
 
+`).join("")}
+
+
 </div>
-
-
-`).join("")
-
-}
 
 
 </section>
 
 
-`).join("")
-}
+`).join("")}
 
 
 </div>
+
 
 `;
 

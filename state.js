@@ -1,7 +1,9 @@
 let currentTab = "aftermarket";
 let currentCategory = "All";
 
+
 let searchQuery = "";
+let appStarted = false;
 
 let currentViewerComponent = null;
 let currentViewerIndex = 0;

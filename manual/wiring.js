@@ -4,6 +4,8 @@
  */
 
 function renderWiring() {
+
+
     const content = document.getElementById("manualContent") || document.getElementById("products");
     if (!content) return;
 

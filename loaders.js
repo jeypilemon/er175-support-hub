@@ -147,24 +147,32 @@ function loadEFI(url) {
 }
 
 function loadWiring(url) {
+
     Papa.parse(url, {
+
         download: true,
+
         header: true,
+
         complete: res => {
-            // 1. Explicitly attach it to the window so all other JS files can see it
+
             window.manualWiring = res.data.filter(r => r.ID);
+
 
             console.log(
                 "Wiring loaded:",
                 window.manualWiring.length
             );
 
-            // 2. Trigger the render function immediately now that the data exists!
-            if (typeof renderWiring === 'function') {
-                renderWiring();
-            }
+
+            loaded.wiring = true;
+
+            checkReady();
+
         }
+
     });
+
 }
 
 function loadPrecautions(url){
@@ -242,6 +250,8 @@ function loadManualSearchIndex(url){
 function checkReady() {
 
 
+    if(appStarted) return;
+
 
     if (
         loaded.aftermarket &&
@@ -252,9 +262,16 @@ function checkReady() {
     ) {
 
 
+        appStarted = true;
+
         isLoading = false;
+
+
+        currentTab = "aftermarket";
+        currentCategory = "All";
+
+
         switchTab("aftermarket");
-        
 
     }
 
