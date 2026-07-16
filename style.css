@@ -3712,8 +3712,7 @@ box-shadow:
   --bg-card: #2a2b36;
   --text-main: #f3f4f6;
   --text-muted: #9ca3af;
-  --accent: #ff4757;
-  --accent-rgb: 255, 71, 87;
+  --accent-rgb: 0, 100, 200;
   --success: #2ed573;
   --border-color: #3f4050;
   --radius-lg: 12px;
@@ -3724,14 +3723,14 @@ box-shadow:
 /* Container #ff4757*/
 .cvt-container {
   font-family: var(--font-stack);
-  background: var(--bg-panel);
-  color: var(--text-main);
+  background: var(--card);
+  color: var(--text);
   max-width: 780px;
   margin: 1.5rem auto;
   padding: 1.5rem;
   border-radius: var(--radius-lg);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--surface);
 }
 
 .cvt-container h2 {
@@ -3752,11 +3751,11 @@ box-shadow:
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 0.75rem;
-  background: var(--bg-card);
+  background: #1b2635;
   padding: 1rem;
   border-radius: var(--radius-md);
   margin-bottom: 1.25rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
 }
 
 .cvt-controls label {
@@ -3765,16 +3764,16 @@ box-shadow:
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-muted);
+  color: var(--accent);
   margin-bottom: 0.35rem;
 }
 
 .cvt-controls select {
   width: 100%;
   padding: 0.5rem;
-  background: var(--bg-panel);
+  background: var(--card);
   color: var(--text-main);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 0.9rem;
   outline: none;
@@ -3802,10 +3801,10 @@ box-shadow:
 
 /* Active Setup / Left Card */
 .cvt-result {
-  background: var(--bg-card);
+  background: #1b2635;
   padding: 1rem;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
+  border: 1px solid #1b2635;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -3815,7 +3814,7 @@ box-shadow:
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border);
   padding-bottom: 0.75rem;
   margin-bottom: 0.75rem;
 }
@@ -3851,7 +3850,7 @@ box-shadow:
 }
 
 .cvt-spec-grid div {
-  background: var(--bg-panel);
+  background: var(--card);
   padding: 0.5rem;
   border-radius: 6px;
   border: 1px solid rgba(255, 255, 255, 0.03);
@@ -3872,10 +3871,10 @@ box-shadow:
 
 /* Performance Scores / Right Card */
 .cvt-score-card {
-  background: var(--bg-card);
+  background: #1b2635;
   padding: 1rem;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
 }
 
 .cvt-score-card h3 {
@@ -3903,7 +3902,7 @@ box-shadow:
 
 .score-box .bar {
   flex-grow: 1;
-  background: var(--bg-panel);
+  background: var(--card);
   height: 8px;
   border-radius: 4px;
   overflow: hidden;
@@ -3911,7 +3910,7 @@ box-shadow:
 
 .score-box .bar div {
   height: 100%;
-  background: linear-gradient(90deg, var(--accent), #ff6b81);
+  background: linear-gradient(90deg,var(--accent), #8fbcfc);
   border-radius: 4px;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -3932,7 +3931,7 @@ box-shadow:
 }
 
 .cvt-tags span {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(65, 182, 255, 0.136);
   border: 1px solid var(--border-color);
   font-size: 0.75rem;
   padding: 0.3rem 0.6rem;
@@ -3955,6 +3954,7 @@ box-shadow:
 
 /* Disclaimer text */
 .cvt-disclaimer {
+
   font-size: 0.7rem;
   color: var(--text-muted);
   line-height: 1.3;

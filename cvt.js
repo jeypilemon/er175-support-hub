@@ -20,7 +20,7 @@ function renderCVT(){
 
     container.innerHTML = `
         <div class="cvt-container">
-            <h2>⚙️ ER175 CVT Tuner</h2>
+            <h2>⚙️ Motorstar ER175 Fi CVT Tuner</h2>
             <p class="cvt-sub">Compare CVT setups for acceleration, speed and riding style.</p>
 
             <div class="cvt-controls">
@@ -136,7 +136,7 @@ function updateCVT(){
         <div class="cvt-spec-grid">
             <div>
                 <strong>${result.roller}</strong>
-                <span>Roller</span>
+                <span>Flyball</span>
             </div>
             <div>
                 <strong>${result.center}</strong>
@@ -162,11 +162,11 @@ function updateCVT(){
     let tags = document.getElementById("cvtTags");
     if(tags){
         tags.innerHTML = `
-            <span>🛞 CVT Type:  ${result.type}</span>
+            <span>🔧CVT Setup for  ${result.type}</span>
             <span>${getStressIcon(result.stress)} ${result.stress}</span>
-            <span>⚙️ RPM Holding: ${result.rpm}</span>
+            <span>📈${result.rpm}</span>
             <span>${getLaunchIcon(result.launch)} ${result.launch}</span>
-            <span>🏋️Rider Weight:  ${result.weight}</span>
+            <span>🏋️Best for ${result.weight}</span>
         `;
     }
 
@@ -182,18 +182,22 @@ function updateCVT(){
 
 function getStressIcon(value){
     value = value || "";
-    if(value.includes("Extreme")) return "🔥🔥🔥🔥🔥";
-    if(value.includes("Very High")) return "🔥🔥🔥";
-    if(value.includes("High")) return "🔥🔥";
-    if(value.includes("Medium")) return "🔥";
-    if(value.includes("Low")) return "✅";
-    return "✅ Normal ";
+    if(value.includes("Extreme")) return "🔥Engine Stress";
+    if(value.includes("Very High")) return "🔥Engine Stress";
+    if(value.includes("High")) return "🔥Engine Stress";
+    if(value.includes("Medium")) return "⚠️Engine Stress";
+    if(value.includes("Low")) return "✅Engine Stress";
+    return "✅ Engine Stress: Normal ";
 }
 
 function getLaunchIcon(value){
     value = value || "";
-    if(value.includes("Aggressive")) return "😡";
-    if(value.includes("Smooth")) return "👌";
-    if(value.includes("Strong")) return "💪";
-    return "🚀 Launch: ";
+    if(value.includes("Smooth")) return "😎Launch Feel";
+    if(value.includes("Strong")) return "💪Launch Feel";
+    if(value.includes("Very Aggressive")) return "👹";
+    if(value.includes("Aggressive")) return "😡Launch Feel";
+    if(value.includes("Snappy")) return "🫰Launch Feel";
+    if(value.includes("Quick")) return "👌Launch Feel";
+    if(value.includes("Normal")) return "💚Launch Feel";
+    return "🚀 Launch Feel: ";
 }
