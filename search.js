@@ -2,8 +2,12 @@ function handleGlobalSearch(value){
 
     searchQuery = normalizeText(value);
 
+
     renderSuggestion();
 
+
+
+    // Manual document search
     if(currentTab === "manual"){
 
         if(searchQuery){
@@ -20,13 +24,29 @@ function handleGlobalSearch(value){
 
     }
 
-    if(currentTab === "troubleshoot"){
 
-        renderTroubleshoot();
+
+    // Diagnostics EFI search
+    if(currentTab === "diagnostics"){
+
+        render();
+
         return;
 
     }
 
+
+
+    // CVT has no search
+    if(currentTab === "cvt"){
+
+        return;
+
+    }
+
+
+
+    // Parts search
     render();
 
 }

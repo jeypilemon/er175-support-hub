@@ -30,7 +30,7 @@ let selectedCVT = {
 
     center:"1500 RPM",
 
-    clutch:"1000 RPM"
+    clutch:"1200 RPM"
 
 };
 

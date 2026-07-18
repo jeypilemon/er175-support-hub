@@ -86,7 +86,20 @@ window.va = window.va || function () {
 (window.vaq = window.vaq || []).push(arguments);
 };
 </script>
-<script defer src="/_vercel/insights/script.js"></script>
+
+<script>
+
+if(location.hostname !== "localhost" &&
+   location.hostname !== "127.0.0.1"){
+
+document.write(
+'<script src="/_vercel/insights/script.js"><\/script>'
+);
+
+}
+
+</script>
+
 
 <body>
 
@@ -164,9 +177,12 @@ window.va = window.va || function () {
 
     <!-- SEARCH -->
     <div class="search-box">
-        <input id="search" placeholder="Search...">
 
-    </div>
+    <input id="search" placeholder="Search...">
+
+    <div id="suggestions"></div>
+
+</div>
 
     <!-- RESET -->
     <div class="reset-container">
@@ -178,9 +194,6 @@ window.va = window.va || function () {
     <!-- MAIN CONTENT -->
     <div id="products"></div>
     
-
-    <!-- SEARCH SUGGESTIONS -->
-    <div id="suggestions"></div>
 
     <!-- LINK MODAL -->
     <div id="linkModal" class="link-modal">
@@ -265,44 +278,89 @@ class="component-viewer-zoom">
 
     </footer>
 
+
+<!-- EFI Diagnosis Modal -->
+
+<div id="efiDiagnosisModal"
+    class="efi-modal">
+
+
+    <div class="efi-modal-inner">
+
+
+    <button 
+    class="efi-modal-close"
+    onclick="closeEFIDiagnosisModal()">
+
+    ✕
+
+    </button>
+
+
+
+    <div id="efiDiagnosisContent">
+
+    </div>
+
+
+</div>
+
     
 <button id="backToTop" aria-label="Back to top">
     ↑
 </button>
-
 <!-- LIBRARIES -->
 <script src="assets/vendor/papaparse.min.js"></script>
 
-<!-- CORE -->
+
+<!-- CORE STATE -->
 <script src="state.js"></script>
+
+
+<!-- CORE HELPERS -->
 <script src="utils.js"></script>
+
+
+<!-- UI SYSTEM -->
+<script src="ui.js"></script>
+<script src="chips.js"></script>
 <script src="modal.js"></script>
 <script src="viewer.js"></script>
-<script src="chips.js"></script>
-<script src="ui.js"></script>
+
+
+<!-- DATA LOADERS -->
 <script src="loaders.js"></script>
+
+
+<!-- SEARCH SYSTEM -->
 <script src="search.js"></script>
 
-<!-- MANUAL -->
-<!-- Remove this line for now because the file doesn't exist -->
-<!-- <script src="manual/components.js"></script> -->
 
+<!-- MANUAL MODULES -->
 <script src="manual/dashboard.js"></script>
 <script src="manual/maintenance.js"></script>
-<script src="manual/efi.js"></script>
 <script src="manual/components.js"></script>
+<script src="manual/efi.js?v=2"></script>
+<script src="manual/efiModal.js?v=2"></script>
 <script src="manual/wiring.js"></script>
 <script src="manual/precautions.js"></script>
 <script src="manual/mistakes.js"></script>
+
+
+<!-- CVT MODULES -->
 <script src="cvt_engine.js"></script>
 <script src="cvt_compare.js"></script>
 <script src="cvt.js"></script>
 
-<!-- MAIN -->
+
+<!-- APP INITIALIZATION -->
 <script src="app.js"></script>
 
-<!-- EVENTS (LAST) -->
+
+<!-- EVENTS ALWAYS LAST -->
 <script src="events.js"></script>
+
+</div>
 
 </body>
 

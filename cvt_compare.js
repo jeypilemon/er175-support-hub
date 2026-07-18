@@ -6,13 +6,13 @@ const stockCVT = {
     "Stock ER175A Reference",
 
     roller:
-    "14g",
+    "14g-14.5g",
 
     center:
-    "1500 RPM",
+    "1200-1500 RPM",
 
     clutch:
-    "1000 RPM",
+    "1000-1200 RPM",
 
 
     accel:
@@ -20,7 +20,7 @@ const stockCVT = {
 
 
     speed:
-    90,
+    88,
 
 
     fuel:
@@ -28,7 +28,8 @@ const stockCVT = {
 
 
     uphill:
-    70
+    75
+    
 
 };
 

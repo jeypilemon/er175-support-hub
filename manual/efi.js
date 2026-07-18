@@ -1,106 +1,181 @@
-function renderEFI() {
-    const content = document.getElementById("diagnosticsContent") || document.getElementById("manualContent");
-    if (!content) return;
+console.log("EFI.JS LOADED");
 
-    // 1. Array Dataset Safety Verification
-    const dataset = window.efiData || efiData || [];
+function renderEFI(){
 
-    // ==========================================
-    // 2. PERSISTENT RENDERING ANCHOR LAYOUT
-    // ==========================================
-    let dashboardWrapper = content.querySelector(".efi-dashboard-wrapper");
-    if (!dashboardWrapper) {
-        content.innerHTML = `
-        <div class="efi-dashboard-wrapper">
-            <div class="efi-header">
-                <h2>EFI Diagnostic Center</h2>
-                <div class="efi-tip">
-                    <span class="efi-tip-icon">ℹ️</span>
-                    <div>
-                        <strong>How to use</strong><br>
-                        Select a symptom below, then tap <b>Diagnose →</b> to follow the step-by-step troubleshooting guide.
-                    </div>
-                </div>
-            </div>
-            
-            <div class="efi-guide-grid">
-                <div class="efi-guide-card" onclick="openImageModal('assets/images/component/mil-flash-example.png')">
-                    <img src="assets/images/component/mil-flash-example.png" alt="MIL Pattern Reference">
-                    <div class="efi-guide-info">
-                        <h3>MIL Flash Example</h3>
-                        <p>Understand long and short MIL flashes.</p>
-                    </div>
-                </div>
-                <div class="efi-guide-card" onclick="openImageModal('assets/images/component/obd-manual-ecu-clearing.png')">
-                    <img src="assets/images/component/obd-manual-ecu-clearing.png" alt="ECU Clear Manual">
-                    <div class="efi-guide-info">
-                        <h3>Manual OBD Query & Clearing</h3>
-                        <p>Read and erase EFI fault codes manually.</p>
-                    </div>
-                </div>
-            </div>
 
-            <div class="efi-grid"></div>
-        </div>
-        `;
-        dashboardWrapper = content.querySelector(".efi-dashboard-wrapper");
-    }
+const content =
+document.getElementById("diagnosticsContent");
 
-    const gridContainer = dashboardWrapper.querySelector(".efi-grid");
 
-    // Handling early data loading states
-    if (!dataset || !dataset.length) {
-        gridContainer.innerHTML = `<div class="empty-state">EFI diagnostic database loading...</div>`;
-        return;
-    }
+if(!content)
+return;
 
-    // 3. String Query Normalization Filtering
-    const cleanSearch = typeof normalizeText === 'function' ? normalizeText(searchQuery || "") : (searchQuery || "").toLowerCase();
 
-    const filtered = dataset.filter(problem => {
-        const sym = problem["Error / Symptom"] || "";
-        const comp = problem["Component / System"] || "";
-        
-        const targetText = typeof normalizeText === 'function'
-            ? normalizeText(`${sym} ${comp}`)
-            : `${sym} ${comp}`.toLowerCase();
 
-        return targetText.includes(cleanSearch);
-    });
+const dataset =
+window.efiData || [];
 
-    if (!filtered.length) {
-        gridContainer.innerHTML = `<div class="empty-state">No diagnostic entries found matching "${searchQuery}".</div>`;
-        return;
-    }
 
-    // ==========================================
-    // 4. ATOMIC GRID DOM UPDATE (PREVENTS JUMPING)
-    // ==========================================
-    gridContainer.innerHTML = filtered.map(problem => {
-        const rawSteps = problem["Possible Cause & Troubleshooting Steps (Sequential)"] || "";
-        const steps = typeof parseTroubleshootingSteps === 'function' ? parseTroubleshootingSteps(rawSteps) : rawSteps.split("\n").filter(Boolean);
-        const difficulty = typeof getEFIDifficulty === 'function' ? getEFIDifficulty(problem["Component / System"]) : { class: "warning", label: "Standard" };
-        const symptom = problem["Error / Symptom"] || "Unknown Malfunction";
-        const component = problem["Component / System"] || "EFI System";
 
-        return `
-        <div class="efi-card">
-            <div class="efi-card-top">
-                <div class="efi-card-title-group">
-                    <h3>${typeof safeHighlight === 'function' ? safeHighlight(symptom) : symptom}</h3>
-                    <p>${typeof safeHighlight === 'function' ? safeHighlight(component) : component}</p>
-                </div>
-                <span class="efi-difficulty ${difficulty.class}">${difficulty.label}</span>
-            </div>
-            <div class="efi-card-bottom">
-                <span class="efi-step-counter">📋 ${steps.length} Diagnostic Steps</span>
-                <button type="button" class="efi-btn" onclick="openEFIDiagnosis('${problem.ID}')">Diagnose →</button>
-            </div>
-        </div>
-        `;
-    }).join("");
+console.log(
+"RENDER EFI DATA:",
+dataset
+);
+
+
+
+if(!dataset.length){
+
+content.innerHTML =
+`
+<div class="empty-state">
+EFI database loading...
+</div>
+`;
+
+return;
+
 }
 
+
+
+
+
+content.innerHTML = `
+
+
+<div class="efi-dashboard-wrapper">
+
+
+<div class="efi-header">
+
+<h2>
+EFI Diagnostic Center
+</h2>
+
+
+<div class="efi-tip">
+
+ℹ️ Select a problem and press Diagnose
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="efi-grid">
+
+
+${
+
+dataset.map(problem=>{
+
+
+const steps =
+parseTroubleshootingSteps(
+problem["Inspection & Checks"]
+);
+
+
+
+return `
+
+
+
+<div class="efi-card">
+
+
+<div class="efi-card-top">
+
+
+<div>
+
+<h3>
+${problem["Error / Symptom"]}
+</h3>
+
+
+<p>
+${problem["Component / System"]}
+</p>
+
+
+</div>
+
+
+
+${(() => {
+
+const difficulty = getEFIDifficulty(problem["Difficulty"]);
+
+return `
+
+<span class="efi-difficulty ${difficulty.class}">
+    ${difficulty.label}
+</span>
+
+`;
+
+})()}
+
+
+</div>
+
+
+
+
+
+<div class="efi-card-bottom">
+
+
+<span>
+🩺 ${steps.length} Diagnostic Steps
+</span>
+
+
+
+<button
+class="efi-btn"
+onclick="openEFIDiagnosis('${problem.ID}')">
+
+Diagnose →
+
+</button>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+`;
+
+
+
+}).join("")
+
+}
+
+
+</div>
+
+
+</div>
+
+
+`;
+
+
+
+}
 
 function renderEFIModal() {
     window.currentViewerMode = "efi";
@@ -177,50 +252,35 @@ function openGuideImage(title, image){
 
 }
 
+function getEFIDifficulty(level){
 
-function openEFIDiagnosis(id){
+    level = String(level || "Easy").toLowerCase();
 
-    currentEFIProblem = efiData.find(x=>x.ID==id);
 
-    if(!currentEFIProblem) return;
+    if(level.includes("advanced")){
 
-    currentEFISteps = parseTroubleshootingSteps(
-        currentEFIProblem["Possible Cause & Troubleshooting Steps (Sequential)"]
-    );
-
-    currentEFIStepIndex = 0;
-
-    renderEFIModal();
-
-}
-
-function getEFIDifficulty(component){
-
-    const c=component.toLowerCase();
-
-    if(c.includes("ecu")){
-
-        return{
+        return {
             label:"Advanced",
             class:"danger"
         };
 
     }
 
+
     if(
-        c.includes("pump")||
-        c.includes("injector")||
-        c.includes("sensor")
+        level.includes("intermediate") ||
+        level.includes("moderate")
     ){
 
-        return{
-            label:"Moderate",
+        return {
+            label:"Intermediate",
             class:"warning"
         };
 
     }
 
-    return{
+
+    return {
 
         label:"Easy",
         class:"success"
@@ -231,7 +291,7 @@ function getEFIDifficulty(component){
 
 function getEFICategory(component){
 
-    const c = component.toLowerCase();
+    const c = String(component || "").toLowerCase();
 
     if(c.includes("mil"))
         return "MIL";
@@ -276,20 +336,55 @@ function previousEFIStep(){
 
 }
 
+
 function parseTroubleshootingSteps(text){
 
-    if(!text) return [];
 
-    const matches = text.match(/(?:^|\n)\d+\.\s[\s\S]*?(?=(?:\n\d+\.\s)|$)/g);
+    if(!text)
+    return [];
 
-    if(!matches) return [text];
 
-    return matches.map(step=>{
+
+    return text
+    .split(/\s*(?=\d+\.)/)
+    .map(step=>{
 
         return step
-            .replace(/^\s*\d+\.\s*/,"")
-            .trim();
+        .replace(/^\d+\.\s*/,"")
+        .trim();
 
-    });
+    })
+    .filter(Boolean);
+
+
 
 }
+
+
+
+window.openEFIDiagnosis = function(id){
+
+    console.log("OPEN EFI:", id);
+
+
+    window.currentEFIProblem =
+    window.efiData.find(
+        x => x.ID == id
+    );
+
+
+    if(!window.currentEFIProblem){
+
+        console.error(
+            "EFI ITEM NOT FOUND",
+            id
+        );
+
+        return;
+
+    }
+
+
+    renderEFIDiagnosisModal();
+
+};

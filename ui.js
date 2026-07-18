@@ -95,6 +95,33 @@ function render() {
         ${part["Spec Size"]}
        </div>`
     : ""
+
+
+}
+
+${
+    part["Compatibility"]
+    ?
+    `
+    <div class="spec-compatibility">
+        ${part["Compatibility"]}
+    </div>
+    `
+    :
+    ""
+}
+
+
+${
+    part["Brand"]
+    ?
+    `
+    <div class="spec-brand">
+        ${part["Brand"]}
+    </div>
+    `
+    :
+    ""
 }
 
         </div>
@@ -541,9 +568,56 @@ function switchTab(tab) {
     
     updateSearchPlaceholder();
 
+    updateGlobalControls();
+
     updateTabUI();
 
     setTimeout(updateChipArrow, 100);
+
+}
+
+function updateGlobalControls(){
+
+    const chipsWrapper =
+    document.querySelector(".chips-wrapper");
+
+
+    const searchBox =
+    document.querySelector(".search-box");
+
+
+    // Hide chips on CVT and Diagnostics
+    if(
+        currentTab === "cvt" ||
+        currentTab === "diagnostics"
+    ){
+
+        if(chipsWrapper)
+            chipsWrapper.style.display = "none";
+
+    }
+    else{
+
+        if(chipsWrapper)
+            chipsWrapper.style.display = "flex";
+
+    }
+
+
+
+    // Hide search only on CVT
+    if(currentTab === "cvt"){
+
+        if(searchBox)
+            searchBox.style.display = "none";
+
+    }
+    else{
+
+        if(searchBox)
+            searchBox.style.display = "block";
+
+    }
 
 }
 

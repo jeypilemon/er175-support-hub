@@ -58,66 +58,81 @@ function openManualSection(section){
 
 function renderChips() {
 
+    const chips = document.getElementById("chips");
+
+    if(!chips) return;
+
+
     let cats = [];
 
-    if (currentTab === "aftermarket") {
 
-        cats = [...new Set(
-            aftermarketParts.map(p => p["Parts Category"])
-        )];
+    console.log("CURRENT TAB:", currentTab);
 
-    }
 
-    else if (currentTab === "oem") {
 
-        cats = [...new Set(
-            oemParts.map(p => p["Parts Category"])
-        )];
+    if(currentTab === "aftermarket"){
+
+        cats = aftermarketParts.map(
+            p => p["Parts Category"]
+        );
 
     }
 
-    else if (currentTab === "troubleshoot") {
 
-        cats = [...new Set(
-            troubleshootData.flatMap(p =>
-                (p["Tags"] || "").split(",")
-            )
-        )];
+    else if(currentTab === "oem"){
 
-    }
-
-    // Diagnostics doesn't use category chips
-    else if (currentTab === "diagnostics") {
-
-        chips.innerHTML = "";
-        return;
+        cats = oemParts.map(
+            p => p["Parts Category"]
+        );
 
     }
 
-    else {
 
-        chips.innerHTML = "";
-        return;
+    else if(currentTab === "troubleshoot"){
+
+        cats = troubleshootData.flatMap(
+            p => (p["Tags"] || "").split(",")
+        );
 
     }
 
-    cats = ["All", ...cats.filter(Boolean)];
 
-    chips.innerHTML = cats.map(c => `
+    console.log("RAW CATEGORIES:", cats);
+
+
+
+    cats = [
+        ...new Set(
+            cats
+            .filter(Boolean)
+            .map(c=>String(c).trim())
+        )
+    ]
+    .sort((a,b)=>a.localeCompare(b));
+
+
+
+    console.log("SORTED CATEGORIES:", cats);
+
+
+
+    cats.unshift("All");
+
+
+
+    chips.innerHTML = cats.map(c=>`
 
         <button
-            class="${c === currentCategory ? "active" : ""}"
-            onclick="setCategory('${c}')">
+        class="${c === currentCategory ? "active" : ""}"
+        onclick="setCategory('${c}')">
 
-            ${c}
+        ${c}
 
         </button>
 
     `).join("");
 
-    setTimeout(hintChipScroll,1500);
 
-    updateChipArrow();
 
 }
 

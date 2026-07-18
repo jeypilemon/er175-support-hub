@@ -166,23 +166,72 @@ function loadManualMaintenance(url){
 
 }
 
+
 function loadEFI(url) {
+
     Papa.parse(url, {
+
         download: true,
         header: true,
+
         complete: res => {
 
-            efiData = res.data.filter(r => r.ID);
-           
+
+            console.log("RAW EFI CSV:", res.data);
+
+
+            efiData = res.data.filter(
+                r => r.ID
+            );
+
+
+            window.efiData = efiData;
+
+
+            console.log(
+                "EFI LOADED:",
+                efiData.length
+            );
+
+
+            console.log(
+                "EFI HEADERS:",
+                Object.keys(efiData[0] || {})
+            );
+
+
+            loaded.efi = true;
+
+
+            checkReady();
+
+
+
+            if(typeof renderEFI === "function"){
+                renderEFI();
+            }
+
+
         },
 
+
         error(error){
-        console.error(error);
-        showError(
-          "Unable to load database. Please check your connection."
-        );
-    }
+
+            console.error(
+                "EFI LOAD ERROR:",
+                error
+            );
+
+
+            showError(
+            "Unable to load EFI database."
+            );
+
+        }
+
+
     });
+
 }
 
 function loadWiring(url) {
@@ -336,7 +385,8 @@ function checkReady() {
         loaded.oem &&
         loaded.troubleshoot &&
         loaded.manual &&
-        loaded.components
+        loaded.components &&
+        loaded.efi
     ) {
 
 
