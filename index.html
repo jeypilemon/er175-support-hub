@@ -49,7 +49,30 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<div id="imageModal" class="image-modal">
+<script>
+window.va = window.va || function () {
+(window.vaq = window.vaq || []).push(arguments);
+};
+</script>
+
+<script>
+
+if(location.hostname !== "localhost" &&
+   location.hostname !== "127.0.0.1"){
+
+document.write(
+'<script src="/_vercel/insights/script.js"><\/script>'
+);
+
+}
+
+</script>
+
+
+<body>
+
+    <!-- Modal Viewer -->
+    <div id="imageModal" class="image-modal">
 
     <div class="image-modal-content">
 
@@ -73,28 +96,6 @@
     </div>
 
 </div>
-
-<script>
-window.va = window.va || function () {
-(window.vaq = window.vaq || []).push(arguments);
-};
-</script>
-
-<script>
-
-if(location.hostname !== "localhost" &&
-   location.hostname !== "127.0.0.1"){
-
-document.write(
-'<script src="/_vercel/insights/script.js"><\/script>'
-);
-
-}
-
-</script>
-
-
-<body>
 
     <!-- SUPPORT BAR -->
     <div id="supportBar" class="saas-bar">
@@ -300,9 +301,14 @@ class="component-viewer-zoom">
 
 </div>
 
-    
-<button id="backToTop" aria-label="Back to top">
-    ↑
+</div>  
+
+    <button id="backToTop" aria-label="Back to top">
+
+    <span class="icon">⮝</span>
+
+    <span class="label">Top</span>
+
 </button>
 <!-- LIBRARIES -->
 <script src="assets/vendor/papaparse.min.js"></script>
@@ -354,8 +360,6 @@ class="component-viewer-zoom">
 
 <!-- EVENTS ALWAYS LAST -->
 <script src="events.js"></script>
-
-</div>
 
 </body>
 

@@ -648,7 +648,6 @@ function resetFilters() {
 
 const backToTop = document.getElementById("backToTop");
 
-console.log("Back to top loaded");
 
 window.addEventListener("scroll",()=>{
 

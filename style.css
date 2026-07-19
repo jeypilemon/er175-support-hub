@@ -5117,77 +5117,50 @@ input#search{
 
 }
 
+
 #backToTop{
 
     position:fixed;
 
-    right:20px;
+    right:22px;
+    bottom:22px;
 
-    bottom:20px;
+    width:54px;
+    height:54px;
 
-    width:48px;
-    height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
 
     border:none;
+    border-radius:999px;
 
-    border-radius:50%;
+    background:linear-gradient(180deg,var(--card),#1b2635);
+    border:1px solid var(--border);
 
-    background:#1e293b;
-
-    color:#fff;
-
-    font-size:22px;
+    color:var(--accent);
 
     cursor:pointer;
 
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    box-shadow:0 8px 20px rgba(0,0,0,.25);
-
     opacity:0;
-
     visibility:hidden;
 
     transform:translateY(20px);
 
     transition:.25s;
 
-    z-index:999999;
+    z-index:99999;
 
+    overflow:hidden;
 }
 
 #backToTop.show{
 
     opacity:1;
-
     visibility:visible;
+    
 
     transform:translateY(0);
-
-}
-
-#backToTop:hover{
-
-    background:#2563eb;
-
-}
-
-@media(max-width:768px){
-
-    #backToTop{
-
-        right:16px;
-        bottom:16px;
-
-        width:44px;
-        height:44px;
-
-        font-size:18px;
-
-    }
 
 }
