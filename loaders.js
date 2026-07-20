@@ -17,25 +17,6 @@ function loadAftermarket(url) {
     });
 }
 
-function loadOEM(url) {
-    Papa.parse(url, {
-        download: true,
-        header: true,
-        complete: res => {
-            oemParts = res.data.filter(p => p["Parts Name"]);
-            loaded.oem = true;
-            checkReady();
-        },
-
-        error(error){
-        console.error(error);
-        showError(
-          "Unable to load database. Please check your connection."
-        );
-    }
-    });
-}
-
 function loadTroubleshoot(url) {
     Papa.parse(url, {
         download: true,
@@ -367,7 +348,6 @@ function checkReady() {
 
     if (
         loaded.aftermarket &&
-        loaded.oem &&
         loaded.troubleshoot &&
         loaded.manual &&
         loaded.components &&
