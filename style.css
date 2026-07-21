@@ -677,38 +677,88 @@ input#search:focus {
 }
 
 
-/*saas bar*/
+/* =====================================
+   Support Bar
+===================================== */
 
 .saas-bar {
-    top: 0;
-    z-index: 999;
-
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 10px;
 
-    padding: 10px 12px;
+    flex-wrap: wrap;
+
+    padding: 10px 14px;
 
     background: var(--surface);
-    color: white;
-
-    font-size: 12px;
-    backdrop-filter: blur(10px);
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
 }
 
-/*linkstyle*/
+.saas-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    flex: 1;
+    min-width: 220px;
+
+    font-size: 0.8rem;
+}
+
+.saas-right {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    justify-content: flex-end;
+}
 
 .saas-right a {
-    font-size: 10px;
-    padding: 6px 8px;
-    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 6px 10px;
+
+    border-radius: 6px;
+
+    font-size: 0.72rem;
+    font-weight: 600;
+
     text-decoration: none;
-    color: white;
-    background: rgba(182, 0, 0, 0.674);
+
+    color: var(--text);
+
+    background: #820505;
+    border: 1px solid var(--border);
+
+    transition: .15s;
 }
 
-.saas-right a:hover, b:hover, c:hover {
-    background: rgba(255, 162, 0, 10);
+.saas-right a:hover {
+    background: var(--accent);
+    color: #000;
+}
+
+@media (max-width: 600px) {
+
+    .saas-bar {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .saas-left {
+        justify-content: center;
+        min-width: 100%;
+    }
+
+    .saas-right {
+        justify-content: center;
+        width: 100%;
+    }
+
 }
 
 
