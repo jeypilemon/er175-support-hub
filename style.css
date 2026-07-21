@@ -731,7 +731,7 @@ input#search:focus {
 
     color: var(--text);
 
-    background: #820505;
+    background: #5e0303;
     border: 1px solid var(--border);
 
     transition: .15s;
