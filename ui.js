@@ -127,7 +127,7 @@ ${
         class="copy-btn"
         onclick="copyAffiliateLink('${part["Shopee"]}')">
 
-        🔗 Copy link
+        🔗
 
     </button>
 
