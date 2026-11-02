@@ -5358,20 +5358,20 @@ input#search{
 
 /*buttons css*/
 
-.card-actions{
-
-    display:flex;
-
-    gap:8px;
-
-    margin-top:12px;
-
+.card-actions .button-shopee {
+    background: #ee4d2d;
 }
 
-.card-actions .button{
+.card-actions .button-shopee:hover {
+    background: #d73211;
+}
 
-    flex:1;
+.card-actions .button-lazada {
+    background: #262ec2;
+}
 
+.card-actions .button-lazada:hover {
+    background: #292f91;
 }
 
 .copy-btn{
@@ -5404,6 +5404,27 @@ input#search{
 
     color:var(--accent);
 
+}
+
+.card-actions {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.card-actions .button {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-top: 0;
+    padding: 10px 6px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.card-actions .copy-btn {
+    flex: 0 0 42px;
+    padding: 0;
 }
 
 

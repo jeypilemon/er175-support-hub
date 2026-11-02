@@ -114,21 +114,27 @@ ${
         <div class="card-actions">
 
     <a
-        class="button"
+        class="button button-shopee"
         href="${part["Shopee"]}"
         target="_blank"
         rel="noopener noreferrer">
-
-        View Product
-
+        Buy in Shopee
     </a>
+
+    ${part["Lazada"] ? `
+    <a
+        class="button button-lazada"
+        href="${part["Lazada"]}"
+        target="_blank"
+        rel="noopener noreferrer">
+        Buy in Lazada
+    </a>
+    ` : ""}
 
     <button
         class="copy-btn"
         onclick="copyAffiliateLink('${part["Shopee"]}')">
-
         🔗
-
     </button>
 
 </div>
