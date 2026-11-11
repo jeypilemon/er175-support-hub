@@ -80,6 +80,17 @@
     <link rel="icon" type="image/png" sizes="192x192" href="assets/images/logo/192x192.png">
     
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ui-theme.css">
+    <link rel="stylesheet" href="stage13-6-theme.css">
+    <link rel="stylesheet" href="stage13-7-refinement.css">
+    <link rel="stylesheet" href="stage13-8-controls.css">
+    <link rel="stylesheet" href="stage13-11-search-discovery.css">
+    <link rel="stylesheet" href="stage13-13-whats-new-teaser.css">
+    <link rel="stylesheet" href="stage13-14-whats-new-modal.css">
+    <link rel="stylesheet" href="stage13-16-header-explainer-modal.css">
+    <link rel="stylesheet" href="stage13-20-search-analytics.css">
+    <link rel="stylesheet" href="stage13-22-most-searched-products.css">
+    <link rel="stylesheet" href="stage13-23-layout-refinements.css">
 
     
 <script type="application/ld+json">
@@ -113,6 +124,8 @@
 }
 </script>
 
+    <link rel="stylesheet" href="stage13-24-refinements.css">
+    <link rel="stylesheet" href="stage13-25-fixes.css">
 </head>
 
 <script>
@@ -142,7 +155,7 @@ document.write(
 
     <div class="image-modal-content">
 
-        <button class="image-close"
+        <button class="image-close" aria-label="Close image viewer"
             onclick="closeImageModal()">
             ✕
         </button>
@@ -151,13 +164,13 @@ document.write(
             download
             target="_blank">
 
-            <button class="image-download">
+            <button class="image-download" aria-label="Download image">
                 ⬇ Download
             </button>
 
         </a>
 
-        <img id="imageModalImg">
+        <img id="imageModalImg" alt="Expanded reference image">
 
     </div>
 
@@ -167,7 +180,7 @@ document.write(
     <div id="supportBar" class="saas-bar">
         <div class="saas-left">
             <span class="dot"></span>
-            <strong>Follow me for updates!</strong>
+            <strong>Support me:</strong>
         </div>
 
         <div class="saas-right">
@@ -179,9 +192,9 @@ document.write(
                 TikTok
             </a>
 
-            <a class="btn fb" href="https://www.facebook.com/jeypixc" target="_blank">
-                Facebook
-            </a>
+            <a class="btn fb" href="https://www.facebook.com/jeypixc" target="_blank" rel="noopener noreferrer">Facebook</a>
+            <button class="btn support-gcash" type="button" onclick="openGCashSupport()"><span class="gcash-heart" aria-hidden="true">☕</span><span>Buy me a coffee</span></button>
+            <button class="btn whats-new-header-trigger" id="openWhatsNew" type="button" aria-haspopup="dialog" aria-controls="whatsNewModal">What's New <span aria-hidden="true">↗</span></button>
         </div>
     </div>
 
@@ -198,9 +211,38 @@ document.write(
 
 </header>
 
+    <div class="whats-new-modal" id="whatsNewModal" aria-hidden="true">
+        <div class="whats-new-backdrop" data-close-whats-new></div>
+        <section class="whats-new-dialog" role="dialog" aria-modal="true" aria-labelledby="whatsNewTitle" tabindex="-1">
+            <button class="whats-new-close" type="button" aria-label="Close updates" data-close-whats-new>×</button>
+            <span class="whats-new-badge">WHAT'S NEW</span>
+            <h2 id="whatsNewTitle">Latest ER175 Hub updates</h2>
+            <p>Recent improvements, new features, and project updates.</p>
+            <ul class="whats-new-highlights">
+                <li>Improved product search with live suggestions and recent searches.</li>
+                <li>Refined light and dark themes, navigation, and mobile layout.</li>
+                <li>Updated manuals, diagnostics, CVT tools, and support resources.</li>
+            </ul>
+            <a class="whats-new-full-log" href="changelog.html">View full update log <span aria-hidden="true">→</span></a>
+        </section>
+    </div>
+
+    <!-- First-visit explainer promotion -->
+    <div class="explainer-modal" id="explainerModal" aria-hidden="true">
+        <div class="explainer-modal-backdrop" data-close-explainer></div>
+        <section class="explainer-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="explainerModalTitle" tabindex="-1">
+            <button class="explainer-modal-close" type="button" aria-label="Close explainer" data-close-explainer>×</button>
+            <span class="explainer-modal-kicker">NEW TO THE HUB?</span>
+            <div class="explainer-modal-icon" aria-hidden="true"><img src="assets/images/logo/192x192.png" alt="ER175 Hub logo" width="66" height="66"></div>
+            <h2 id="explainerModalTitle">Welcome to the ER175 Support Hub</h2>
+            <p>Take a quick tour to learn where to find parts, manuals, troubleshooting guides, diagnostics, and CVT tools.</p>
+            <button class="explainer-modal-watch" id="watchExplainerNow" type="button"><span class="explainer-play-icon" aria-hidden="true">▶</span><span>Watch the Explainer Video</span></button>
+            <button class="explainer-modal-later" type="button" data-close-explainer>Maybe later</button>
+        </section>
+    </div>
 
     <!-- TABS -->
-    <div class="segmented">
+    <div class="segmented" role="group" aria-label="Main sections">
         <button class="seg active" data-tab="manual" onclick="switchTab('manual')">
             Manual
         </button>
@@ -228,7 +270,7 @@ document.write(
 
         <div id="chips" class="chips"></div>
 
-        <button class="chips-next" onclick="scrollChips()">
+        <button class="chips-next" aria-label="Scroll categories" onclick="scrollChips()">
             ›
         </button>
 
@@ -237,9 +279,11 @@ document.write(
     <!-- SEARCH -->
     <div class="search-box">
 
-<input id="search" placeholder="Search...">
+<label class="sr-only" for="search">Search parts, guides and technical information</label>
+<input id="search" type="search" placeholder="Search..." autocomplete="off">
 
 <div id="suggestions"></div>
+<div id="popularSearches" class="popular-searches" hidden></div>
 
 </div>
 
@@ -250,35 +294,80 @@ document.write(
         </button>
     </div>
 
+    <!-- SHARED POPULARITY: based on aggregated searches mapped to catalog products -->
+    <section id="mostSearchedSection" class="most-searched-section" aria-labelledby="mostSearchedTitle" hidden>
+        <div class="most-searched-heading">
+            <div>
+                <span class="most-searched-eyebrow">COMMUNITY SEARCHES</span>
+                <h2 id="mostSearchedTitle">Most Searched Products</h2>
+                <p>Parts visitors are searching for across ER175 Hub.</p>
+            </div>
+            <span class="most-searched-period">All-time</span>
+        </div>
+        <div id="mostSearchedProducts" class="most-searched-grid"></div>
+    </section>
+
     <!-- MAIN CONTENT -->
     <div id="products"></div>
     
 
     <!-- LINK MODAL -->
-    <div id="linkModal" class="link-modal">
+    <div id="linkModal" class="link-modal" role="dialog" aria-modal="true" aria-label="YouTube video" aria-hidden="true">
 
         <div class="link-modal-backdrop" onclick="closeModal()"></div>
 
         <div class="link-modal-content">
 
-            <button class="close-modal" onclick="closeModal()">
+            <button class="close-modal" aria-label="Close video" onclick="closeModal()">
                 ×
             </button>
 
-            <iframe id="modalFrame"></iframe>
+            <iframe id="modalFrame" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
         </div>
 
     </div>
 
+    <div id="gcashSupportModal" class="support-modal" role="dialog" aria-modal="true" aria-labelledby="gcashTitle" aria-hidden="true">
+        <div class="support-modal-backdrop" onclick="closeGCashSupport()"></div>
+        <div class="support-modal-card">
+            <button class="support-modal-close" type="button" aria-label="Close" onclick="closeGCashSupport()">×</button>
+            <span class="support-modal-kicker">DO YOU LOVE THIS PROJECT?</span>
+            <h2 id="gcashTitle">Buy me a coffee?</h2>
+            <p>If this hub has helped you, a little support or a follow means a lot. Thank you!</p>
+            <div class="support-subscribe-callout">
+                <strong>Prefer to support for free?</strong>
+                <span>Follow the project on your favorite platform or subscribe for more ER175 guides and updates.</span>
+                <div class="support-follow-buttons" aria-label="Follow and subscribe to the project">
+                    <a class="support-follow-button support-follow-youtube" href="https://www.youtube.com/@jpxcariman?sub_confirmation=1" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.6V8.4l6.2 3.6-6.2 3.6Z"/></svg>
+                        Subscribe on YouTube
+                    </a>
+                    <a class="support-follow-button support-follow-tiktok" href="https://www.tiktok.com/@jpcariman" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.6 6.2a5.8 5.8 0 0 1-3.8-4.9V1h-4.2v15.1a2.8 2.8 0 1 1-2.8-2.8c.4 0 .8.1 1.1.2v-4.3a7.1 7.1 0 1 0 5.9 7V8.5a10 10 0 0 0 5.8 1.9V6.2h-2Z"/></svg>
+                        Follow on TikTok
+                    </a>
+                    <a class="support-follow-button support-follow-facebook" href="https://www.facebook.com/jeypixc" target="_blank" rel="noopener noreferrer">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1v-2c0-.9.3-1.5 1.6-1.5h1.7V3.6c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.1H7.3V13h2.8v8h3.4Z"/></svg>
+                        Follow on Facebook
+                    </a>
+                </div>
+            </div>
+            <h3 class="support-modal-qr-heading">Or send a little support via GCash</h3>
+            <div class="gcash-qr-image-wrap"><img src="assets/images/gcash-support-qr.png" alt="Optional GCash InstaPay support payment QR code" loading="lazy" width="420" height="430"></div>
+            <a class="gcash-qr-download" href="assets/images/gcash-support-qr.png" download="ER175-Hub-GCash-Support-QR.png">↓ Download GCash QR</a>
+            <small>Everything here is optional. The hub will always remain free to use.</small>
+        </div>
+    </div>
+
 <!-- UNIVERSAL VIEWER MODAL -->
 
-<div id="componentModal" class="component-modal">
+<div id="componentModal" class="component-modal" role="dialog" aria-modal="true" aria-labelledby="componentViewerTitle" aria-hidden="true">
 
 <div class="component-modal-box"
 onclick="event.stopPropagation()">
 
-<button class="component-close"
+<button class="component-close" aria-label="Close component details"
 onclick="closeComponentViewer()">
 ×
 </button>
@@ -347,51 +436,40 @@ class="component-viewer-zoom">
 
     <!-- FOOTER -->
     <footer class="footer">
-
-        <div class="footer-title">
-            Motorstar ER175A Fi Support Hub
+        <div class="footer-main">
+            <div class="footer-brand">
+                <img class="footer-brand-logo" src="assets/images/logo/192x192.png" alt="ER175 Hub logo" width="64" height="64" loading="lazy">
+                <div><strong>Motorstar ER175A FI Support Hub</strong><p>Independent community resource for parts, maintenance, diagnostics, and CVT tuning.</p></div>
+            </div>
+            <div class="footer-social-block">
+                <span class="footer-heading">SUPPORT OR FOLLOW THE CREATOR</span>
+                <div class="footer-links">
+                    <a href="https://www.youtube.com/@jpxcariman" target="_blank" rel="noopener noreferrer">YouTube ↗</a>
+                    <a href="https://www.tiktok.com/@jpcariman" target="_blank" rel="noopener noreferrer">TikTok ↗</a>
+                    <a href="https://www.facebook.com/jeypixc" target="_blank" rel="noopener noreferrer">Facebook ↗</a>
+                </div>
+            </div>
         </div>
-
-<div class="footer-links">
-
-    <a href="https://www.youtube.com/@jpxcariman" target="_blank">
-        YouTube
-    </a>
-
-    <a href="https://www.tiktok.com/@jpcariman" target="_blank">
-        TikTok
-    </a>
-
-    <a href="https://www.facebook.com/jeypixc" target="_blank">
-        Facebook
-    </a>
-
-</div>
+        <div class="footer-bottom">
+            <span>Built for the ER175A FI riding community.</span>
+            <nav class="footer-legal" aria-label="Site information">
+                <a href="privacy.html">Privacy Policy</a><a href="disclaimer.html">Disclaimer</a><a href="terms.html">Terms</a><a href="affiliate.html">Affiliate Disclosure</a><a href="changelog.html">What's New</a>
+            </nav>
         </div>
-<div class="footer-legal">
-
-    <a href="privacy.html">Privacy Policy</a>
-
-    <a href="disclaimer.html">Disclaimer</a>
-
-    <a href="terms.html">Terms</a>
-
-</div>
-
     </footer>
 
 
 <!-- EFI Diagnosis Modal -->
 
 <div id="efiDiagnosisModal"
-    class="efi-modal">
+    class="efi-modal" role="dialog" aria-modal="true" aria-label="EFI diagnosis" aria-hidden="true">
 
 
     <div class="efi-modal-inner">
 
 
     <button 
-    class="efi-modal-close"
+    class="efi-modal-close" aria-label="Close EFI diagnosis"
     onclick="closeEFIDiagnosisModal()">
 
     ✕
@@ -417,6 +495,11 @@ class="component-viewer-zoom">
     <span class="label">Share</span>
     </button>
 
+    <button id="themeToggle" class="theme-toggle theme-toggle-floating" type="button" aria-label="Switch to dark mode" aria-pressed="false" title="Toggle light and dark mode">
+        <span class="theme-toggle-icon" aria-hidden="true">☾</span>
+        <span class="theme-toggle-label">Dark mode</span>
+    </button>
+
     <button id="backToTop" aria-label="Back to top">
 
     <span class="icon">↑</span>
@@ -426,6 +509,7 @@ class="component-viewer-zoom">
 </button>
 <!-- LIBRARIES -->
 <script src="assets/vendor/papaparse.min.js"></script>
+<script src="config.js"></script>
 
 
 <!-- CORE STATE -->
@@ -449,6 +533,7 @@ class="component-viewer-zoom">
 
 <!-- SEARCH SYSTEM -->
 <script src="search.js"></script>
+<script src="search-analytics.js"></script>
 
 
 <!-- MANUAL MODULES -->
@@ -474,6 +559,61 @@ class="component-viewer-zoom">
 
 <!-- EVENTS ALWAYS LAST -->
 <script src="events.js"></script>
+<script src="accessibility.js"></script>
+<script src="support-ui.js"></script>
+<script src="theme.js"></script>
+<script>
+(() => {
+    const modal = document.getElementById('whatsNewModal');
+    const trigger = document.getElementById('openWhatsNew');
+    if (!modal || !trigger) return;
+    const dialog = modal.querySelector('.whats-new-dialog');
+    let previousFocus = null;
+    const close = () => {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('whats-new-open');
+        if (previousFocus) previousFocus.focus();
+    };
+    trigger.addEventListener('click', () => {
+        previousFocus = document.activeElement;
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('whats-new-open');
+        dialog.focus();
+    });
+    modal.querySelectorAll('[data-close-whats-new]').forEach(el => el.addEventListener('click', close));
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && modal.classList.contains('is-open')) close();
+    });
+
+    // Explainer promotion opens on each fresh page load; users can dismiss it.
+    const explainer = document.getElementById('explainerModal');
+    const explainerDialog = explainer && explainer.querySelector('.explainer-modal-dialog');
+    const watchButton = document.getElementById('watchExplainerNow');
+    if (explainer && explainerDialog && watchButton) {
+        const closeExplainer = () => {
+            explainer.classList.remove('is-open');
+            explainer.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('explainer-modal-open');
+        };
+        explainer.querySelectorAll('[data-close-explainer]').forEach(el => el.addEventListener('click', closeExplainer));
+        watchButton.addEventListener('click', () => {
+            closeExplainer();
+            if (typeof openModal === 'function') openModal('https://www.youtube.com/watch?v=MCw3opAAZ44&t=13s');
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && explainer.classList.contains('is-open')) closeExplainer();
+        });
+        window.setTimeout(() => {
+            explainer.classList.add('is-open');
+            explainer.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('explainer-modal-open');
+            explainerDialog.focus();
+        }, 550);
+    }
+})();
+</script>
 
 <div id="toast" class="toast">
     Link copied!

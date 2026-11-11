@@ -27,4 +27,16 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <changefreq>yearly</changefreq>
 </url>
 
+<url>
+<loc>https://er175-hub.vercel.app/affiliate.html</loc>
+<priority>0.4</priority>
+<changefreq>yearly</changefreq>
+</url>
+
+<url>
+<loc>https://er175-hub.vercel.app/changelog.html</loc>
+<priority>0.6</priority>
+<changefreq>monthly</changefreq>
+</url>
+
 </urlset>

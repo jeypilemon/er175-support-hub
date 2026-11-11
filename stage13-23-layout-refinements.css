@@ -1,0 +1,86 @@
+/* Stage 13.23 — compact popular searches, branded explainer CTA, wider desktop hero. */
+/* Keep popular searches as a slim horizontal strip attached to the search field. */
+.popular-searches {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  margin: 6px 0 0;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 0 0 10px 10px;
+  background: transparent;
+  overflow: hidden;
+}
+.popular-searches[hidden] { display: none; }
+.popular-searches .search-suggestion-heading {
+  flex: 0 0 auto;
+  padding: 0 2px;
+  color: var(--muted, #737b86);
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.popular-searches .search-suggestion-list {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 7px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1px 1px 4px;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+.popular-searches .search-suggestion-item {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  min-height: 29px;
+  max-width: 190px;
+  padding: 5px 9px;
+  border: 1px solid var(--border, #d9dee5);
+  border-radius: 999px;
+  background: var(--card, var(--surface, #fff));
+  color: var(--text, #20252b);
+  white-space: nowrap;
+}
+.popular-searches .search-suggestion-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 17px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: rgba(217, 35, 50, .12);
+  color: #d92332;
+  font-size: 9px;
+  font-weight: 800;
+}
+.popular-searches .search-suggestion-copy { display: inline-flex; align-items: baseline; gap: 5px; min-width: 0; }
+.popular-searches .search-suggestion-copy strong { overflow: hidden; max-width: 125px; font-size: 11px; text-overflow: ellipsis; }
+.popular-searches .search-suggestion-copy small { color: var(--muted, #737b86); font-size: 9px; }
+
+/* Explainer video CTA uses the hub's racing-red action color. */
+.explainer-modal-watch {
+  gap: 10px;
+  background: #d92332;
+  color: #fff;
+}
+.explainer-modal-watch:hover { background: #bd1f2d; }
+
+/* Use more of the available desktop width for the hero banner. */
+@media (min-width: 1241px) {
+  .hero { max-width: 1680px; padding-inline: 24px !important; }
+  .hero-banner { width: 100%; max-width: none !important; max-height: 340px; }
+}
+@media (max-width: 1240px) {
+  .hero { max-width: 100%; }
+  .hero-banner { width: 100%; max-width: 100% !important; }
+}
+@media (max-width: 600px) {
+  .popular-searches { gap: 6px; padding: 5px 2px; }
+  .popular-searches .search-suggestion-heading { font-size: 9px; }
+  .popular-searches .search-suggestion-item { min-height: 27px; padding: 4px 8px; }
+}

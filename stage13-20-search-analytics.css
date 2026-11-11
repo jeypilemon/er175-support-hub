@@ -1,0 +1,5 @@
+/* Stage 13.20 — shared search popularity */
+.popular-searches { margin: 8px 0 0; padding: 10px 12px; border: 1px solid var(--border, #d9dee5); border-radius: 12px; background: var(--surface, #fff); color: var(--text, #20252b); }
+.popular-searches[hidden] { display: none; }
+.popular-searches .search-suggestion-heading { padding: 2px 0 8px; }
+@media (max-width: 520px) { .popular-searches { margin-top: 6px; padding: 8px; } }

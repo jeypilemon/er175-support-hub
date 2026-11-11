@@ -1,0 +1,20 @@
+/* Stage 13.25 targeted fixes */
+/* Keep shared popularity widgets out of the manual's reference/search workflow. */
+body.manual-active #popularSearches,
+body.manual-active #mostSearchedSection {
+  display: none !important;
+}
+
+/* Restore the familiar play glyph in the explainer CTA. */
+.explainer-modal-watch .explainer-play-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* Diagnostic guide titles sit directly beneath their respective images. */
+.efi-guide-card .guide-content h3 {
+  margin-top: 0;
+}

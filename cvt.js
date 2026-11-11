@@ -7,11 +7,10 @@ function uniqueValues(column){
         )
     ];
 
-    return values.map(value => `
-        <option value="${value}">
-            ${value}
-        </option>
-    `).join("");
+    return values.map(value => {
+        const safeValue = escapeHTML(value);
+        return `<option value="${safeValue}">${safeValue}</option>`;
+    }).join("");
 }
 
 function renderCVT(){
@@ -22,6 +21,7 @@ function renderCVT(){
         <div class="cvt-container">
             <h2>⚙️ Motorstar ER175 Fi CVT Tuner</h2>
             <p class="cvt-sub">Compare CVT setups for acceleration, speed and riding style.</p>
+            <div class="cvt-disclaimer cvt-disclaimer-top">⚠️ Simulation only: Actual results may vary depending on rider weight, road condition, engine condition, tire size, fuel quality, CVT wear, parts combination, and installation accuracy.</div>
 
             <div class="cvt-controls">
                 <div>
@@ -81,9 +81,6 @@ function renderCVT(){
             <div id="cvtTags" class="cvt-tags"></div>
             <div id="cvtCompare" class="cvt-compare"></div>
 
-            <div class="cvt-disclaimer">
-                ⚠️ Simulation only: Actual results may vary depending on rider weight, road condition, engine condition, tire size, fuel quality, CVT wear, parts combination, and installation accuracy.
-            </div>
         </div>
     `;
 
@@ -103,7 +100,30 @@ function updateCVT(){
         x["Clutch Spring"] == clutch
     );
 
-    if(!setup) return;
+    if (!setup) {
+        const resultCard = document.getElementById("cvtResult");
+        if (resultCard) {
+            resultCard.innerHTML = `
+                <div class="empty-state cvt-empty-state" role="status">
+                    <strong>No matching preset found.</strong>
+                    <p>Try another roller, center spring, or clutch spring combination.</p>
+                </div>
+            `;
+        }
+
+        ["accel", "speed", "fuel", "uphill"].forEach(metric => {
+            const bar = document.getElementById(`${metric}Bar`);
+            const value = document.getElementById(`${metric}Value`);
+            if (bar) bar.style.width = "0%";
+            if (value) value.textContent = "—";
+        });
+
+        const tags = document.getElementById("cvtTags");
+        const comparison = document.getElementById("cvtCompare");
+        if (tags) tags.replaceChildren();
+        if (comparison) comparison.replaceChildren();
+        return;
+    }
 
     let result = {
         name: setup["Preset Name"],
@@ -155,7 +175,7 @@ function updateCVT(){
         let bar = document.getElementById(`${metric}Bar`);
         let value = document.getElementById(`${metric}Value`);
         if(bar) bar.style.width = result[metric] + "%";
-        if(value) value.innerHTML = result[metric] + "/100";
+        if(value) value.textContent = result[metric] + "/100";
     });
 
     // TAGS

@@ -1,0 +1,121 @@
+/* Stage 13.8 — compact support header, floating theme switch, and refined accents. */
+:root { --hub-nav-active: #c92332; --hub-explainer: #087f8c; }
+:root[data-theme="dark"] { --hub-nav-active: #d83a47; --hub-explainer: #168c98; }
+
+/* Keep the support label and links together in a compact header. */
+.saas-bar {
+  display:flex !important; align-items:center !important; justify-content:flex-start !important;
+  flex-wrap:wrap !important; gap:8px 12px !important;
+  min-height:42px !important; padding:6px clamp(12px,2vw,24px) !important;
+}
+.saas-left { flex:0 0 auto !important; display:flex !important; align-items:center !important; gap:7px !important; }
+.saas-left .dot { width:8px !important; height:8px !important; flex:0 0 8px !important; }
+.saas-left strong { font-size:12px !important; font-weight:700 !important; white-space:nowrap !important; }
+.saas-right { flex:0 1 auto !important; display:flex !important; align-items:center !important; justify-content:flex-start !important; flex-wrap:wrap !important; gap:6px !important; width:auto !important; }
+.saas-right .btn {
+  width:auto !important; min-height:30px !important; padding:5px 10px !important;
+  border-radius:7px !important; font-size:11px !important; line-height:1.1 !important;
+}
+.saas-right .support-gcash { margin:0 !important; background:transparent !important; color:var(--header-text) !important; border:1px solid #69727d !important; font-weight:650 !important; }
+.saas-right .support-gcash:hover { background:rgba(255,255,255,.12) !important; }
+
+/* Theme control joins Share and Back-to-top as a floating utility button. */
+.theme-toggle-floating {
+  position:fixed !important; z-index:100000 !important; right:22px !important; bottom:158px !important;
+  width:52px !important; height:52px !important; min-width:52px !important; min-height:52px !important;
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  margin:0 !important; padding:0 !important; border-radius:50% !important;
+  border:1px solid var(--float-border) !important; background:var(--float-bg) !important;
+  color:var(--float-text) !important; box-shadow:0 7px 20px rgba(0,0,0,.16) !important;
+  cursor:pointer !important; transition:transform .18s ease, background .18s ease !important;
+}
+.theme-toggle-floating:hover { transform:translateY(-2px) !important; background:var(--hub-accent-soft) !important; }
+.theme-toggle-floating .theme-toggle-icon { font-size:20px !important; line-height:1 !important; }
+.theme-toggle-floating .theme-toggle-label { display:none !important; }
+
+/* Main category navigation: neutral inactive states, racing-red active state. */
+.segmented .seg.active, .segmented button.seg.active {
+  background:var(--hub-nav-active) !important; border-color:var(--hub-nav-active) !important;
+  color:#fff !important; box-shadow:0 3px 10px rgba(170,25,38,.18) !important;
+}
+.segmented .seg:not(.active) { background:var(--surface) !important; color:var(--text) !important; border-color:var(--border) !important; }
+:root[data-theme="dark"] .segmented .seg:not(.active) { background:#292d33 !important; color:#e7e9ec !important; border-color:#414750 !important; }
+.segmented .seg:not(.active):hover { border-color:var(--hub-nav-active) !important; color:var(--hub-nav-active) !important; }
+:root[data-theme="dark"] .segmented .seg:not(.active):hover { background:#333941 !important; color:#ff737d !important; }
+
+/* Explainer is deliberately the secondary teal accent, not another red action. */
+.explainer-button {
+  background:var(--hub-explainer) !important; border-color:var(--hub-explainer) !important;
+  color:#fff !important; box-shadow:0 5px 13px rgba(8,127,140,.16) !important;
+}
+.explainer-button:hover { background:#066b76 !important; border-color:#066b76 !important; box-shadow:0 7px 16px rgba(8,127,140,.22) !important; }
+:root[data-theme="dark"] .explainer-button { background:#168c98 !important; border-color:#168c98 !important; }
+:root[data-theme="dark"] .explainer-button:hover { background:#20a0ac !important; border-color:#20a0ac !important; }
+
+@media (max-width:700px) {
+  .saas-bar { display:flex !important; align-items:center !important; flex-wrap:wrap !important; gap:5px 8px !important; padding:7px 10px !important; }
+  .saas-left { flex:0 0 auto !important; width:auto !important; }
+  .saas-left strong { font-size:11px !important; }
+  .saas-right { flex:1 1 100% !important; width:100% !important; display:flex !important; flex-wrap:nowrap !important; gap:5px !important; }
+  .saas-right .btn { flex:1 1 0 !important; min-width:0 !important; padding:6px 4px !important; font-size:10px !important; white-space:nowrap !important; }
+  .saas-right .support-gcash { flex:0 0 auto !important; padding-inline:8px !important; }
+  .theme-toggle-floating { right:14px !important; bottom:150px !important; width:46px !important; height:46px !important; min-width:46px !important; min-height:46px !important; }
+  #shareSite { right:14px !important; bottom:88px !important; }
+  #backToTop { right:14px !important; bottom:18px !important; }
+}
+@media (max-width:380px) {
+  .saas-right { flex-wrap:wrap !important; }
+  .saas-right .btn { flex:1 1 21% !important; }
+  .saas-right .support-gcash { flex:1 1 100% !important; }
+}
+@media (prefers-reduced-motion:reduce) { .theme-toggle-floating { transition:none !important; } }
+
+/* Stage 13.9 — enforce racing-red active navigation in both themes. */
+.segmented button.seg.active,
+.segmented button.seg.active:hover,
+.segmented .seg.active,
+.segmented .seg.active:hover {
+  background: #c92332 !important;
+  background-image: none !important;
+  border-color: #c92332 !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 10px rgba(170, 25, 38, .20) !important;
+}
+:root[data-theme="dark"] .segmented button.seg.active,
+:root[data-theme="dark"] .segmented button.seg.active:hover,
+:root[data-theme="dark"] .segmented .seg.active,
+:root[data-theme="dark"] .segmented .seg.active:hover {
+  background: #d12d3c !important;
+  background-image: none !important;
+  border-color: #d12d3c !important;
+  color: #ffffff !important;
+  box-shadow: 0 3px 12px rgba(209, 45, 60, .24) !important;
+}
+
+/* Remove the inherited separator that appeared beside the floating theme control. */
+.theme-toggle-floating,
+.theme-toggle-floating:hover {
+  border-left: 1px solid var(--float-border) !important;
+}
+.theme-toggle-floating::before,
+.theme-toggle-floating::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Stage 13.10 — compact support controls and clean QR display. */
+.saas-bar { gap: 4px 8px !important; padding-block: 5px !important; }
+.saas-right { gap: 4px !important; }
+.saas-right .btn { min-height: 29px !important; padding: 5px 8px !important; }
+.saas-right .gcash-heart { font-size: 13px !important; }
+.gcash-qr-image-wrap { margin: 16px auto 12px; padding: 12px; max-width: 330px; background: #fff; border: 1px solid #e0e3e7; border-radius: 14px; }
+.gcash-qr-image-wrap img { display: block; width: 100%; height: auto; object-fit: contain; }
+@media (max-width:700px) {
+ .saas-bar { gap: 4px 6px !important; padding: 5px 8px !important; }
+ .saas-right { gap: 4px !important; }
+ .saas-right .btn { padding: 5px 5px !important; font-size: 10px !important; }
+ .saas-right .support-gcash { padding-inline: 6px !important; }
+}
+@media (max-width:380px) {
+ .saas-right .support-gcash { flex: 1 1 auto !important; }
+}

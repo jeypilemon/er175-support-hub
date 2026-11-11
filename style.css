@@ -500,10 +500,7 @@ input#search:focus {
 .inline-link.tiktok { background: #111; }
 .inline-link.facebook { background: #1877f2; }
 
-.inline-link:hover {
-    transform: translateY(-1px);
-    opacity: 0.9;
-}
+
 
 .help-solution {
     display: flex;
@@ -802,11 +799,7 @@ flex:1;
 }
 
 
-.chips::-webkit-scrollbar{
 
-display:none;
-
-}
 
 
 .chips button{
@@ -1139,14 +1132,7 @@ border-radius:15px;
 
 }
 
-.component-view-image{
 
-    
-    position:relative;
-
-    overflow:hidden;
-
-}
 
 
 
@@ -2558,139 +2544,42 @@ background: rgba(207, 87, 1, 0.1);
    ========================================================================== */
 
 /* Outer Headers & Info Cards */
-.efi-header {
-    margin-bottom: 14px;
-}
 
-.efi-header h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin: 0 0 4px 0;
-    color: var(--text);
-}
 
-.efi-tip {
-    display: flex;
-    gap: 10px;
-    align-items: flex-start;
-    margin: 10px 0 14px 0;
-    padding: 10px 12px;
-    border-radius: 6px;
-    background: #1b2433;
-    border: 1px solid rgba(59, 130, 246, 0.15);
-    border-left: 3px solid #3b82f6;
-    color: #d9e3f0;
-    font-size: 0.775rem;
-    line-height: 1.4;
-}
+
+
+
 
 /* Reference Card Grid */
-.efi-guide-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 10px;
-    margin-bottom: 16px;
-}
 
-.efi-guide-card {
-    background: var(--card, #121214);
-    border: 1px solid var(--border, #26262b);
-    border-radius: 6px;
-    overflow: hidden;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px;
-    transition: border-color 0.15s ease, background-color 0.15s ease;
-}
 
-.efi-guide-card:hover {
-    border-color: var(--accent);
-    background: var(--surface);
-}
 
-.efi-guide-card img {
-    width: 54px;
-    height: 54px;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-    background: var(--surface);
-    border-radius: 4px;
-    border: 1px solid var(--border);
-    flex-shrink: 0;
-}
 
-.efi-guide-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
 
-.efi-guide-card h3 {
-    margin: 0;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text);
-}
 
-.efi-guide-card p {
-    margin: 0;
-    font-size: 0.7rem;
-    color: var(--muted);
-    line-height: 1.3;
-}
+
+
+
+
+
+
+
 
 /* Diagnostic Items Grid layout */
-.efi-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 10px;
-}
+
 
 /* Component Symptom Cards */
-.efi-card {
-    background: var(--card, #121214);
-    border: 1px solid var(--border, #26262b);
-    border-radius: 6px;
-    padding: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: border-color 0.15s ease, background-color 0.15s ease;
-}
 
-.efi-card:hover {
-    border-color: var(--accent);
-    background: var(--surface);
-}
 
-.efi-card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 12px;
-}
 
-.efi-card-title-group {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
 
-.efi-card h3 {
-    margin: 0;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text);
-    line-height: 1.3;
-}
 
-.efi-card p {
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.725rem;
-}
+
+
+
+
+
+
 
 .efi-card-bottom {
     margin-top: 12px;
@@ -2702,39 +2591,15 @@ background: rgba(207, 87, 1, 0.1);
     gap: 10px;
 }
 
-.efi-step-counter {
-    color: var(--muted);
-    font-size: 0.7rem;
-    font-family: ui-monospace, monospace;
-}
+
 
 /* Action Execution Buttons */
-.efi-btn {
-    border: none;
-    border-radius: 4px;
-    background: var(--accent, #0ea5e9);
-    color: #000000;
-    padding: 4px 10px;
-    font-size: 0.725rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: filter 0.1s ease;
-}
 
-.efi-btn:hover {
-    filter: brightness(1.1);
-}
+
+
 
 /* Micro Difficulty Tags */
-.efi-difficulty {
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.625rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-}
+
 .efi-difficulty {
     padding: 4px 12px;
     border-radius: 3px;
@@ -2770,66 +2635,22 @@ background: rgba(207, 87, 1, 0.1);
 
 
 /* Dedicated Secondary Media Viewer Components */
-#componentViewerZoom {
-    display: block;
-    width: 100%;
-    max-width: 340px;
-    margin: 12px auto 0 auto;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 6px;
-    object-fit: contain;
-    cursor: zoom-in;
-    transition: transform 0.15s ease;
-}
 
-#componentViewerZoom:hover {
-    transform: scale(1.015);
-}
+
+
 
 /* Fullscreen Img Modal Lightbox */
-.image-modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.94);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-}
 
-.image-modal.show { display: flex; }
-.image-modal-content {
-    position: relative;
-    width: 90%;
-    height: 90%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
-#imageModalImg {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    border-radius: 4px;
-}
 
-.image-close, .image-download {
-    position: absolute;
-    top: 10px;
-    border: none;
-    font-size: 0.75rem;
-    font-weight: 700;
-    border-radius: 4px;
-    cursor: pointer;
-    padding: 6px 12px;
-    line-height: 1.2;
-}
 
-.image-close { right: 10px; background: #ef4444; color: #fff; }
-.image-download { left: 10px; background: #2563eb; color: #fff; }
+
+
+
+
+
+
+
 
 
 
@@ -3477,18 +3298,7 @@ line-height:1.6;
 }
 
 
-:root {
-  --bg-panel: #1e1e24;
-  --bg-card: #2a2b36;
-  --text-main: #f3f4f6;
-  --text-muted: #9ca3af;
-  --accent-rgb: 0, 100, 200;
-  --success: #2ed573;
-  --border-color: #3f4050;
-  --radius-lg: 12px;
-  --radius-md: 8px;
-  --font-stack: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
+
 
 /* Container #ff4757*/
 .cvt-container {
@@ -5587,4 +5397,30 @@ input#search{
 
     width:220px;
 
+}
+/* Stage 11: accessibility improvements (additive, visual design preserved). */
+.sr-only {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+}
+
+:where(button, a, input, select, textarea, iframe, [tabindex]):focus-visible {
+    outline: 3px solid var(--accent, #4da3ff);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

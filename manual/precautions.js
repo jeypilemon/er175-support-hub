@@ -3,6 +3,15 @@ function renderPrecautions() {
     if (!content) return;
 
     const dataset = window.manualPrecautions || manualPrecautions || [];
+    const pick = (item, names) => {
+        const keys = Object.keys(item || {});
+        for (const wanted of names) {
+            const exact = keys.find(key => key.trim().toLowerCase() === wanted.toLowerCase());
+            if (exact && String(item[exact] || "").trim()) return String(item[exact]).trim();
+        }
+        const fuzzy = keys.find(key => names.some(name => key.toLowerCase().includes(name.toLowerCase())) && String(item[key] || "").trim());
+        return fuzzy ? String(item[fuzzy]).trim() : "";
+    };
 
     // ==========================================
     // 1. PERSISTENT LAYOUT WRAPPER ENGINE
@@ -24,20 +33,20 @@ function renderPrecautions() {
     // 2. DATA FILTERING
     // ==========================================
     if (!dataset || !dataset.length) {
-        gridContainer.innerHTML = `
-        <div class="empty-state" style="grid-column: 1 / -1;">
-            Precautions loading...
-        </div>
-        `;
+        const state = window.manualPrecautionsLoadState;
+        const message = state === "error"
+            ? "Precautions could not be loaded. Please refresh the page or try again later."
+            : state === "empty"
+                ? "No precaution entries were found in the published sheet."
+                : "Precautions are still loading. Please wait a moment or switch sections and return.";
+        gridContainer.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">${message}</div>`;
         return;
     }
 
     const filtered = dataset.filter(item => {
         if (!searchQuery) return true;
 
-        const text = typeof normalizeText === 'function' ? normalizeText(
-            `${item["Category"] || ""} ${item["Topic"] || ""} ${item["Instruction"] || ""} ${item["Notes"] || ""}`
-        ) : `${item["Category"] || ""} ${item["Topic"] || ""} ${item["Instruction"] || ""} ${item["Notes"] || ""}`.toLowerCase();
+        const text = typeof normalizeText === 'function' ? normalizeText(Object.values(item).join(" ")) : Object.values(item).join(" ").toLowerCase();
 
         return text.includes(searchQuery);
     });
@@ -55,10 +64,10 @@ function renderPrecautions() {
     // 3. TARGETED DOM PLACEMENT (SMOOTH UX)
     // ==========================================
     gridContainer.innerHTML = filtered.map(item => {
-        const category = item["Category"] || "General";
-        const topic = item["Topic"] || "Safety Notice";
-        const instruction = item["Instruction"] || "";
-        const notes = item["Notes"] || "";
+        const category = pick(item, ["Category", "Group", "Type", "Area"]) || "General";
+        const topic = pick(item, ["Topic", "Title", "Precaution", "Subject", "Item", "Do", "Don't"]) || "Safety Notice";
+        const instruction = pick(item, ["Instruction", "Description", "Details", "Guideline", "Reminder", "Action", "Precautions"]) || "";
+        const notes = pick(item, ["Notes", "Remarks", "Additional Notes", "Explanation"]);
 
         const negative = instruction.toLowerCase().startsWith("avoid") ||
                          instruction.toLowerCase().startsWith("do not") ||

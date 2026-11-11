@@ -1,401 +1,274 @@
-function loadAftermarket(url) {
+/**
+ * Shared diagnostics and CSV loading primitives for published Google Sheets.
+ * Dataset-specific functions below intentionally remain as small adapters so
+ * app.js and any feature modules can keep calling their existing public names.
+ */
+function reportSheetLoadError(datasetName, error) {
+    const detail = error && error.message
+        ? error.message
+        : String(error || "Unknown network or parsing error");
+
+    console.error(`[ER175 Hub] ${datasetName} dataset failed to load:`, error);
+    showError(`Unable to load ${datasetName} data. Check your connection and try again.`);
+    return detail;
+}
+
+/**
+ * Parse one published CSV and run its dataset-specific transformation.
+ *
+ * Keep side effects explicit in the options: some secondary datasets do not
+ * participate in the app-ready gate, and a few require a post-load renderer.
+ */
+function parseSheetDataset({
+    url,
+    datasetName,
+    transform,
+    onLoaded,
+    onAfterLoad,
+    onError,
+    readyKey,
+    checkApplicationReady = false,
+    updateStats = true
+}) {
+    if (!url) {
+        console.warn(`[ER175 Hub] Missing spreadsheet URL for ${datasetName}.`);
+        return;
+    }
+
     Papa.parse(url, {
         download: true,
         header: true,
-        complete: res => {
-            aftermarketParts = res.data.filter(p => p["Parts Name"]);
-            loaded.aftermarket = true;
-            checkReady();
-            updateSiteStats();
-        
-        },
+        complete: response => {
+            const rows = Array.isArray(response.data) ? response.data : [];
+            const transformedData = transform(rows);
 
-        error(error){
-        console.error(error);
-        showError(
-          "Unable to load database. Please check your connection."
-        );
-    }
+            if (typeof onLoaded === "function") {
+                onLoaded(transformedData);
+            }
+
+            if (readyKey) {
+                loaded[readyKey] = true;
+            }
+
+            if (checkApplicationReady) {
+                checkReady();
+            }
+
+            if (updateStats) {
+                updateSiteStats();
+            }
+
+            if (typeof onAfterLoad === "function") {
+                onAfterLoad(transformedData);
+            }
+            if (response && Array.isArray(response.errors) && response.errors.length) {
+                console.warn(`[ER175 Hub] ${datasetName} CSV parse warnings:`, response.errors);
+            }
+        },
+        error: error => {
+            reportSheetLoadError(datasetName, error);
+            if (typeof onError === "function") onError(error);
+        }
+    });
+}
+
+// Primary datasets: these participate in the application's ready gate.
+function loadAftermarket(url) {
+    parseSheetDataset({
+        url,
+        datasetName: "aftermarket parts",
+        transform: rows => rows.filter(row => row["Parts Name"]),
+        onLoaded: data => { aftermarketParts = data; },
+        readyKey: "aftermarket",
+        checkApplicationReady: true
     });
 }
 
 function loadTroubleshoot(url) {
-    Papa.parse(url, {
-        download: true,
-        header: true,
-        complete: res => {
-            troubleshootData = res.data.filter(p => p["Known Issue"]);
-            loaded.troubleshoot = true;
-            checkReady();
-            updateSiteStats();
-        },
-        
-        error(error){
-        console.error(error);
-        showError(
-          "Unable to load database. Please check your connection."
-        );
-    }
+    parseSheetDataset({
+        url,
+        datasetName: "troubleshooting",
+        transform: rows => rows.filter(row => row["Known Issue"]),
+        onLoaded: data => { troubleshootData = data; },
+        readyKey: "troubleshoot",
+        checkApplicationReady: true
     });
 }
 
-/* Load Manual Tabs*/
-
 function loadManual(url) {
-    Papa.parse(url, {
-        download: true,
-        header: true,
-        complete: res => {
-            manualData = res.data.filter(x => x["Category"]);
-            loaded.manual = true;
-            checkReady();
-            updateSiteStats();
-        },
-        
-        error(error){
-        console.error(error);
-        showError(
-          "Unable to load database. Please check your connection."
-        );
-    }
+    parseSheetDataset({
+        url,
+        datasetName: "manual",
+        transform: rows => rows.filter(row => row["Category"]),
+        onLoaded: data => { manualData = data; },
+        readyKey: "manual",
+        checkApplicationReady: true
     });
 }
 
 function loadManualComponents(url) {
-
-    Papa.parse(url, {
-
-        download:true,
-
-        header:true,
-
-        complete: res => {
-
-    manualComponents =
-    res.data.filter(x=>x["Component"]);
-
-
-    manualComponents.sort((a,b)=>
-    Number(a.ID)-Number(b.ID)
-    );
-
-
-    loaded.components = true;
-
-    checkReady();
-    updateSiteStats();
-
-    },
-
-        error(error){
-        console.error(error);
-        showError(
-          "Unable to load database. Please check your connection."
-        );
-    }
-
+    parseSheetDataset({
+        url,
+        datasetName: "manual components",
+        transform: rows => rows
+            .filter(row => row["Component"])
+            .sort((a, b) => Number(a.ID) - Number(b.ID)),
+        onLoaded: data => { manualComponents = data; },
+        readyKey: "components",
+        checkApplicationReady: true
     });
-
 }
 
-function loadManualDashboard(url){
-
-    Papa.parse(url,{
-        download:true,
-        header:true,
-
-        complete: res=>{
-
-            manualDashboard =
-            res.data.filter(
-                x=>x["Component"]
-            );
-            updateSiteStats();
-
-        },
-
-        error(error){
-        console.error(error);
-        showError(
-          "Unable to load database. Please check your connection."
-        );
-    }
-
+// Secondary manual datasets: these update their data and stats but do not
+// block the initial application-ready gate.
+function loadManualDashboard(url) {
+    parseSheetDataset({
+        url,
+        datasetName: "manual dashboard",
+        transform: rows => rows.filter(row => row["Component"]),
+        onLoaded: data => { manualDashboard = data; }
     });
-
 }
 
-function loadManualMaintenance(url){
-
-    Papa.parse(url,{
-
-        download:true,
-        header:true,
-
-        complete: res => {
-
-
-            manualMaintenance =
-            res.data.filter(
-                x => x["Item"]
-            );
-            updateSiteStats();
-
-        },
-
-        error(error){
-        console.error(error);
-        showError(
-          "Unable to load database. Please check your connection."
-        );
-    }
-
+function loadManualMaintenance(url) {
+    parseSheetDataset({
+        url,
+        datasetName: "maintenance",
+        transform: rows => rows.filter(row => row["Item"]),
+        onLoaded: data => { manualMaintenance = data; }
     });
-
 }
-
 
 function loadEFI(url) {
-
-    Papa.parse(url, {
-
-        download: true,
-        header: true,
-
-        complete: res => {
-
-
-            efiData = res.data.filter(
-                r => r.ID
-            );
-
-
-            window.efiData = efiData;
-
-
-            loaded.efi = true;
-
-
-            checkReady();
-            updateSiteStats();
-
-
-
-            if(typeof renderEFI === "function"){
+    parseSheetDataset({
+        url,
+        datasetName: "EFI diagnostics",
+        transform: rows => rows.filter(row => row.ID),
+        onLoaded: data => {
+            efiData = data;
+            window.efiData = data;
+        },
+        onAfterLoad: () => {
+            if (typeof renderEFI === "function") {
                 renderEFI();
             }
-
-
         },
-
-
-        error(error){
-
-            console.error(
-                "EFI LOAD ERROR:",
-                error
-            );
-
-
-            showError(
-            "Unable to load EFI database."
-            );
-
-        }
-
-
+        readyKey: "efi",
+        checkApplicationReady: true
     });
-
 }
 
 function loadWiring(url) {
-
-    Papa.parse(url, {
-
-        download: true,
-
-        header: true,
-
-        complete: res => {
-
-            window.manualWiring = res.data.filter(r => r.ID);
-
-
-
-            loaded.wiring = true;
-
-            checkReady();
-            updateSiteStats();
-
-        },
-
-        error(error){
-        console.error(error);
-        showError(
-          "Unable to load database. Please check your connection."
-        );
-    }
-
+    parseSheetDataset({
+        url,
+        datasetName: "wiring",
+        transform: rows => rows.filter(row => row.ID),
+        onLoaded: data => { window.manualWiring = data; },
+        readyKey: "wiring",
+        checkApplicationReady: true
     });
-
 }
 
-function loadPrecautions(url){
-
-    Papa.parse(url,{
-
-        download:true,
-
-        header:true,
-
-        complete:res=>{
-
-            manualPrecautions =
-                res.data.filter(r=>r.ID);
-                updateSiteStats();
-
-
+function loadPrecautions(url) {
+    parseSheetDataset({
+        url,
+        datasetName: "precautions",
+        // Keep every non-empty row. The sheet has evolved over time and may
+        // use alternate column labels; the renderer resolves those labels.
+        transform: rows => rows.filter(row => row && Object.values(row).some(value => String(value || "").trim())),
+        onLoaded: data => {
+            manualPrecautions = data;
+            window.manualPrecautions = data;
+            window.manualPrecautionsLoadState = data.length ? "loaded" : "empty";
         },
-
-           error(error){
-        console.error(error);
-        showError(
-          "Unable to load database. Please check your connection."
-        );
-    }
-
+        onAfterLoad: () => { if (currentTab === "manual" && currentManualSection === "precautions") renderPrecautions(); },
+        onError: () => {
+            window.manualPrecautionsLoadState = "error";
+            if (currentTab === "manual" && currentManualSection === "precautions") renderPrecautions();
+        }
     });
-
 }
 
-function loadMistakes(url){
-
-    Papa.parse(url,{
-
-        download:true,
-
-        header:true,
-
-        complete:res=>{
-
-            manualMistakes =
-                res.data.filter(r=>r.ID);
-                updateSiteStats();
-
-        },
-
-           error(error){
-        console.error(error);
-        showError(
-          "Unable to load database. Please check your connection."
-        );
-    }
-
+function loadMistakes(url) {
+    parseSheetDataset({
+        url,
+        datasetName: "common mistakes",
+        transform: rows => rows.filter(row => row.ID),
+        onLoaded: data => { manualMistakes = data; },
+        onAfterLoad: () => { if (currentTab === "manual" && currentManualSection === "mistakes") renderMistakes(); }
     });
-
 }
 
-function loadManualSearchIndex(url){
-
-    Papa.parse(url,{
-
-        download:true,
-
-        header:true,
-
-        complete:res=>{
-
-            manualSearchIndex =
-                res.data.filter(r=>r.ID);
-                
-
-        },
-
-           error(error){
-        console.error(error);
-        showError(
-          "Unable to load database. Please check your connection."
-        );
-    }
-
+function loadManualSearchIndex(url) {
+    parseSheetDataset({
+        url,
+        datasetName: "manual search index",
+        transform: rows => rows.filter(row => row.ID),
+        onLoaded: data => { manualSearchIndex = data; },
+        updateStats: false
     });
-
 }
 
-function loadCVT(url){
-
-    Papa.parse(url,{
-
-        download:true,
-
-        header:true,
-
-        complete:res=>{
-
-            cvtData =
-            res.data.filter(
-                r=>r.ID
-            );
-            updateSiteStats();
-
-        },
-
-           error(error){
-        console.error(error);
-        showError(
-          "Unable to load database. Please check your connection."
-        );
+function loadCVT(url) {
+    // Preserve the existing render fallback when called without a URL.
+    if (!url) {
+        if (Array.isArray(cvtData) && cvtData.length) {
+            renderCVT();
+            return;
+        }
+        console.warn("CVT dataset URL is missing; check APP_CONFIG and app.js.");
+        return;
     }
 
+    parseSheetDataset({
+        url,
+        datasetName: "CVT presets",
+        transform: rows => rows.filter(row => row.ID),
+        onLoaded: data => { cvtData = data; }
     });
-
 }
-
-
 
 function checkReady() {
+    if (appStarted) return;
 
-
-    if(appStarted) return;
-
-if (
-    loaded.aftermarket &&
-    loaded.troubleshoot &&
-    loaded.manual &&
-    loaded.components &&
-    loaded.efi
-) {
-
-    appStarted = true;
-
-    isLoading = false;
-
-    currentTab = "aftermarket";
-
-    currentCategory = "All";
-
-    updateSiteStats();
-
-    switchTab("aftermarket");
-
-}
-
-}
-
-
-
-function showError(message) {
-    const container = document.getElementById("app");
-
-    if (container) {
-        container.innerHTML = `
-            <div class="error-card">
-                <h3>⚠️ Something went wrong</h3>
-                <p>${message}</p>
-                <button onclick="location.reload()">
-                    Reload Page
-                </button>
-            </div>
-        `;
+    if (
+        loaded.aftermarket &&
+        loaded.troubleshoot &&
+        loaded.manual &&
+        loaded.components &&
+        loaded.efi
+    ) {
+        appStarted = true;
+        isLoading = false;
+        currentTab = "aftermarket";
+        currentCategory = "All";
+        updateSiteStats();
+        switchTab("aftermarket");
+        if (typeof renderPopularSearches === "function") renderPopularSearches();
     }
+}
+
+/**
+ * Report a data-loading problem without replacing the application UI.
+ * A failed secondary sheet must not erase sections that already loaded.
+ */
+function showError(message) {
+    const safeMessage = String(message || "A data source could not be loaded.");
+    console.error(`[ER175 Hub] ${safeMessage}`);
+
+    if (typeof showToast === "function") {
+        showToast(safeMessage);
+        return;
+    }
+
+    // Fallback for errors that occur before the toast UI is initialized.
+    let notice = document.getElementById("app-error-notice");
+    if (!notice) {
+        notice = document.createElement("div");
+        notice.id = "app-error-notice";
+        notice.setAttribute("role", "alert");
+        notice.style.cssText = "position:fixed;left:12px;right:12px;bottom:16px;z-index:99999;padding:12px 16px;background:#7f1d1d;color:#fff;border-radius:8px;font:14px/1.4 system-ui,sans-serif;";
+        document.body.appendChild(notice);
+    }
+    notice.textContent = safeMessage;
 }

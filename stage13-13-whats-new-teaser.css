@@ -1,0 +1,68 @@
+/* Compact What's New announcement — placed directly below the hero banner. */
+.whats-new-teaser {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: min(100% - 48px, 1440px);
+    margin: 16px auto 18px;
+    padding: 13px 17px;
+    color: var(--text, #20252b);
+    text-decoration: none;
+    background: var(--surface, #fff);
+    border: 1px solid var(--border, #d9dee4);
+    border-left: 3px solid #d92332;
+    border-radius: 13px;
+    box-shadow: 0 5px 16px rgba(20, 28, 36, .045);
+    transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.whats-new-teaser:hover {
+    border-color: rgba(217, 35, 50, .48);
+    box-shadow: 0 8px 22px rgba(20, 28, 36, .085);
+    transform: translateY(-1px);
+}
+.whats-new-badge {
+    flex: 0 0 auto;
+    padding: 6px 9px;
+    border-radius: 7px;
+    color: #fff;
+    background: #d92332;
+    font: 800 10px/1 system-ui, sans-serif;
+    letter-spacing: .09em;
+}
+.whats-new-copy { display: grid; gap: 3px; min-width: 0; }
+.whats-new-copy strong { color: var(--text, #20252b); font-size: 13px; line-height: 1.35; }
+.whats-new-copy > span { color: var(--muted, #64707d); font-size: 12px; line-height: 1.4; }
+.whats-new-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-left: auto;
+    flex: 0 0 auto;
+    color: #c91f30;
+    font-size: 12px;
+    font-weight: 750;
+}
+.whats-new-link > span { font-size: 17px; line-height: 1; }
+:root[data-theme="dark"] .whats-new-teaser {
+    background: var(--surface, #20262d);
+    border-color: var(--border, #39414a);
+    border-left-color: #f04450;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .14);
+}
+:root[data-theme="dark"] .whats-new-teaser:hover { border-color: rgba(240, 68, 80, .58); }
+:root[data-theme="dark"] .whats-new-link { color: #ff6872; }
+@media (max-width: 600px) {
+    .whats-new-teaser {
+        width: calc(100% - 22px);
+        margin: 11px auto 14px;
+        gap: 9px;
+        padding: 11px 12px;
+        border-radius: 11px;
+    }
+    .whats-new-badge { padding: 6px 7px; font-size: 9px; }
+    .whats-new-copy strong { font-size: 12px; }
+    .whats-new-copy > span { font-size: 11px; }
+    .whats-new-link { gap: 3px; font-size: 0; }
+    .whats-new-link > span { font-size: 19px; }
+}
+@media (prefers-reduced-motion: reduce) { .whats-new-teaser { transition: none; } }

@@ -180,7 +180,7 @@ function openComponentViewer(id){
 
     if(title){
 
-        title.innerHTML =
+        title.textContent =
         item["Component"] || "";
 
     }
@@ -188,7 +188,7 @@ function openComponentViewer(id){
 
     if(location){
 
-        location.innerHTML =
+        location.textContent =
         item["Location"] || "";
 
     }
@@ -196,7 +196,7 @@ function openComponentViewer(id){
 
     if(notes){
 
-        notes.innerHTML =
+        notes.textContent =
         item["Access / Notes"] || "";
 
     }
@@ -211,3 +211,35 @@ function openComponentViewer(id){
 
 
 }
+
+/* Product card image lightbox: reuse the existing image modal. */
+(function initProductImageLightbox() {
+    if (window.__er175ProductImageLightboxReady) return;
+    window.__er175ProductImageLightboxReady = true;
+
+    function openFromImage(image) {
+        const source = image && image.getAttribute("data-full-image");
+        if (source && typeof openImageModal === "function") openImageModal(source);
+    }
+
+    document.addEventListener("click", function (event) {
+        const image = event.target.closest("img.product-card-image[data-full-image]");
+        if (!image) return;
+        event.preventDefault();
+        event.stopPropagation();
+        openFromImage(image);
+    });
+
+    document.addEventListener("keydown", function (event) {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        const image = event.target.closest && event.target.closest("img.product-card-image[data-full-image]");
+        if (!image) return;
+        event.preventDefault();
+        openFromImage(image);
+    });
+
+    document.addEventListener("click", function (event) {
+        const modal = document.getElementById("imageModal");
+        if (modal && event.target === modal && typeof closeImageModal === "function") closeImageModal();
+    });
+})();

@@ -1,25 +1,87 @@
-function normalizeText(text){
-
-    return String(text || "")
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g,"")
-    .replace(/\s+/g," ")
-    .trim();
-
+/** Escape text before inserting spreadsheet/user-provided values into HTML. */
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[character]);
 }
 
-function safeHighlight(text) {
+/** Accept only HTTP(S) URLs before using spreadsheet values for navigation or media. */
+function getSafeHttpUrl(value, base = window.location.href) {
+    const raw = String(value ?? "").trim();
+    if (!raw) return "";
 
-    if (!searchQuery) return text || "";
+    try {
+        const parsed = new URL(raw, base);
+        return ["http:", "https:"].includes(parsed.protocol) ? parsed.href : "";
+    } catch {
+        return "";
+    }
+}
 
-    const escaped = searchQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+/** Normalize text consistently while retaining accented and non-Latin letters. */
+function normalizeText(value) {
+    return String(value ?? "")
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLocaleLowerCase()
+        .replace(/[^\p{L}\p{N}\s]/gu, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
 
-    const reg = new RegExp(escaped, "gi");
+/**
+ * Cache normalized spreadsheet fields between renders. The original value is
+ * checked on every access, so editing a record invalidates its cached value.
+ * WeakMap avoids keeping removed spreadsheet rows alive in memory.
+ */
+const normalizedFieldCache = new WeakMap();
 
-    return (text || "").replace(
-        reg,
-        m => `<mark>${m}</mark>`
-    );
+function getNormalizedField(record, field) {
+    if (!record || typeof record !== "object") {
+        return normalizeText(record);
+    }
+
+    const rawValue = record[field] ?? "";
+    let fields = normalizedFieldCache.get(record);
+
+    if (!fields) {
+        fields = new Map();
+        normalizedFieldCache.set(record, fields);
+    }
+
+    const cached = fields.get(field);
+    if (cached && cached.rawValue === rawValue) {
+        return cached.normalizedValue;
+    }
+
+    const normalizedValue = normalizeText(rawValue);
+    fields.set(field, { rawValue, normalizedValue });
+    return normalizedValue;
+}
+
+/** Return escaped text with only the matching query wrapped in <mark>. */
+function safeHighlight(value) {
+    const text = String(value ?? "");
+    const safeText = escapeHTML(text);
+    const query = normalizeText(searchQuery);
+    if (!query) return safeText;
+
+    // Search normalization can remove punctuation; match the normalized text
+    // as a whole when direct highlighting would produce misleading offsets.
+    const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const expression = new RegExp(escapedQuery, "gi");
+    if (!expression.test(normalizeText(text))) return safeText;
+
+    // Highlighting is intentionally conservative for Unicode/punctuation-heavy
+    // text: it avoids injecting markup into untrusted source content.
+    const rawQuery = String(searchQuery ?? "").trim();
+    if (!rawQuery) return safeText;
+    const rawExpression = new RegExp(rawQuery.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+    return safeText.replace(rawExpression, match => `<mark>${match}</mark>`);
 }
 
 function matchWords(text, query){
@@ -204,82 +266,133 @@ function getSuggestion(query) {
 }
 
 
-function renderSuggestion(){
+const SEARCH_RECENTS_KEY = "er175-search-recents-v1";
+const SEARCH_RECENTS_LIMIT = 6;
 
-   
-
-    const suggestionBox =
-    document.getElementById("suggestions");
-
-  
-
-
-    if(!suggestionBox)
-        return;
-
-
-    if(searchQuery.length < 2){
-
-        suggestionBox.innerHTML="";
-        return;
-
-    }
-
-
-
-    let suggestion =
-    getSuggestion(searchQuery);
-
-
-
-    if(!suggestion){
-
-    suggestion =
-    findAutoSuggestion(searchQuery);
-
+function getSearchablePartRows() {
+    if (currentTab === "oem") return Array.isArray(oemParts) ? oemParts : [];
+    if (currentTab === "aftermarket") return Array.isArray(aftermarketParts) ? aftermarketParts : [];
+    return [];
 }
 
+function getRecentSearches() {
+    try {
+        const value = JSON.parse(localStorage.getItem(SEARCH_RECENTS_KEY) || "[]");
+        return Array.isArray(value) ? value.filter(item => typeof item === "string").slice(0, SEARCH_RECENTS_LIMIT) : [];
+    } catch (_) {
+        return [];
+    }
+}
 
-    if(!suggestion){
+function saveRecentSearch(value) {
+    const clean = String(value || "").trim();
+    if (clean.length < 2) return;
+    try {
+        const normalized = normalizeText(clean);
+        const next = [clean, ...getRecentSearches().filter(item => normalizeText(item) !== normalized)]
+            .slice(0, SEARCH_RECENTS_LIMIT);
+        localStorage.setItem(SEARCH_RECENTS_KEY, JSON.stringify(next));
+    } catch (_) {
+        // Search remains fully usable when storage is unavailable.
+    }
+}
 
-        suggestionBox.innerHTML="";
+function renderSuggestion() {
+    const box = document.getElementById("suggestions");
+    if (!box) return;
+
+    const query = normalizeText(searchQuery);
+    const rows = getSearchablePartRows();
+
+    if (query.length < 2) {
+        if (typeof renderPopularSearches === "function") renderPopularSearches();
+        const recent = getRecentSearches();
+        box.innerHTML = recent.length ? `
+            <div class="search-suggestion-panel">
+                <div class="search-suggestion-heading">Recent searches</div>
+                <div class="search-suggestion-list">
+                    ${recent.map(item => `<button type="button" class="search-suggestion-item search-recent-item" data-search-value="${escapeHTML(item)}"><span class="search-suggestion-icon">↻</span><span>${escapeHTML(item)}</span></button>`).join("")}
+                </div>
+            </div>` : "";
+        box.classList.toggle("is-open", recent.length > 0);
         return;
-
     }
 
+    const correction = getSuggestion(query) || findAutoSuggestion(query);
+    const products = rows.filter(item => {
+        const name = getNormalizedField(item, "Parts Name");
+        const category = getNormalizedField(item, "Parts Category");
+        const brand = getNormalizedField(item, "Brand");
+        const compatibility = getNormalizedField(item, "Compatibility");
+        return name.includes(query) || category.includes(query) || brand.includes(query) || compatibility.includes(query);
+    }).slice(0, 5);
 
+    const categories = [...new Set(rows
+        .map(item => String(item["Parts Category"] || "").trim())
+        .filter(Boolean)
+        .filter(category => normalizeText(category).includes(query)))].slice(0, 3);
 
-    if(
-        normalizeText(suggestion)
-        .includes(searchQuery)
-    ){
-
-        suggestionBox.innerHTML="";
+    if (!correction && !products.length && !categories.length) {
+        box.innerHTML = "";
+        box.classList.remove("is-open");
         return;
-
     }
 
+    box.innerHTML = `
+        <div class="search-suggestion-panel">
+            ${correction && normalizeText(correction) !== query ? `
+                <div class="search-suggestion-correction">
+                    <span>💡 Did you mean</span>
+                    <button type="button" data-search-value="${escapeHTML(correction)}">${escapeHTML(correction)}</button>
+                </div>` : ""}
+            ${products.length ? `
+                <div class="search-suggestion-heading">Matching products</div>
+                <div class="search-suggestion-list">
+                    ${products.map(item => `
+                        <button type="button" class="search-suggestion-item" data-search-value="${escapeHTML(item["Parts Name"] || "")}">
+                            <span class="search-suggestion-icon">⌕</span>
+                            <span class="search-suggestion-copy"><strong>${escapeHTML(item["Parts Name"] || "Unnamed part")}</strong><small>${escapeHTML(item["Parts Category"] || "Product")}${item["Brand"] ? ` · ${escapeHTML(item["Brand"])}` : ""}</small></span>
+                            <span class="search-suggestion-arrow">↗</span>
+                        </button>`).join("")}
+                </div>` : ""}
+            ${categories.length ? `
+                <div class="search-suggestion-heading">Categories</div>
+                <div class="search-suggestion-categories">
+                    ${categories.map(category => `<button type="button" class="search-suggestion-category" data-category-value="${escapeHTML(category)}">${escapeHTML(category)}</button>`).join("")}
+                </div>` : ""}
+        </div>`;
+    box.classList.add("is-open");
+}
 
+function closeSearchSuggestions() {
+    const box = document.getElementById("suggestions");
+    if (box) box.classList.remove("is-open");
+}
 
-    suggestionBox.innerHTML = `
+function selectSearchSuggestion(value) {
+    const clean = String(value || "").trim();
+    if (!clean) return;
+    const input = document.getElementById("search");
+    if (input) input.value = clean;
+    searchQuery = normalizeText(clean);
+    saveRecentSearch(clean);
+    if (typeof trackSharedSearch === "function") trackSharedSearch(clean);
+    render();
+    closeSearchSuggestions();
+}
 
-    <div class="suggestion-item"
-    onclick="applySuggestion('${suggestion}')">
-
-        💡 Do you mean:
-        <b>${suggestion}</b>?
-
-    </div>
-
-    `;
-
+function selectSearchCategory(category) {
+    currentCategory = category;
+    searchQuery = "";
+    const input = document.getElementById("search");
+    if (input) input.value = "";
+    renderChips();
+    render();
+    closeSearchSuggestions();
 }
 
 function applySuggestion(text) {
-    document.getElementById("search").value = text;
-    searchQuery = normalizeText(text);
-    render();
-    renderSuggestion();
+    selectSearchSuggestion(text);
 }
 
 /*fuzzy suggestion*/

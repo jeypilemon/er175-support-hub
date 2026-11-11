@@ -1,36 +1,56 @@
-window.addEventListener(
-"unhandledrejection",
-function(event){
-
-console.error(
-"Unhandled Error:",
-event.reason
-);
-
+/**
+ * Application bootstrap.
+ * Keep feature logic in its own module; keep editable data-source settings in config.js.
+ */
+window.addEventListener("unhandledrejection", function (event) {
+    console.error("Unhandled promise rejection:", event.reason);
 });
 
-renderSkeleton();
+function startApplication() {
+    // Fail early with a useful message if a required local dependency is missing.
+    if (typeof Papa === "undefined" || typeof Papa.parse !== "function") {
+        showError("The CSV parser did not load. Check assets/vendor/papaparse.min.js.");
+        return;
+    }
+    if (typeof getSheetCsvUrl !== "function") {
+        showError("Application configuration is unavailable. Check config.js.");
+        return;
+    }
 
-loadAftermarket("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=0&single=true&output=csv");
+    renderSkeleton();
 
-loadTroubleshoot("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=557855511&single=true&output=csv");
+    // DATASET REGISTRY
+    // Each entry maps one config.js sheet key to its existing loader function.
+    // Keep keys aligned with APP_CONFIG.spreadsheet.sheets. This registry is
+    // intentionally explicit so a maintainer can audit every startup request.
+    // To add/remove a dataset, edit config.js and this list only.
+    const dataSources = [
+        ["aftermarketParts", loadAftermarket],
+        ["troubleshooting", loadTroubleshoot],
+        ["manual", loadManual],
+        ["manualComponents", loadManualComponents],
+        ["manualDashboard", loadManualDashboard],
+        ["maintenance", loadManualMaintenance],
+        ["efiDiagnostics", loadEFI],
+        ["wiring", loadWiring],
+        ["precautions", loadPrecautions],
+        ["commonMistakes", loadMistakes],
+        ["manualSearchIndex", loadManualSearchIndex],
+        ["cvtPresets", loadCVT],
+    ];
 
-loadManual("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=56637698&single=true&output=csv");
+    dataSources.forEach(([sheetKey, loader]) => {
+        try {
+            if (typeof loader !== "function") {
+                throw new Error(`Loader function is missing for ${sheetKey}`);
+            }
+            console.info(`[ER175 Hub] Loading dataset: ${sheetKey}`);
+            loader(getSheetCsvUrl(sheetKey));
+        } catch (error) {
+            console.error(`Failed to start dataset loader: ${sheetKey}`, error);
+            showError(`Unable to initialize ${sheetKey} data.`);
+        }
+    });
+}
 
-loadManualComponents("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=1017192042&single=true&output=csv");
-
-loadManualDashboard("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=81321961&single=true&output=csv");
-
-loadManualMaintenance("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=1981058519&single=true&output=csv");
-
-loadEFI("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=980811144&single=true&output=csv");
-
-loadWiring("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=1373439743&single=true&output=csv");
-
-loadPrecautions("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=2052007273&single=true&output=csv");
-
-loadMistakes("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=1708336835&single=true&output=csv");
-
-loadManualSearchIndex("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=260309207&single=true&output=csv");
-
-loadCVT("https://docs.google.com/spreadsheets/d/e/2PACX-1vQuOxI5JH-mWFfHd2VecpdsOXdT6UsnqDaedyEjofuMK3qofOnLJkK4tPPiX0qJqg5Wp9G0PaXSTysz/pub?gid=489241229&single=true&output=csv");
+startApplication();

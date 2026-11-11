@@ -1,6 +1,7 @@
 
 function renderSkeleton(count = 6) {
-    container.innerHTML = Array(count).fill(0).map(() => `
+    const safeCount = Math.max(0, Math.min(24, Number(count) || 0));
+    container.innerHTML = Array.from({ length: safeCount }, () => `
         <div class="card skeleton-card">
             <div class="skeleton image"></div>
             <div class="skeleton text short"></div>
@@ -8,6 +9,60 @@ function renderSkeleton(count = 6) {
             <div class="skeleton text"></div>
         </div>
     `).join("");
+}
+
+/** Build one parts card. Keep its class names stable for the existing CSS. */
+function renderPartCard(part) {
+    const name = escapeHTML(part["Parts Name"] || "Unnamed part");
+    const category = escapeHTML(part["Parts Category"] || "");
+    const preview = getSafeHttpUrl(part["Preview"]);
+    const spec = String(part["Spec Size"] || "").trim();
+    const compatibility = String(part["Compatibility"] || "").trim();
+    const shopee = getSafeHttpUrl(part["Shopee"]);
+    const lazada = getSafeHttpUrl(part["Lazada"]);
+    const specClass = spec.toLowerCase().includes("plug") ? " plug-fit" : "";
+
+    return `
+        <div class="card">
+            ${preview ? `<img class="product-card-image" src="${escapeHTML(preview)}" data-full-image="${escapeHTML(preview)}" alt="View full image of ${name}" role="button" tabindex="0" aria-label="View full-size image of ${name}" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">` : ""}
+            <div class="card-content">
+                <h3>${name}</h3>
+                <span class="category">${category}</span>
+                ${spec ? `<div class="specs${specClass}">${escapeHTML(spec)}</div>` : ""}
+                ${compatibility ? `<div class="spec-compatibility">${escapeHTML(compatibility)}</div>` : ""}
+                <div class="card-actions">
+                    ${shopee ? `<a class="button button-shopee" href="${escapeHTML(shopee)}" target="_blank" rel="noopener noreferrer">Buy in Shopee</a>` : ""}
+                    ${lazada ? `<a class="button button-lazada" href="${escapeHTML(lazada)}" target="_blank" rel="noopener noreferrer">Buy in Lazada</a>` : ""}
+                    ${shopee ? `<button class="copy-btn" type="button" data-copy-url="${escapeHTML(shopee)}" onclick="copyAffiliateLink(this.dataset.copyUrl)" aria-label="Copy Shopee link">🔗</button>` : ""}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/** Build a troubleshooting card while preserving the existing expand behavior. */
+function renderTroubleshootCard(item, index) {
+    const id = `trouble-${index}`;
+    const issue = escapeHTML(item["Known Issue"] || "Untitled issue");
+    const tags = escapeHTML(item["Tags"] || "General");
+
+    return `
+        <div class="troubleshoot-card">
+            <div class="troubleshoot-top" onclick="toggleCard('${id}')">
+                <div class="trouble-title-area">
+                    <h3>${issue}</h3>
+                    <span class="trouble-tag">${tags}</span>
+                </div>
+                <div class="trouble-arrow">▼</div>
+            </div>
+            <div class="troubleshoot-content" id="${id}">
+                <div class="solution-box">
+                    <div class="solution-title">🔧 Possible Solution</div>
+                    <div class="solution-text">${linkifySolution(item["Possible Solution"] || "")}</div>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 function render() {
@@ -59,8 +114,8 @@ function render() {
         : oemParts;
 
     const filtered = data.filter(p => {
-        const name = normalizeText(p["Parts Name"]);
-        const cat = normalizeText(p["Parts Category"]);
+        const name = getNormalizedField(p, "Parts Name");
+        const cat = getNormalizedField(p, "Parts Category");
 
         return (
             (name.includes(searchQuery) || cat.includes(searchQuery)) &&
@@ -73,74 +128,7 @@ function render() {
         return;
     }
 
-    container.innerHTML = filtered.map(part => `
-    <div class="card">
-
-        <img 
-            src="${part["Preview"] || ""}" 
-            onerror="this.style.display='none'"
-        >
-
-        <div class="card-content">
-
-            <h3>${part["Parts Name"]}</h3>
-
-            <span class="category">
-                ${part["Parts Category"] || ""}
-            </span>
-
-            ${
-    part["Spec Size"] 
-    ? `<div class="specs ${part["Spec Size"].toLowerCase().includes("plug") ? "plug-fit" : ""}">
-        ${part["Spec Size"]}
-       </div>`
-    : ""
-
-
-}
-
-${
-    part["Compatibility"]
-    ?
-    `
-    <div class="spec-compatibility">
-        ${part["Compatibility"]}
-    </div>
-    `
-    :
-    ""
-}
-
-        <div class="card-actions">
-
-    <a
-        class="button button-shopee"
-        href="${part["Shopee"]}"
-        target="_blank"
-        rel="noopener noreferrer">
-        Buy in Shopee
-    </a>
-
-    ${part["Lazada"] ? `
-    <a
-        class="button button-lazada"
-        href="${part["Lazada"]}"
-        target="_blank"
-        rel="noopener noreferrer">
-        Buy in Lazada
-    </a>
-    ` : ""}
-
-    <button
-        class="copy-btn"
-        onclick="copyAffiliateLink('${part["Shopee"]}')">
-        🔗
-    </button>
-
-</div>
-</div>
-</div>
-`).join("");
+    container.innerHTML = filtered.map(renderPartCard).join("");
 
     updateTabUI();
 }
@@ -168,9 +156,9 @@ function renderTroubleshootCards() {
 
     const filtered = troubleshootData.filter(item => {
 
-        const issue = normalizeText(item["Known Issue"]);
-        const sol = normalizeText(item["Possible Solution"]);
-        const tags = normalizeText(item["Tags"] || "");
+        const issue = getNormalizedField(item, "Known Issue");
+        const sol = getNormalizedField(item, "Possible Solution");
+        const tags = getNormalizedField(item, "Tags");
 
         return (
 
@@ -214,84 +202,7 @@ function renderTroubleshootCards() {
 
 
 
-    container.innerHTML = filtered.map((item,i)=>{
-
-
-        const id = `trouble-${i}`;
-
-
-        return `
-
-<div class="troubleshoot-card">
-
-
-    <div class="troubleshoot-top"
-        onclick="toggleCard('${id}')">
-
-        <div class="trouble-title-area">
-
-
-            <h3>
-                ${item["Known Issue"]}
-            </h3>
-
-
-            <span class="trouble-tag">
-
-                ${item["Tags"] || "General"}
-
-            </span>
-
-
-        </div>
-
-
-        <div class="trouble-arrow">
-            ▼
-        </div>
-
-
-    </div>
-
-
-
-    <div 
-    class="troubleshoot-content"
-    id="${id}">
-
-
-        <div class="solution-box">
-
-
-            <div class="solution-title">
-
-                🔧 Possible Solution
-
-            </div>
-
-
-            <div class="solution-text">
-
-                ${linkifySolution(
-                    item["Possible Solution"]
-                )}
-
-            </div>
-
-
-        </div>
-
-
-    </div>
-
-
-</div>
-
-
-`;
-
-    }).join("");
-
+    container.innerHTML = filtered.map(renderTroubleshootCard).join("");
 
     updateTabUI();
 
@@ -329,17 +240,18 @@ function renderManual() {
 
     container.innerHTML = `
 
-    <div class="manual-download">
-
+    <section class="manual-download-card" aria-labelledby="manualDownloadTitle">
+        <div class="manual-download-copy">
+            <span class="manual-download-kicker">DIGITAL REFERENCE</span>
+            <h2 id="manualDownloadTitle">Looking for the E-Manual?</h2>
+            <p>Scanned document · Motorcycle owner's manual · 2025</p>
+        </div>
         <a class="manual-download-btn"
-        href="https://drive.google.com/file/d/1xJyf7sNn1Nlo7X4r0a3X6W_R5pUabHbQ/view"
-        target="_blank">
-
-        Download Owner's Manual PDF (Official)
-
+           href="https://drive.google.com/file/d/1xJyf7sNn1Nlo7X4r0a3X6W_R5pUabHbQ/view"
+           target="_blank" rel="noopener noreferrer">
+            <span aria-hidden="true">↓</span> Download Owner's Manual (PDF)
         </a>
-
-    </div>
+    </section>
 
     <div id="manualContent">
 
@@ -503,12 +415,8 @@ function updateSearchPlaceholder(){
     }
 
     if(currentTab === "diagnostics"){
-
-    search.placeholder =
-    "Search EFI codes, sensors or diagnostics...";
-
-    return;
-
+        search.placeholder = "Search...";
+        return;
     }
 }
 
@@ -545,6 +453,8 @@ function updateTabUI() {
 function switchTab(tab) {
 
     currentTab = tab;
+    document.body.classList.toggle("diagnostics-active", tab === "diagnostics");
+    document.body.classList.toggle("manual-active", tab === "manual");
     currentCategory = "All";
 
     searchQuery = "";
@@ -568,6 +478,7 @@ function switchTab(tab) {
     }
 
     render();
+    if (typeof renderMostSearchedProducts === "function") renderMostSearchedProducts();
 
     if (tab === "manual") {
 
@@ -670,31 +581,15 @@ function resetFilters() {
 
 const backToTop = document.getElementById("backToTop");
 
+if (backToTop) {
+    window.addEventListener("scroll", () => {
+        backToTop.classList.toggle("show", window.scrollY > 350);
+    }, { passive: true });
 
-window.addEventListener("scroll",()=>{
-
-    if(window.scrollY > 350){
-
-        backToTop.classList.add("show");
-
-    }else{
-
-        backToTop.classList.remove("show");
-
-    }
-
-});
-
-backToTop.addEventListener("click",()=>{
-
-    window.scrollTo({
-
-        top:0,
-        behavior:"smooth"
-
+    backToTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
     });
-
-});
+}
 
 
 
@@ -735,7 +630,7 @@ function updateSiteStats(){
 
 const shareBtn = document.getElementById("shareSite");
 
-shareBtn.addEventListener("click", async () => {
+if (shareBtn) shareBtn.addEventListener("click", async () => {
 
     const shareData = {
         title: document.title,

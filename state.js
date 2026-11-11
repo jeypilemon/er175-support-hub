@@ -1,10 +1,18 @@
-let currentTab = "aftermarket";
-let currentCategory = "All";
+/**
+ * Shared application state.
+ * Keep this file limited to state declarations; put behavior in feature modules.
+ * Script order matters: config.js must load before this file.
+ */
+
+// Active browsing context
+let currentTab = APP_CONFIG.defaults.initialTab;
+let currentCategory = APP_CONFIG.defaults.initialCategory;
 
 
 let searchQuery = "";
 let appStarted = false;
 
+// Image/component viewer state
 let currentViewerComponent = null;
 let currentViewerIndex = 0;
 
@@ -13,27 +21,29 @@ let currentViewerMode = "";
 let currentComponentIndex = 0;
 let currentDashboardIndex = 0;
 
+// CVT tuner state and selected rider/setup values
 let cvtData = [];
 
 let cvtUser = {
 
-    weight:80,
+    weight: APP_CONFIG.defaults.initialRiderWeightKg,
 
-    riding:"Daily"
+    riding: APP_CONFIG.defaults.initialRidingStyle
 
 };
 
 
 let selectedCVT = {
 
-    roller:"14g",
+    roller: APP_CONFIG.defaults.initialCVT.roller,
 
-    center:"1500 RPM",
+    center: APP_CONFIG.defaults.initialCVT.center,
 
-    clutch:"1200 RPM"
+    clutch: APP_CONFIG.defaults.initialCVT.clutch
 
 };
 
+// Manual and diagnostics state
 let currentManualSection = "specs";
 
 let currentEFIProblem = null;
@@ -44,6 +54,7 @@ let efiFilter = "All";
 
 let manualSearchIndex = [];
 
+// Data populated by the Google Sheets loaders
 let manualData = [];
 let manualComponents = [];
 let manualDashboard = [];
@@ -58,6 +69,7 @@ let troubleshootData = [];
 
 let isLoading = true;
 
+// Readiness flags used by the initial application render
 const loaded = {
     aftermarket: false,
     troubleshoot: false,

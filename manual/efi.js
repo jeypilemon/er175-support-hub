@@ -39,34 +39,7 @@ content.innerHTML = `
 <div class="efi-dashboard-wrapper">
 
 
-<div class="efi-header">
-
-<h2>
-EFI Diagnostic Center
-</h2>
-
-
-<div class="efi-tip">
-
-ℹ️ Select a problem and press Diagnose
-
-</div>
-
-
-</div>
-
 <div class="efi-guide-section">
-
-    <div class="efi-guide-header">
-
-        <h2>📘 EFI Quick Reference Guides</h2>
-
-        <p>
-            Learn how to manually clear Check Engine (MIL) errors
-            and read flashing error codes before starting diagnosis.
-        </p>
-
-    </div>
 
     <div class="efi-guide-grid">
 
@@ -133,7 +106,7 @@ EFI Diagnostic Center
 
             <div class="guide-content">
 
-                <h3>Reading Check Engine (MIL) Flash Codes</h3>
+                <h3>How to Read MIL Flash Codes</h3>
 
                 <p>
                     Understand long flashes, short flashes and how to identify the correct error code.
@@ -171,6 +144,10 @@ EFI Diagnostic Center
 
 </div>
 
+<div class="efi-header">
+    <h2>EFI Diagnostic Center</h2>
+    <div class="efi-tip">ℹ️ Select a problem and press Diagnose</div>
+</div>
 
 <div class="efi-grid">
 
@@ -294,14 +271,19 @@ function renderEFIModal() {
     const stepIndex = typeof currentEFIStepIndex !== 'undefined' ? currentEFIStepIndex : 0;
     const stepsArray = window.currentEFIExtractedSteps || window.currentEFISteps || currentEFISteps || [];
 
-    document.getElementById("componentViewerTitle").innerHTML = activeProblem["Error / Symptom"] || "Diagnostic View";
-    document.getElementById("componentViewerLocation").innerHTML = activeProblem["Component / System"] || "System Location";
+    const title = document.getElementById("componentViewerTitle");
+    const location = document.getElementById("componentViewerLocation");
+    const notes = document.getElementById("componentViewerNotes");
+    if (!title || !location || !notes) return;
+
+    title.textContent = activeProblem["Error / Symptom"] || "Diagnostic View";
+    location.textContent = activeProblem["Component / System"] || "System Location";
 
     // Injection of interactive compact step layout controls
-    document.getElementById("componentViewerNotes").innerHTML = `
+    notes.innerHTML = `
     <div class="efi-progress">Step ${stepIndex + 1} of ${Math.max(1, stepsArray.length)}</div>
     <div class="efi-step-box">
-        <p>${stepsArray[stepIndex] || "No steps configured for this issue entry."}</p>
+        <p>${escapeHTML(stepsArray[stepIndex] || "No steps configured for this issue entry.")}</p>
     </div>
     <div class="efi-nav">
         <button type="button" class="efi-nav-btn" onclick="previousEFIStep()" ${stepIndex === 0 ? "disabled" : ""}>◀ Previous</button>
@@ -309,7 +291,7 @@ function renderEFIModal() {
     </div>
     `;
 
-    const zoomImg = (activeProblem["Zoom Image"] || "").trim();
+    const zoomImg = getSafeHttpUrl(activeProblem["Zoom Image"] || "");
     const image = document.getElementById("componentViewerImage");
     const zoom = document.getElementById("componentViewerZoom");
 
@@ -333,12 +315,18 @@ function renderEFIModal() {
 
 function openGuideImage(title, image){
 
+    const safeImage = getSafeHttpUrl(image);
+    if (!safeImage) {
+        console.warn("Blocked an invalid guide image URL:", image);
+        return;
+    }
+
     currentViewerMode = "guide";
     setViewerMode("guide");
 
     const modal = document.getElementById("componentModal");
 
-    document.getElementById("componentViewerTitle").innerHTML = title;
+    document.getElementById("componentViewerTitle").textContent = title;
 
     document.getElementById("componentViewerLocation").innerHTML = "";
 
@@ -346,7 +334,7 @@ function openGuideImage(title, image){
         <div class="guide-download">
             <a
                 class="efi-download"
-                href="${image}"
+                href="${escapeHTML(safeImage)}"
                 download>
                 ⬇ Download PNG
             </a>
@@ -355,14 +343,14 @@ function openGuideImage(title, image){
 
     const zoom = document.getElementById("componentViewerZoom");
 
-    zoom.src = image;
+    zoom.src = safeImage;
     zoom.style.display = "block";
 
     zoom.onclick = () => {
 
     closeComponentViewer();
 
-    openImageModal(image);
+    openImageModal(safeImage);
 
 };
 

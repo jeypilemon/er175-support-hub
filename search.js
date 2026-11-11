@@ -2,7 +2,7 @@ function handleGlobalSearch(value){
 
     searchQuery = normalizeText(value);
 
-
+    if (typeof renderMostSearchedProducts === "function") renderMostSearchedProducts();
     renderSuggestion();
 
 
@@ -87,7 +87,7 @@ function renderManualSearch(){
 
         <div class="empty-state">
 
-            No manual results found.
+            No results found in the manual for “${searchQuery}”. Try a different keyword or check the Parts tab for product listings.
 
         </div>
 

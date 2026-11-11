@@ -1,0 +1,60 @@
+/* Stage 13.14: compact What's New launcher and accessible modal */
+.whats-new-entry { display:flex; justify-content:center; width:min(100% - 24px, 1440px); margin:10px auto 12px; }
+.whats-new-trigger { display:inline-flex; align-items:center; gap:9px; min-height:38px; padding:6px 12px; border:1px solid var(--border,#d9dee4); border-radius:999px; background:var(--surface,#fff); color:var(--text,#20252b); font:650 12px/1.2 system-ui,sans-serif; cursor:pointer; box-shadow:0 3px 10px rgba(20,28,36,.045); transition:border-color .18s ease,background .18s ease,transform .18s ease; }
+.whats-new-trigger:hover { border-color:#d92332; transform:translateY(-1px); }
+.whats-new-trigger-arrow { color:#d92332; font-size:15px; }
+.whats-new-modal { display:none; position:fixed; inset:0; z-index:10050; align-items:center; justify-content:center; padding:18px; }
+.whats-new-modal.is-open { display:flex; }
+.whats-new-backdrop { position:absolute; inset:0; background:rgba(10,14,18,.66); backdrop-filter:blur(3px); }
+.whats-new-dialog { position:relative; width:min(100%,480px); max-height:min(82vh,620px); overflow:auto; padding:26px; border:1px solid var(--border,#d9dee4); border-radius:18px; background:var(--surface,#fff); color:var(--text,#20252b); box-shadow:0 24px 70px rgba(0,0,0,.28); outline:none; }
+.whats-new-dialog h2 { margin:14px 40px 7px 0; color:var(--text,#20252b); font-size:22px; line-height:1.25; }
+.whats-new-dialog p { margin:0 0 16px; color:var(--muted,#64707d); font-size:14px; }
+.whats-new-close { position:absolute; top:14px; right:14px; width:36px; height:36px; border:1px solid var(--border,#d9dee4); border-radius:10px; background:var(--card,#f3f4f6); color:var(--text,#20252b); font-size:23px; line-height:1; cursor:pointer; }
+.whats-new-highlights { display:grid; gap:10px; margin:0 0 20px; padding-left:20px; color:var(--text,#20252b); font-size:13px; line-height:1.55; }
+.whats-new-full-log { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:10px; background:#d92332; color:#fff; text-decoration:none; font-size:13px; font-weight:750; }
+:root[data-theme="dark"] .whats-new-trigger { background:var(--surface,#20262d); border-color:var(--border,#39414a); }
+:root[data-theme="dark"] .whats-new-dialog { background:var(--surface,#20262d); }
+:root[data-theme="dark"] .whats-new-close { background:var(--card,#29313a); }
+body.whats-new-open { overflow:hidden; }
+@media(max-width:600px) { .whats-new-entry { justify-content:flex-start; margin:8px auto 10px; } .whats-new-dialog { padding:22px 18px; } .whats-new-dialog h2 { font-size:19px; } }
+@media(prefers-reduced-motion:reduce) { .whats-new-trigger { transition:none; } }
+/* Compact explainer card */
+.explainer-cta { padding:14px 18px !important; margin-top:10px !important; margin-bottom:14px !important; gap:14px !important; }
+.explainer-copy { gap:4px !important; }
+.explainer-copy h1 { margin:0 !important; font-size:clamp(16px,2vw,20px) !important; line-height:1.25 !important; }
+.explainer-copy p { margin:0 !important; font-size:12px !important; line-height:1.4 !important; }
+.explainer-kicker { font-size:9px !important; letter-spacing:.08em !important; }
+.explainer-cta .explainer-button { min-height:38px !important; padding:9px 13px !important; font-size:12px !important; }
+@media(max-width:600px) { .explainer-cta { padding:12px 14px !important; gap:9px !important; } .explainer-copy h1 { font-size:16px !important; } .explainer-copy p { font-size:11px !important; } }
+
+/* Stage 13.15: What's New becomes a compact in-flow banner (not sticky). */
+.whats-new-entry {
+  justify-content: stretch;
+  width: min(100% - 24px, 1440px);
+  margin: 10px auto 12px;
+}
+.whats-new-trigger {
+  display: flex;
+  width: 100%;
+  min-height: 46px;
+  justify-content: flex-start;
+  padding: 7px 12px;
+  border-radius: 12px;
+  text-align: left;
+}
+.whats-new-trigger-arrow { margin-left: auto; }
+
+/* On narrow screens, keep the explainer action directly under the copy. */
+@media (max-width: 700px) {
+  .explainer-cta .explainer-button {
+    align-self: flex-start !important;
+    justify-self: start !important;
+    width: fit-content !important;
+    max-width: 100%;
+  }
+}
+@media (max-width: 380px) {
+  .whats-new-trigger { gap: 7px; padding-inline: 9px; font-size: 11px; }
+  .whats-new-badge { padding-inline: 8px; }
+  .explainer-cta .explainer-button { white-space: normal; }
+}
