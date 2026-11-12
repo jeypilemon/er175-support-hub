@@ -27,7 +27,7 @@ function renderPartCard(part) {
             ${preview ? `<img class="product-card-image" src="${escapeHTML(preview)}" data-full-image="${escapeHTML(preview)}" alt="View full image of ${name}" role="button" tabindex="0" aria-label="View full-size image of ${name}" loading="lazy" decoding="async" onerror="this.style.display=\'none\'">` : ""}
             <div class="card-content">
                 <h3>${name}</h3>
-                <span class="category">${category}</span>
+                <span class="category category-tag">${category}</span>
                 ${spec ? `<div class="specs${specClass}">${escapeHTML(spec)}</div>` : ""}
                 ${compatibility ? `<div class="spec-compatibility">${escapeHTML(compatibility)}</div>` : ""}
                 <div class="card-actions">
