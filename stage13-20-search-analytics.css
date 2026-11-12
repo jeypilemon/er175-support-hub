@@ -3,3 +3,12 @@
 .popular-searches[hidden] { display: none; }
 .popular-searches .search-suggestion-heading { padding: 2px 0 8px; }
 @media (max-width: 520px) { .popular-searches { margin-top: 6px; padding: 8px; } }
+/* Compact trending searches into a content-sized row instead of stretched columns. */
+.popular-searches { display:flex; align-items:center; flex-wrap:wrap; gap:8px 14px; padding:8px 10px; }
+.popular-searches .search-suggestion-heading { flex:0 0 auto; padding:2px 4px 2px 0; }
+.popular-searches .search-suggestion-list { display:flex; flex:1 1 auto; flex-wrap:wrap; align-items:center; gap:7px; min-width:0; }
+.popular-searches .search-suggestion-item { display:inline-flex; flex:0 0 auto; width:auto; min-width:0; gap:8px; padding:6px 11px; border:1px solid var(--border, #d9dee5); border-radius:999px; background:var(--surface-soft, #f2f4f6); }
+.popular-searches .search-suggestion-icon { flex:0 0 20px; width:20px; height:20px; border-radius:50%; background:color-mix(in srgb, var(--hub-accent, #d92332) 13%, transparent); font-size:.78rem; font-weight:800; line-height:20px; }
+.popular-searches .search-suggestion-copy { flex:0 1 auto; }
+.popular-searches .search-suggestion-copy strong { font-size:.86rem; }
+@media (max-width:520px) { .popular-searches { gap:6px 10px; padding:8px; } .popular-searches .search-suggestion-list { gap:6px; } .popular-searches .search-suggestion-item { padding:6px 9px; } }
