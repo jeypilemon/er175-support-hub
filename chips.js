@@ -202,37 +202,52 @@ function hintChipScroll(){
     if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if(chips.scrollWidth <= chips.clientWidth + 4) return;
 
-    window.__er175ChipPeekShown = true;
-
-    let interrupted = false;
-    let restoreTimer;
-
-    const cancelHint = () => {
-        interrupted = true;
-        clearTimeout(restoreTimer);
-        chips.removeEventListener("pointerdown", cancelHint);
-        chips.removeEventListener("touchstart", cancelHint);
-        chips.removeEventListener("wheel", cancelHint);
-        chips.removeEventListener("keydown", cancelHint);
+    // Let the welcome explainer and its video finish before showing the hint.
+    const waitForIntroToClose = () => {
+        const explainerOpen = document.getElementById("explainerModal")?.classList.contains("is-open");
+        const videoOpen = document.getElementById("linkModal")?.classList.contains("show");
+        if(explainerOpen || videoOpen){
+            window.setTimeout(waitForIntroToClose, 350);
+            return;
+        }
+        window.setTimeout(startPeek, 750);
     };
 
-    chips.addEventListener("pointerdown", cancelHint, { once: true });
-    chips.addEventListener("touchstart", cancelHint, { once: true, passive: true });
-    chips.addEventListener("wheel", cancelHint, { once: true, passive: true });
-    chips.addEventListener("keydown", cancelHint, { once: true });
+    const startPeek = () => {
+        if(window.__er175ChipPeekShown || !document.getElementById("chips")) return;
+        const row = document.getElementById("chips");
+        if(!row || row.scrollWidth <= row.clientWidth + 4) return;
 
-    // Briefly reveal that more categories continue off-screen, then return.
-    setTimeout(() => {
-        if(interrupted) return;
-        chips.scrollTo({ left: Math.min(26, chips.scrollWidth - chips.clientWidth), behavior: "smooth" });
-        restoreTimer = setTimeout(() => {
-            if(!interrupted) chips.scrollTo({ left: 0, behavior: "smooth" });
-            chips.removeEventListener("pointerdown", cancelHint);
-            chips.removeEventListener("touchstart", cancelHint);
-            chips.removeEventListener("wheel", cancelHint);
-            chips.removeEventListener("keydown", cancelHint);
-        }, 650);
-    }, 450);
+        window.__er175ChipPeekShown = true;
+        let interrupted = false;
+        let restoreTimer;
+
+        const cancelHint = () => {
+            interrupted = true;
+            clearTimeout(restoreTimer);
+            row.removeEventListener("pointerdown", cancelHint);
+            row.removeEventListener("touchstart", cancelHint);
+            row.removeEventListener("wheel", cancelHint);
+            row.removeEventListener("keydown", cancelHint);
+        };
+
+        row.addEventListener("pointerdown", cancelHint, { once: true });
+        row.addEventListener("touchstart", cancelHint, { once: true, passive: true });
+        row.addEventListener("wheel", cancelHint, { once: true, passive: true });
+        row.addEventListener("keydown", cancelHint, { once: true });
+
+        // Peek, hold the offset long enough to notice, then return.
+        row.scrollTo({ left: Math.min(30, row.scrollWidth - row.clientWidth), behavior: "smooth" });
+        restoreTimer = window.setTimeout(() => {
+            if(!interrupted) row.scrollTo({ left: 0, behavior: "smooth" });
+            row.removeEventListener("pointerdown", cancelHint);
+            row.removeEventListener("touchstart", cancelHint);
+            row.removeEventListener("wheel", cancelHint);
+            row.removeEventListener("keydown", cancelHint);
+        }, 4550);
+    };
+
+    waitForIntroToClose();
 }
 
 function scrollChips(){
