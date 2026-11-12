@@ -122,7 +122,8 @@ function renderChips() {
 
     `).join("");
 
-
+    updateChipArrow();
+    requestAnimationFrame(hintChipScroll);
 
 }
 
@@ -197,23 +198,41 @@ function updateChipArrow(){
 function hintChipScroll(){
 
     const chips = document.getElementById("chips");
+    if(!chips || window.__er175ChipPeekShown) return;
+    if(window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if(chips.scrollWidth <= chips.clientWidth + 4) return;
 
-    if(!chips) return;
+    window.__er175ChipPeekShown = true;
 
+    let interrupted = false;
+    let restoreTimer;
 
-    // only animate if content is overflowing
-    if(chips.scrollWidth <= chips.clientWidth){
-        return;
-    }
+    const cancelHint = () => {
+        interrupted = true;
+        clearTimeout(restoreTimer);
+        chips.removeEventListener("pointerdown", cancelHint);
+        chips.removeEventListener("touchstart", cancelHint);
+        chips.removeEventListener("wheel", cancelHint);
+        chips.removeEventListener("keydown", cancelHint);
+    };
 
+    chips.addEventListener("pointerdown", cancelHint, { once: true });
+    chips.addEventListener("touchstart", cancelHint, { once: true, passive: true });
+    chips.addEventListener("wheel", cancelHint, { once: true, passive: true });
+    chips.addEventListener("keydown", cancelHint, { once: true });
 
-    chips.classList.add("hint-scroll");
-
-
-    setTimeout(()=>{
-        chips.classList.remove("hint-scroll");
-    },1800);
-
+    // Briefly reveal that more categories continue off-screen, then return.
+    setTimeout(() => {
+        if(interrupted) return;
+        chips.scrollTo({ left: Math.min(26, chips.scrollWidth - chips.clientWidth), behavior: "smooth" });
+        restoreTimer = setTimeout(() => {
+            if(!interrupted) chips.scrollTo({ left: 0, behavior: "smooth" });
+            chips.removeEventListener("pointerdown", cancelHint);
+            chips.removeEventListener("touchstart", cancelHint);
+            chips.removeEventListener("wheel", cancelHint);
+            chips.removeEventListener("keydown", cancelHint);
+        }, 650);
+    }, 450);
 }
 
 function scrollChips(){
