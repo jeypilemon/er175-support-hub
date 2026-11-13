@@ -39,6 +39,6 @@ async function renderPopularSearches() {
     if (!box || !SEARCH_ANALYTICS_ENDPOINT) return;
     const rows = await loadPopularSearches();
     if (!rows.length || searchQuery.trim().length >= 2) { box.hidden = true; return; }
-    box.innerHTML = `<div class="search-suggestion-heading">Trending</div><div class="search-suggestion-list">${rows.map((item, index) => `<button type="button" class="search-suggestion-item" data-search-value="${escapeHTML(item.query)}"><span class="search-suggestion-icon">${index + 1}</span><span class="search-suggestion-copy"><strong>${escapeHTML(item.query)}</strong></span></button>`).join('')}</div>`;
+    box.innerHTML = `<div class="search-suggestion-heading">Trending Parts</div><div class="search-suggestion-list">${rows.map((item, index) => `<button type="button" class="search-suggestion-item" data-search-value="${escapeHTML(item.query)}"><span class="search-suggestion-icon">${index + 1}</span><span class="search-suggestion-copy"><strong>${escapeHTML(item.query)}</strong></span></button>`).join('')}</div>`;
     box.hidden = false;
 }
