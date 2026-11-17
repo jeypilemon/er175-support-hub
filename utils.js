@@ -233,29 +233,78 @@ function levenshtein(a,b){
 }
 
 
-function findAutoSuggestion(query){
+function compactSearchText(value) {
+    return normalizeText(value).replace(/\\s+/g, "");
+}
 
+function scoreSearchText(value, query) {
+    const text = normalizeText(value);
     const q = normalizeText(query);
+    if (!q || !text) return 0;
+    if (text.includes(q)) return 100;
 
-    const terms = getAllSearchTerms();
+    const compactText = compactSearchText(text);
+    const compactQuery = compactSearchText(q);
+    if (compactQuery.length >= 3 && compactText.includes(compactQuery)) return 96;
 
+    const queryWords = q.split(" ").filter(Boolean);
+    const textWords = text.split(" ").filter(Boolean);
+    let totalDistance = 0;
+    let exactOrPrefix = 0;
 
-    for(let term of terms){
-
-        const clean = normalizeText(term);
-
-
-        if(clean.includes(q)){
-
-            return term;
-
+    for (const queryWord of queryWords) {
+        let best = Infinity;
+        let exact = false;
+        for (const textWord of textWords) {
+            if (textWord === queryWord) { best = 0; exact = true; break; }
+            if (textWord.startsWith(queryWord) || queryWord.startsWith(textWord)) {
+                const gap = Math.abs(textWord.length - queryWord.length);
+                if (gap < best) { best = gap; exact = true; }
+                continue;
+            }
+            if (Math.min(queryWord.length, textWord.length) < 4) continue;
+            const limit = Math.max(queryWord.length, textWord.length) >= 8 ? 2 : 1;
+            if (Math.abs(queryWord.length - textWord.length) > limit) continue;
+            const distance = levenshtein(queryWord, textWord);
+            if (distance <= limit && distance < best) { best = distance; exact = false; }
         }
-
+        if (!Number.isFinite(best)) return 0;
+        totalDistance += best;
+        if (exact) exactOrPrefix++;
     }
+    const score = 70 + exactOrPrefix * 3 - totalDistance * 7 - Math.max(0, textWords.length - queryWords.length);
+    return score >= 50 ? score : 0;
+}
 
+function getPartSearchScore(item, query) {
+    if (!item || !normalizeText(query)) return 1;
+    const fields = [
+        [item["Parts Name"], 1],
+        [item["Parts Category"], 0.96],
+        [item["Brand"], 0.88],
+        [item["Compatibility"], 0.82]
+    ];
+    const alias = typeof getSuggestion === "function" ? getSuggestion(query) : null;
+    let best = 0;
+    for (const [value, weight] of fields) {
+        best = Math.max(best, scoreSearchText(value, query) * weight);
+        if (alias) best = Math.max(best, scoreSearchText(value, alias) * weight * 0.94);
+    }
+    return best;
+}
 
-    return null;
-
+function findAutoSuggestion(query) {
+    const q = normalizeText(query);
+    if (q.length < 3) return null;
+    const rows = typeof getSearchablePartRows === "function" ? getSearchablePartRows() : [];
+    let bestItem = null, bestScore = 0;
+    for (const item of rows) {
+        const name = String(item["Parts Name"] || "").trim();
+        const score = scoreSearchText(name, q);
+        if (score > bestScore) { bestScore = score; bestItem = item; }
+    }
+    return bestItem && bestScore >= 50 && bestScore < 100
+        ? String(bestItem["Parts Name"] || "").trim() : null;
 }
 
 
@@ -318,19 +367,20 @@ function renderSuggestion() {
         return;
     }
 
+    const rankedProducts = rows
+        .map(item => ({ item, score: getPartSearchScore(item, query) }))
+        .filter(result => result.score > 0)
+        .sort((a, b) => b.score - a.score);
     const correction = getSuggestion(query) || findAutoSuggestion(query);
-    const products = rows.filter(item => {
-        const name = getNormalizedField(item, "Parts Name");
-        const category = getNormalizedField(item, "Parts Category");
-        const brand = getNormalizedField(item, "Brand");
-        const compatibility = getNormalizedField(item, "Compatibility");
-        return name.includes(query) || category.includes(query) || brand.includes(query) || compatibility.includes(query);
-    }).slice(0, 5);
+    const products = rankedProducts.slice(0, 5).map(result => result.item);
 
     const categories = [...new Set(rows
         .map(item => String(item["Parts Category"] || "").trim())
         .filter(Boolean)
-        .filter(category => normalizeText(category).includes(query)))].slice(0, 3);
+        .map(category => ({ category, score: scoreSearchText(category, query) }))
+        .filter(result => result.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .map(result => result.category))].slice(0, 3);
 
     if (!correction && !products.length && !categories.length) {
         box.innerHTML = "";
