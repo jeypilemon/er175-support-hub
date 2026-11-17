@@ -113,15 +113,12 @@ function render() {
         ? aftermarketParts
         : oemParts;
 
-    const filtered = data.filter(p => {
-        const name = getNormalizedField(p, "Parts Name");
-        const cat = getNormalizedField(p, "Parts Category");
-
-        return (
-            (name.includes(searchQuery) || cat.includes(searchQuery)) &&
+    const filtered = data
+        .filter(p => (
+            (!searchQuery || getPartSearchScore(p, searchQuery) > 0) &&
             (currentCategory === "All" || p["Parts Category"] === currentCategory)
-        );
-    });
+        ))
+        .sort((a, b) => getPartSearchScore(b, searchQuery) - getPartSearchScore(a, searchQuery));
 
     if (!filtered.length) {
         container.innerHTML = `<div class="empty-state">${getEmptyStateMessage()}</div>`;
