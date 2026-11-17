@@ -182,54 +182,31 @@ function getAllSearchTerms(){
 
 }
 
-function levenshtein(a,b){
+/** Damerau-Levenshtein distance: adjacent letter swaps count as one typo. */
+function levenshtein(a, b) {
+    a = String(a || "");
+    b = String(b || "");
+    if (a === b) return 0;
+    if (!a.length) return b.length;
+    if (!b.length) return a.length;
 
-    const matrix=[];
+    const matrix = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+    for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
 
-
-    for(let i=0;i<=b.length;i++){
-
-        matrix[i]=[i];
-
-    }
-
-
-    for(let j=0;j<=a.length;j++){
-
-        matrix[0][j]=j;
-
-    }
-
-
-
-    for(let i=1;i<=b.length;i++){
-
-        for(let j=1;j<=a.length;j++){
-
-
-            if(b[i-1]===a[j-1]){
-
-                matrix[i][j]=matrix[i-1][j-1];
-
+    for (let i = 1; i <= a.length; i++) {
+        for (let j = 1; j <= b.length; j++) {
+            const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+            matrix[i][j] = Math.min(
+                matrix[i - 1][j] + 1,
+                matrix[i][j - 1] + 1,
+                matrix[i - 1][j - 1] + cost
+            );
+            if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+                matrix[i][j] = Math.min(matrix[i][j], matrix[i - 2][j - 2] + 1);
             }
-
-            else{
-
-                matrix[i][j]=Math.min(
-                    matrix[i-1][j-1]+1,
-                    matrix[i][j-1]+1,
-                    matrix[i-1][j]+1
-                );
-
-            }
-
         }
-
     }
-
-
-    return matrix[b.length][a.length];
-
+    return matrix[a.length][b.length];
 }
 
 
