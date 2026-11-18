@@ -426,7 +426,22 @@ function applySuggestion(text) {
 
 function getEmptyStateMessage() {
     if (searchQuery) {
-        return `No results found for "<b>${searchQuery}</b>"`;
+        const query = escapeHTML(searchQuery);
+        const hasCategoryFilter = (currentTab === "aftermarket" || currentTab === "oem")
+            && currentCategory !== "All";
+
+        if (hasCategoryFilter) {
+            return `
+                <div class="empty-search-message">
+                    <strong>No results found for "${query}"</strong>
+                    <p>You're currently searching within the <b>${escapeHTML(currentCategory)}</b> category.</p>
+                    <p>For a broader search across all parts, select <b>All</b> category.</p>
+                    <button type="button" class="empty-search-reset" onclick="setCategory('All')">Show all categories</button>
+                </div>
+            `;
+        }
+
+        return `No results found for "<b>${query}</b>"`;
     }
     return "No items available";
 }
