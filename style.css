@@ -5444,3 +5444,25 @@ input#search{
     letter-spacing: .015em;
     overflow-wrap: anywhere;
 }
+
+
+/* Helpful guidance when a search is narrowed by an active parts category. */
+.empty-search-message { max-width: 520px; margin: 0 auto; text-align: center; }
+.empty-search-message > strong { display: block; margin-bottom: 8px; }
+.empty-search-message p { margin: 6px 0; color: var(--muted, #8b929c); line-height: 1.5; }
+.empty-search-reset {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+    padding: 9px 15px;
+    border: 1px solid var(--accent, #ef4930);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent, #ef4930) 10%, transparent);
+    color: var(--text, inherit);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.empty-search-reset:hover { background: var(--accent, #ef4930); color: #fff; }
