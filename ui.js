@@ -20,6 +20,7 @@ function renderPartCard(part) {
     const compatibility = String(part["Compatibility"] || "").trim();
     const shopee = getSafeHttpUrl(part["Shopee"]);
     const lazada = getSafeHttpUrl(part["Lazada"]);
+    const tiktok = getSafeHttpUrl(part["Tiktok Shop"]);
     const specClass = spec.toLowerCase().includes("plug") ? " plug-fit" : "";
 
     return `
@@ -33,6 +34,7 @@ function renderPartCard(part) {
                 <div class="card-actions">
                     ${shopee ? `<a class="button button-shopee" href="${escapeHTML(shopee)}" target="_blank" rel="noopener noreferrer">Buy in Shopee</a>` : ""}
                     ${lazada ? `<a class="button button-lazada" href="${escapeHTML(lazada)}" target="_blank" rel="noopener noreferrer">Buy in Lazada</a>` : ""}
+                    ${tiktok ? `<a class="button button-tiktok" href="${escapeHTML(tiktok)}" target="_blank" rel="noopener noreferrer">TikTok Shop</a>` : ""}
                     ${shopee ? `<button class="copy-btn" type="button" data-copy-url="${escapeHTML(shopee)}" onclick="copyAffiliateLink(this.dataset.copyUrl)" aria-label="Copy Shopee link">🔗</button>` : ""}
                 </div>
             </div>
