@@ -5466,3 +5466,16 @@ input#search{
     cursor: pointer;
 }
 .empty-search-reset:hover { background: var(--accent, #ef4930); color: #fff; }
+
+
+/* TikTok Shop affiliate button — rendered only when the sheet has a link. */
+.card-actions .button-tiktok {
+    background: #111;
+    color: #fff;
+    border: 1px solid #333;
+}
+.card-actions .button-tiktok:hover {
+    background: #252525;
+    border-color: #25f4ee;
+    color: #fff;
+}
