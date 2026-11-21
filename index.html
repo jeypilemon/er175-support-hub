@@ -585,30 +585,60 @@ class="component-viewer-zoom">
         if (event.key === 'Escape' && modal.classList.contains('is-open')) close();
     });
 
-    // Explainer promotion opens on each fresh page load; users can dismiss it.
+    // Explainer: show after 10 seconds of visible browsing; snooze dismissal for 10 days.
     const explainer = document.getElementById('explainerModal');
     const explainerDialog = explainer && explainer.querySelector('.explainer-modal-dialog');
     const watchButton = document.getElementById('watchExplainerNow');
     if (explainer && explainerDialog && watchButton) {
+        const dismissedKey = 'er175ExplainerDismissedUntil';
+        const watchedKey = 'er175ExplainerWatched';
+        let visibleSeconds = 0;
+        let explainerShown = false;
+
         const closeExplainer = () => {
             explainer.classList.remove('is-open');
             explainer.setAttribute('aria-hidden', 'true');
             document.body.classList.remove('explainer-modal-open');
         };
-        explainer.querySelectorAll('[data-close-explainer]').forEach(el => el.addEventListener('click', closeExplainer));
-        watchButton.addEventListener('click', () => {
-            closeExplainer();
-            if (typeof openModal === 'function') openModal('https://www.youtube.com/watch?v=MCw3opAAZ44&t=13s');
-        });
-        document.addEventListener('keydown', event => {
-            if (event.key === 'Escape' && explainer.classList.contains('is-open')) closeExplainer();
-        });
-        window.setTimeout(() => {
+        const showExplainer = () => {
+            if (explainerShown || document.visibilityState !== 'visible') return;
+            explainerShown = true;
             explainer.classList.add('is-open');
             explainer.setAttribute('aria-hidden', 'false');
             document.body.classList.add('explainer-modal-open');
             explainerDialog.focus();
-        }, 550);
+        };
+        const dismissExplainer = () => {
+            try { localStorage.setItem(dismissedKey, String(Date.now() + 10 * 24 * 60 * 60 * 1000)); } catch (_) {}
+            closeExplainer();
+        };
+
+        explainer.querySelectorAll('[data-close-explainer]').forEach(el => el.addEventListener('click', dismissExplainer));
+        watchButton.addEventListener('click', () => {
+            try { localStorage.setItem(watchedKey, '1'); } catch (_) {}
+            closeExplainer();
+            if (typeof openModal === 'function') openModal('https://www.youtube.com/watch?v=MCw3opAAZ44&t=13s');
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && explainer.classList.contains('is-open')) dismissExplainer();
+        });
+
+        let dismissedUntil = 0;
+        let alreadyWatched = false;
+        try {
+            dismissedUntil = Number(localStorage.getItem(dismissedKey) || 0);
+            alreadyWatched = localStorage.getItem(watchedKey) === '1';
+        } catch (_) {}
+        if (!alreadyWatched && Date.now() >= dismissedUntil) {
+            const visibleTimer = window.setInterval(() => {
+                if (document.visibilityState !== 'visible' || explainerShown) return;
+                visibleSeconds++;
+                if (visibleSeconds >= 10) {
+                    window.clearInterval(visibleTimer);
+                    showExplainer();
+                }
+            }, 1000);
+        }
     }
 })();
 </script>
