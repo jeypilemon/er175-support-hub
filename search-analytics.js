@@ -66,7 +66,17 @@ async function loadPopularSearches(forceRefresh = false) {
 
 async function renderPopularSearches(forceRefresh = false) {
     const box = document.getElementById('popularSearches');
-    if (!box || !SEARCH_ANALYTICS_ENDPOINT) return;
+    if (!box) return;
+
+    // Trending Parts belongs only to the Parts section, not DIY Guides or other tabs.
+    if (currentTab !== 'aftermarket' && currentTab !== 'oem') {
+        box.hidden = true;
+        return;
+    }
+    if (!SEARCH_ANALYTICS_ENDPOINT) {
+        box.hidden = true;
+        return;
+    }
 
     const rows = await loadPopularSearches(forceRefresh);
     if (!rows.length || searchQuery.trim().length >= 2) {
