@@ -452,6 +452,17 @@ function updateTabUI() {
 function switchTab(tab) {
 
     currentTab = tab;
+
+    // Hide Trending Parts immediately outside the Parts tabs; refresh it when returning.
+    const trendingBox = document.getElementById("popularSearches");
+    if (trendingBox) {
+        if (tab === "aftermarket" || tab === "oem") {
+            if (typeof renderPopularSearches === "function") renderPopularSearches();
+        } else {
+            trendingBox.hidden = true;
+        }
+    }
+
     document.body.classList.toggle("diagnostics-active", tab === "diagnostics");
     document.body.classList.toggle("manual-active", tab === "manual");
     currentCategory = "All";
