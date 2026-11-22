@@ -5519,3 +5519,14 @@ input#search{
     }
 }
 
+
+
+/* Search focus: use a soft accent glow instead of a second hard outline. */
+input#search:focus,
+input#search:focus-visible {
+    outline: none;
+    border-color: rgba(239, 55, 75, 0.55);
+    box-shadow:
+        0 0 0 2px rgba(239, 55, 75, 0.14),
+        0 0 14px rgba(239, 55, 75, 0.28);
+}
