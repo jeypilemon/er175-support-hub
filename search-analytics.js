@@ -79,6 +79,12 @@ async function renderPopularSearches(forceRefresh = false) {
     }
 
     const rows = await loadPopularSearches(forceRefresh);
+
+    // Re-check after the async request: the visitor may have switched tabs while it loaded.
+    if (currentTab !== 'aftermarket' && currentTab !== 'oem') {
+        box.hidden = true;
+        return;
+    }
     if (!rows.length || searchQuery.trim().length >= 2) {
         box.hidden = true;
         return;
