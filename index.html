@@ -358,6 +358,21 @@ document.write(
         </div>
     </div>
 
+<!-- ER175 COMPONENT DETAIL MODAL -->
+<div id="componentDetailModal" class="component-detail-modal" role="dialog" aria-modal="true" aria-labelledby="componentDetailTitle" aria-hidden="true">
+    <div class="component-detail-dialog">
+        <button class="component-detail-close" type="button" aria-label="Close component details" onclick="closeComponentDetailModal()">×</button>
+        <div class="component-detail-heading">
+            <div><span id="componentDetailCategory" class="component-category-label"></span><h2 id="componentDetailTitle"></h2></div>
+            <a id="componentDetailDownload" class="component-detail-download" href="#" download hidden>⬇ Download image</a>
+        </div>
+        <img id="componentDetailImage" class="component-detail-image" alt="" hidden>
+        <div class="component-detail-section"><h3>Where to find it</h3><p id="componentDetailLocation"></p></div>
+        <div class="component-detail-section"><h3>Function</h3><p id="componentDetailFunction"></p></div>
+        <div class="component-detail-section"><h3>Access / Notes</h3><p id="componentDetailNotes"></p></div>
+    </div>
+</div>
+
 <!-- UNIVERSAL VIEWER MODAL -->
 
 <div id="componentModal" class="component-modal" role="dialog" aria-modal="true" aria-labelledby="componentViewerTitle" aria-hidden="true">
