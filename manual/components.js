@@ -200,46 +200,71 @@ title="${item["Component"]}"
 
 }
 
-function selectComponent(id){
-
-selectedComponentID = id;
-
-const item = manualComponents.find(
-x => x.ID == id
-);
-
-if(!item) return;
-
-
-const info =
-document.getElementById("componentInfo");
-
-
-info.innerHTML = `
-
-<h3>${item["Component"]}</h3>
-
-<span class="component-category-label">
-${item["Category"]}
-</span>
-
-<p>
-<b>Location:</b><br>
-${item["Location"]}
-</p>
-
-
-<p>
-<b>Access / Notes:</b><br>
-${item["Access / Notes"]}
-</p>
-
-`;
-
-
-renderComponentMarkers();
-
+function selectComponent(id) {
+    selectedComponentID = id;
+    const item = manualComponents.find(x => x.ID == id);
+    if (!item) return;
+    openComponentDetailModal(item);
+    renderComponentMarkers();
 }
+
+function openComponentDetailModal(item) {
+    const modal = document.getElementById("componentDetailModal");
+    if (!modal || !item) return;
+    const image = document.getElementById("componentDetailImage");
+    const download = document.getElementById("componentDetailDownload");
+    document.getElementById("componentDetailTitle").textContent = item["Component"] || "";
+    document.getElementById("componentDetailCategory").textContent = item["Category"] || "";
+    document.getElementById("componentDetailLocation").textContent = item["Location"] || "Not specified";
+    document.getElementById("componentDetailFunction").textContent = item["Function"] || "Function details not yet provided.";
+    document.getElementById("componentDetailNotes").textContent = item["Access / Notes"] || "No additional access notes.";
+
+    const imageUrl = typeof getSafeHttpUrl === "function"
+        ? getSafeHttpUrl(item["Component Image"])
+        : (item["Component Image"] || "").trim();
+
+    if (imageUrl) {
+        image.src = imageUrl;
+        image.alt = (item["Component"] || "Component") + " location reference";
+        image.hidden = false;
+        download.href = imageUrl;
+        download.hidden = false;
+    } else {
+        image.removeAttribute("src");
+        image.hidden = true;
+        download.removeAttribute("href");
+        download.hidden = true;
+    }
+
+    modal.classList.add("show");
+    modal.setAttribute("aria-hidden", "false");
+    document.body.classList.add("component-detail-open");
+    const closeButton = modal.querySelector(".component-detail-close");
+    if (closeButton) closeButton.focus();
+}
+
+function closeComponentDetailModal() {
+    const modal = document.getElementById("componentDetailModal");
+    if (!modal) return;
+    modal.classList.remove("show");
+    modal.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("component-detail-open");
+    const image = document.getElementById("componentDetailImage");
+    if (image) image.removeAttribute("src");
+}
+
+(function initComponentDetailModal() {
+    if (window.__er175ComponentDetailModalReady) return;
+    window.__er175ComponentDetailModalReady = true;
+    document.addEventListener("click", event => {
+        const modal = document.getElementById("componentDetailModal");
+        if (modal && event.target === modal) closeComponentDetailModal();
+    });
+    document.addEventListener("keydown", event => {
+        const modal = document.getElementById("componentDetailModal");
+        if (event.key === "Escape" && modal && modal.classList.contains("show")) closeComponentDetailModal();
+    });
+})();
 
 
 function filterComponentCategory(category){
