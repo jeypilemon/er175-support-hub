@@ -91,16 +91,6 @@ class="bike-image"
 
 
 
-<div id="componentInfo"
-class="component-info-panel">
-
-
-Select a component marker.
-
-
-</div>
-
-
 </div>
 
 
